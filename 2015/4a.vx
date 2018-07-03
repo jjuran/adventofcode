@@ -1,0 +1,23 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const sample-data = "abcdef"
+
+#const data = sample-data
+const data = "ckczppom"
+
+const n = 5
+
+var suffix = 0
+
+while true do
+{
+	const input = data .++suffix
+	
+	const output = hex md5 input
+	
+	if output[ 0 -> n ] == "0" * n then {break}
+}
+
+print suffix

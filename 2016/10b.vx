@@ -1,0 +1,93 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/10.txt").lines()
+
+var inputs = []
+
+var gates = str^[]
+
+var holding = str^[]
+var outputs = str^[]
+
+var doubles = []
+
+def give
+{
+	const bot, const value = _
+	
+	if not bot in holding then
+	{
+		holding[ bot ] = [value]
+	}
+	else
+	{
+		if holding[ bot ] then
+		{
+			doubles <-- bot
+		}
+		
+		holding[ bot ] <-- value
+	}
+}
+
+def distribute
+{
+	const value, const dst = _
+	
+	const kind, const id = *dst
+	
+	if kind == "output" then
+	{
+		outputs[ id ] = value
+	}
+	else
+	{
+		give( id, value )
+	}
+}
+
+for config in data do
+{
+	const words = [config / ' ']
+	
+	if words[ 0 ] == "value" then
+	{
+		const value, const bot = int words[ 1 ], words[ 5 ]
+		
+		#inputs <-- value => bot
+		
+		give( bot, value )
+		
+		continue
+	}
+	
+	const src = words[ 1 ]
+	
+	const low  = words[  5 ..  6 ]
+	const high = words[ 10 .. 11 ]
+	
+	gates[ src ] = [ low, high ]
+}
+
+while doubles do
+{
+	const bot = doubles[ 0 ]
+	
+	doubles = doubles[ 1 -> doubles.length ]
+	
+	const chips = *holding[ bot ]
+	
+	const low  = Math.min chips
+	const high = Math.max chips
+	
+	const gate = gates[ bot ]
+	
+	distribute( low,  gate[ 0 ] )
+	distribute( high, gate[ 1 ] )
+}
+
+print (outputs[ 0 .. 2 map str ] per Math.product)
+
+end.

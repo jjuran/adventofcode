@@ -1,0 +1,35 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/3.txt").lines()
+
+var valid = 0
+
+def check
+{
+	const edges = *_
+	
+	if Math.sum edges > Math.max edges * 2 then
+	{
+		++valid
+	}
+}
+
+var p = begin data
+
+while p do
+{
+	const a = *p++
+	const b = *p++
+	const c = *p++
+	
+	const trio = [a, b, c] map {[_ / ' '] map {_ or ()} map int}
+	
+	for i in 0 .. 2 do
+	{
+		check (trio map { _[ i ] })
+	}
+}
+
+print valid

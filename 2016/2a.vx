@@ -1,0 +1,42 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/2.txt").lines()
+const _data = "ULL
+RRDDD
+LURDL
+UUUUD
+".lines()
+
+const min = Math.min
+const max = Math.max
+
+const keys = str .*('1' .. '9')
+
+var x = 1
+var y = 1
+
+const dirs = byte^
+[
+	'L': { x = max( x - 1, 0 ) },
+	'R': { x = min( x + 1, 2 ) },
+	'U': { y = max( y - 1, 0 ) },
+	'D': { y = min( y + 1, 2 ) },
+]
+
+var code = ""
+
+for instruction in data do
+{
+	for step in instruction do
+	{
+		dirs[ step ]()
+	}
+	
+	const index = y * 3 + x
+	
+	code = code keys[ index ]
+}
+
+print code

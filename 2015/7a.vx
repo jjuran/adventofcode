@@ -1,0 +1,106 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/7.txt").lines()
+
+var signals = str^[]
+var circuit = str^[]
+
+for instruction in data do
+{
+	const words = [instruction / ' ']
+	
+	var n = words.length
+	
+	const wire = words[ --n ]
+	
+	const input = words[ 0 -> --n ]
+	
+	circuit[ wire ] = input
+}
+
+def NOT { u16 unhex "0x" .~(unhex hex (2^16 + _)) }
+
+def AND
+{
+	const a, const b = _
+	
+	return u16 unhex "0x" (unhex hex (2^16 + a) & unhex hex (2^16 + b))
+}
+
+def OR
+{
+	const a, const b = _
+	
+	return u16 unhex "0x" (unhex hex (2^16 + a) | unhex hex (2^16 + b))
+}
+
+def LSHIFT
+{
+	const signal, const n = _
+	
+	return u16 (signal * 2^n)
+}
+
+def RSHIFT
+{
+	const signal, const n = _
+	
+	return half^n signal
+}
+
+const binary-ops = str^
+[
+	AND: AND,
+	OR: OR,
+	LSHIFT: LSHIFT,
+	RSHIFT: RSHIFT,
+]
+
+def chase
+{
+	const trace = _
+	
+	try
+	{
+		return int trace
+	}
+	catch {}
+	
+	const wire = trace
+	
+	if wire in signals then
+	{
+		return signals[ wire ]
+	}
+	
+	const input = circuit[ wire ]
+	
+	const n = input.length
+	
+	if n == 1 then
+	{
+		const signal = chase input[ 0 ]
+		
+		return signals[ wire ] = signal
+	}
+	
+	if n == 2 then
+	{
+		const signal = NOT chase input[ 1 ]
+		
+		return signals[ wire ] = signal
+	}
+	
+	const operator = input[ 1 ]
+	
+	const a = chase input[ 0 ]
+	const b = chase input[ 2 ]
+	
+	const signal = binary-ops[ operator ] (a, b)
+	
+	return signals[ wire ] = signal
+}
+
+print chase "a"

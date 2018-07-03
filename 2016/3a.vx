@@ -1,0 +1,22 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/3.txt").lines()
+
+var valid = 0
+
+for line in data do
+{
+	const edges = [line / ' '] map {_ or ()} map int
+	
+	const sum = Math.sum .*edges
+	const max = Math.max .*edges
+	
+	if sum - max > max then
+	{
+		++valid
+	}
+}
+
+print valid

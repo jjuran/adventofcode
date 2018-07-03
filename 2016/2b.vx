@@ -1,0 +1,58 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/2.txt").lines()
+const _data = "ULL
+RRDDD
+LURDL
+UUUUD
+".lines()
+
+const min = Math.min
+const max = Math.max
+
+var keys =
+"  1  "
+" 234 "
+"56789"
+" ABC "
+"  D  "
+
+translate( &keys, " ", "\0" )
+
+def get
+{
+	const x, const y = _
+	
+	const range = 0 -> 5
+	
+	return x in range and y in range and keys[ y * 5 + x ]
+}
+
+var x = 0
+var y = 2
+
+const dirs = byte^
+[
+	'L': { get( x - 1, y ) and (x = x - 1) },
+	'R': { get( x + 1, y ) and (x = x + 1) },
+	'U': { get( x, y - 1 ) and (y = y - 1) },
+	'D': { get( x, y + 1 ) and (y = y + 1) },
+]
+
+var code = ""
+
+for instruction in data do
+{
+	for step in instruction do
+	{
+		dirs[ step ]()
+	}
+	
+	const index = y * 5 + x
+	
+	code = code keys[ index ]
+}
+
+print code

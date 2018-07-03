@@ -1,0 +1,27 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = "ugkcyxxp"
+
+const n = 5
+
+var suffix = 0
+
+var password = ""
+
+while password.length < 8 do
+{
+	const input = data .++suffix
+	
+	const output = hex md5 input
+	
+	if output[ 0 -> n ] == "0" * n then
+	{
+		warn rep (input, output)
+		
+		password = password output[ 5 ]
+	}
+}
+
+print password

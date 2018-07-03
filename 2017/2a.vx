@@ -1,0 +1,19 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/2.txt").lines()
+
+var checksum = 0
+
+for row in data do
+{
+	const cells = [row / '\t'] map int
+	
+	var minimum = Math.min .*cells
+	var maximum = Math.max .*cells
+	
+	checksum += maximum - minimum
+}
+
+print checksum

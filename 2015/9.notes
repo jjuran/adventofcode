@@ -1,0 +1,54 @@
+A AC F N Sn Str Ta Tr
+
+3, 4, 8, 14, 14, 22, 52
+
+Faerun to AlphaCentauri = 3
+Tambi to AlphaCentauri = 22
+Tambi to Snowdin = 52
+Norrath to Snowdin = 8
+Tristram to Norrath = 4
+Tristram to Arbre = 14
+Straylight to Arbre = 14
+
+Faerun to AlphaCentauri = 3
+Tristram to Norrath = 4
+Norrath to Snowdin = 8
+Tristram to Arbre = 14
+Straylight to Arbre = 14
+Tambi to AlphaCentauri = 22
+Tambi to Snowdin = 52
+
+Norrath to Straylight = 23
+AlphaCentauri to Arbre = 46
+
+Faerun to Tristram = 65
+Faerun to Snowdin = 71
+Tristram to Tambi = 63
+Tristram to AlphaCentauri = 55
+Tambi to Norrath = 68
+Tambi to Straylight = 65
+Snowdin to AlphaCentauri = 84
+
+Snowdin to Arbre = 96
+Snowdin to Straylight = 101
+Norrath to Arbre = 115
+Faerun to Tambi = 129
+Faerun to Straylight = 137
+
+Tristram to Snowdin = 105
+Straylight to AlphaCentauri = 107
+Tristram to Straylight = 125
+Norrath to AlphaCentauri = 136
+Tambi to Arbre = 143
+Faerun to Norrath = 144
+Faerun to Arbre = 149
+
+Tristram to Snowdin = 105
+Tristram to Straylight = 125
+Straylight to AlphaCentauri = 107
+Norrath to AlphaCentauri = 136
+Faerun to Norrath = 144
+Faerun to Arbre = 149
+Tambi to Arbre = 143
+
+105, 125, 107, 136, 144, 149, 143

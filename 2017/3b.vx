@@ -1,0 +1,101 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = 361527
+
+var cells = str^[ "0,0": 1 ]
+
+const neighbors = -1 .. 1 map { const x = _; *(-1 .. 1 map { [x, _] }) }
+
+def key
+{
+	return join( ",", *_ )
+}
+
+def adjacent-sum
+{
+	const pt = _
+	
+	const x, const y = *pt
+	
+	var sum = 0
+	
+	for d in neighbors do
+	{
+		const dx, const dy = *d
+		
+		const k = key .[x + dx, y + dy]
+		
+		if k in cells then {sum += cells[ k ]}
+	}
+	
+	return sum
+}
+
+def populate
+{
+	
+}
+
+def generate-path
+{
+	const yield = _
+	
+	yield .[0, 0]
+	
+	var r = 0  # radius
+	var i = 0
+	
+	while true do
+	{
+		++r
+		i += 2
+		
+		var x =  r
+		var y = -r
+		
+		for N in 0 -> i do
+		{
+			yield .[x, ++y]
+		}
+		
+		for W in 0 -> i do
+		{
+			yield .[--x, y]
+		}
+		
+		for S in 0 -> i do
+		{
+			yield .[x, --y]
+		}
+		
+		for E in 0 -> i do
+		{
+			yield .[++x, y]
+		}
+	}
+}
+
+var limit = 20
+
+var path-coordinates = channel()
+
+var path-generator = thread { generate-path { path-coordinates <== _ } }
+
+var i = 0
+
+for pt in path-coordinates do
+{
+	const sum = adjacent-sum pt
+	
+	if sum > data then
+	{
+		print sum
+		break
+	}
+	
+	cells[ key pt ] = sum
+}
+
+exit 0

@@ -1,0 +1,198 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+var data = (load bindir "/7.txt").lines()
+
+var _data =
+"pbga (66)
+xhth (57)
+ebii (61)
+havc (66)
+ktlj (57)
+fwft (72) -> ktlj, cntj, xhth
+qoyq (66)
+padx (45) -> pbga, havc, qoyq
+tknk (41) -> ugml, padx, fwft
+jptl (61)
+ugml (68) -> gyxo, ebii, jptl
+gyxo (61)
+cntj (57)
+".lines()
+
+def nameof
+{
+	return [_ / ' '][ 0 ]
+}
+
+def listof
+{
+	var s = _
+	
+	const n = s.length
+	
+	var i = 0
+	
+	while i < n and s[ i ] != '>' do
+	{
+		++i
+	}
+	
+	i += 2
+	
+	var list = s[ i -> n ] " "
+	
+	translate( &list, ", ", "\n\n" )
+	
+	return list.lines() map { _ or () }
+}
+
+def weightof
+{
+	var s = _
+	
+	const n = s.length
+	
+	var i = 0
+	
+	while s[ i ] != '(' do
+	{
+		++i
+	}
+	
+	var j = ++i
+	
+	while s[ j ] != ')' do
+	{
+		++j
+	}
+	
+	const numeral = s[ i -> j ]
+	
+	const number = int numeral
+	
+	return number
+}
+
+def last
+{
+	return _[ _.length - 1 ]
+}
+
+const n = data.length
+
+var disc-weights  = str^[]
+var tower-weights = str^[]
+var names = []
+var seen = str^[]
+var disc = str^[]
+
+def tower-weight
+{
+	const name = _
+	
+	if name in tower-weights then
+	{
+		return tower-weights[ name ]
+	}
+	
+	var total = disc-weights[ name ]
+	
+	if name in disc then
+	{
+		const list = disc[ name ]
+		
+		for subdisc in list do
+		{
+			total += tower-weight subdisc
+		}
+	}
+	
+	return tower-weights[ name ] = total
+}
+
+def check
+{
+	const name = _
+	
+	const list = disc[ name ]
+	
+	const weights = list map tower-weight
+	
+	const first  = weights[ 0 ]
+	const second = weights[ 1 ]
+	
+	if first != second then
+	{
+		return 1 + +(first == weights[ 2 ])
+	}
+	
+	for i in 2 -> weights.length do
+	{
+		if weights[ i ] != first then
+		{
+			return 1 + i
+		}
+	}
+	
+	return false
+}
+
+for s in data do
+{
+	const name = nameof s
+	
+	const weight = weightof s
+	
+	disc-weights[ name ] = weight
+	
+	if last s != ')' then
+	{
+		const list = listof s
+		
+		disc[ name ] = list
+		
+		names <-- name
+		
+		for x in list do
+		{
+			seen[ x ] = name
+		}
+	}
+}
+
+const bottom
+
+for x in names do
+{
+	if not (x in seen.keys) then
+	{
+		bottom = x
+	}
+}
+
+var unbalanced = bottom  # The instructions guarantee the bottom is unbalanced
+var off-weight = ""
+
+var list
+
+while var off-index = check unbalanced do
+{
+	list = disc[ unbalanced ]
+	
+	off-weight = list[ off-index - 1 ]
+	
+	#warn "Unbalanced: " unbalanced
+	#warn "Off: " off-weight
+	
+	unbalanced = off-weight
+}
+
+const balanced = list[ +(list[ 0 ] == off-weight) ]
+
+const balanced-weight   = tower-weight balanced
+const unbalanced-weight = tower-weight unbalanced
+
+const delta = balanced-weight - unbalanced-weight
+
+print (disc-weights[ unbalanced ] + delta)

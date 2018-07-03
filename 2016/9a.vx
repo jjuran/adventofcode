@@ -1,0 +1,34 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/9.txt").lines()[ 0 ]
+
+var p = begin data
+
+var len = 0
+
+while p do
+{
+	if *p == '(' then
+	{
+		var q = ++p
+		
+		while *q != ')' do  {++q}
+		
+		const marker = q - p
+		
+		const m_len, const m_rep = *([marker / 'x'] map int)
+		
+		len += m_len * m_rep
+		
+		p = ++q + m_len
+	}
+	else
+	{
+		++len
+		++p
+	}
+}
+
+print len

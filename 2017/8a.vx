@@ -1,0 +1,65 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+var data = (load bindir "/8.txt").lines()
+
+var _data =
+"b inc 5 if a > 1
+a inc 1 if b < 5
+c dec -10 if a >= 1
+c inc -20 if c == 10
+".lines()
+
+var registers = str^[]
+
+const conds = str^
+[
+	"<": {head _ < tail _},
+	">": {head _ > tail _},
+	"<=": {head _ <= tail _},
+	">=": {head _ >= tail _},
+	"==": {head _ == tail _},
+	"!=": {head _ != tail _},
+]
+
+def get { if _ in registers then {registers[ _ ]} else {0} }
+
+def add
+{
+	const reg, const arg = _
+	
+	if reg in registers then
+	{
+		registers[ reg ] += arg
+	}
+	else
+	{
+		registers[ reg ] = arg
+	}
+}
+
+for instruction in data do
+{
+	const reg,
+	const op,
+	var arg,
+	const literal-if,
+	const creg,
+	const cop,
+	const carg = instruction / ' '
+	
+	if conds[ cop ]( get creg, int carg ) then
+	{
+		arg = int arg
+		
+		if op[ 0 ] == 'd' then
+		{
+			arg = -arg
+		}
+		
+		add( reg, arg )
+	}
+}
+
+print Math.max .*registers.values

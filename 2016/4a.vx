@@ -1,0 +1,73 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/4.txt").lines()
+
+#const data = ["aaaaa-bbb-z-y-x-123[abxyz]"]
+
+var sum = 0
+
+def find
+{
+	const haystack, const needle = _
+	
+	const parts = [haystack / needle]
+	
+	return parts[ 0 ].size
+}
+
+def checksum
+{
+	const letters = _
+	
+	var histogram = x"00" * 26
+	
+	for c in letters do
+	{
+		const i = u8 c - u8 'a'
+		
+		histogram[ i ] = byte (u8 histogram[ i ] + 1)
+	}
+	
+	var result = ""
+	
+	for i in 1 .. 5 do
+	{
+		const max = histogram per Math.max
+		
+		const j = find( histogram, max )
+		
+		histogram[ j ] = '\0'
+		
+		result = result byte (j + u8 'a')
+	}
+	
+	return result
+}
+
+for room in data do
+{
+	const len = room.length
+	
+	const tag = room[ len - 6 -> len - 1 ]
+	
+	const name-id = room[ 0 -> len - 7 ]
+	
+	const words = [name-id / '-']
+	
+	const n = words.length - 1
+	
+	const id = int words[ n ]
+	
+	const letters = str words[ 0 -> n ]
+	
+	if checksum letters == tag then
+	{
+		#warn room
+		
+		sum += id
+	}
+}
+
+print sum

@@ -1,0 +1,22 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/2.txt").lines()
+
+var total = 0
+
+for dimensions in data do
+{
+	const x, const y, const z = *([dimensions / 'x'] map int)
+	
+	const a = x * y
+	const b = y * z
+	const c = z * x
+	
+	const minimum = Math.min (a, b, c)
+	
+	total += 2 * (a + b + c) + minimum
+}
+
+print total

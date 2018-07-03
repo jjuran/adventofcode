@@ -1,0 +1,107 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/6.txt").lines()
+
+const grid-row = record( size: 1000, encode: ..., decode: ... )
+
+var light-grid = vector[ grid-row ] 1000
+
+def point
+{
+	const x_comma_y = _
+	
+	return [x_comma_y / ','] map int
+}
+
+def get-coords
+{
+	const xy_through_xy = _
+	
+	const parts = [xy_through_xy / ' '][[0, 2]]
+	
+	return parts map point
+}
+
+def make-mask
+{
+	const x0, const x1 = _
+	
+	return (x"00" * x0) (x"FF" * (x1 - x0)) (x"00" * (1000 - x1))
+}
+
+def turn-on
+{
+	const a, const b = _
+	
+	return a | b
+}
+
+def turn-off
+{
+	const a, const b = _
+	
+	return a & ~b
+}
+
+def toggle
+{
+	const a, const b = _
+	
+	return a (+) b
+}
+
+for step in data do
+{
+	const action
+	const target
+	
+	const c = step[ 6 ]
+	
+	if c == 'f' then
+	{
+		action = turn-off
+		target = substr( step, 9 )
+	}
+	else if c == 'n' then
+	{
+		action = turn-on
+		target = substr( step, 8 )
+	}
+	else
+	{
+		action = toggle
+		target = substr( step, 7 )
+	}
+	
+	const coords = get-coords target
+	
+	const pt0, const pt1 = *coords
+	
+	const x0, const y0 = *pt0
+	const x1, const y1 = *pt1
+	
+	const mask = make-mask( x0, x1 + 1 )
+	
+	warn rep coords
+	
+	for i in y0 .. y1 do
+	{
+		light-grid[ i ] = action( light-grid[ i ], mask )
+	}
+}
+
+var total = 0
+
+for i in 0 -> 1000 do
+{
+	const row = light-grid[ i ]
+	
+	for j in row do
+	{
+		total += int bool j
+	}
+}
+
+print total

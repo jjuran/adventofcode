@@ -1,0 +1,62 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+var data = (load bindir "/6.txt")
+
+translate( &data, "\t", "\n" )
+
+data = data.lines() map int
+
+#var data = [0, 2, 7, 0]
+
+const n = data.length
+
+def select
+{
+	var max = 0
+	var index = 0
+	
+	for i in 0 -> n do
+	{
+		if (const x = data[ i ]) > max then
+		{
+			max = x
+			index = i
+		}
+	}
+	
+	return index
+}
+
+var seen = str^[]
+
+#seen[ rep data ] = true
+
+var total = 0
+
+while true do
+{
+	const key = rep data
+	
+	if key in seen then {break}
+	
+	seen[ key ] = true
+	
+	++total
+	
+	var i = select()
+	
+	var x = 0
+	
+	x <-> data[ i ]
+	
+	while x-- do
+	{
+		i = (i + 1) % n
+		
+		++data[ i ]
+	}
+}
+
+print total

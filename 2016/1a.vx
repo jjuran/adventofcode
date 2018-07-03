@@ -1,0 +1,38 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/1.txt").lines()[ 0 ]
+
+const directions = [" " data / ','] map { _[1]: int substr( _, 2 ) }
+
+var x = 0
+var y = 0
+
+var dx = 0
+var dy = 1
+
+const turn = byte^
+[
+	'L': { dx, dy = -dy, dx },
+	'R': { dx, dy = dy, -dx },
+]
+
+def go
+{
+	const n = _
+	
+	x += n * dx
+	y += n * dy
+}
+
+for dir in directions do
+{
+	turn[ dir.key ]()
+	
+	go dir.value
+}
+
+const n = abs x + abs y
+
+print n

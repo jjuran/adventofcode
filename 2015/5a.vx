@@ -1,0 +1,37 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const sample-data = ["aaa"]
+
+#const data = sample-data
+const data = (load bindir "/5.txt").lines()
+
+def nice
+{
+	const s = _
+	
+	if "ab" in s or "cd" in s or "pq" in s or "xy" in s then
+	{
+		return false
+	}
+	
+	if (s ver {_ in "aeiou"}).length < 3 then
+	{
+		return false
+	}
+	
+	for i in 1 -> s.length do
+	{
+		if s[ i - 1 ] == s[ i ] then
+		{
+			return true
+		}
+	}
+	
+	return false
+}
+
+const total = (data ver nice).length
+
+print total

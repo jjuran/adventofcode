@@ -1,0 +1,21 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+var data = (load bindir "/5.txt").lines() map int
+#var data = [0, 3, 0, 1, -3]
+
+var total = 0
+
+var ip = 0
+
+const range = 0 -> data.length
+
+while ip in range do
+{
+	++total
+	
+	ip += data[ ip ]++
+}
+
+print total

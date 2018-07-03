@@ -1,0 +1,45 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const sample = "5 9 2 8
+9 4 7 3
+3 8 6 5
+".lines()
+
+const data = (load bindir "/2.txt").lines()
+
+var checksum = 0
+
+for row in data do
+{
+	const cells = [row / '\t'] map int
+	
+	const n = cells.length
+	
+	var done = false
+	
+	for i in 0 -> n do
+	{
+		for j in 0 -> n do
+		{
+			if i == j then {continue}
+			
+			var x = cells[i]
+			var y = cells[j]
+			
+			if x < y then {continue}
+			
+			if x/y isa int then
+			{
+				checksum += x/y
+				done = true
+				break
+			}
+		}
+		
+		if done then {break}
+	}
+}
+
+print checksum

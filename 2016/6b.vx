@@ -1,0 +1,47 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/6.txt").lines()
+
+const len = data[ 0 ].length
+
+def find
+{
+	const haystack, const needle = _
+	
+	const parts = [haystack / needle]
+	
+	return parts[ 0 ].size
+}
+
+def most_frequent_in
+{
+	const letters = _
+	
+	var histogram = x"00" * 26
+	
+	for c in letters do
+	{
+		const i = u8 c - u8 'a'
+		
+		histogram[ i ] = byte (u8 histogram[ i ] + 1)
+	}
+	
+	const min = histogram per Math.min
+	
+	const i = find( histogram, min )
+	
+	return byte (i + u8 'a')
+}
+
+var message = ""
+
+for i in 0 -> len do
+{
+	const letters = str (data map { _[ i ] })
+	
+	message = message most_frequent_in letters
+}
+
+print message

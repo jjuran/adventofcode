@@ -1,0 +1,21 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/1.txt").lines()[ 0 ]
+
+const n = half data.length
+
+var sum = 0
+
+for i in 0 -> n do
+{
+	if data[ i ] == data[ i + n ] then
+	{
+		sum += u8 data[ i ] - u8 '0'
+	}
+}
+
+sum *= 2
+
+print sum

@@ -1,0 +1,51 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/10.txt").lines()[ 0 ]
+
+#const lens = [3, 4, 1, 5]
+const lens = [data / ','] map int
+
+#const N = 5
+const N = 256
+
+var list = packed (0 -> N map byte)
+
+var pos = 0
+var skip = 0
+
+
+def rewind
+{
+	const mid = -pos mod N
+	
+	return list[ mid -> N ] list[ 0 -> mid ]
+}
+
+def state
+{
+	return pos => (rewind() map int)
+}
+
+for len in lens do
+{
+	#warn rep state()
+	
+	# reverse
+	list = -list[ 0 -> len ] list[ len -> N ]
+	
+	# advance
+	const delta = (len + skip) % N
+	
+	list = list[ delta -> N ] list[ 0 -> delta ]
+	
+	pos = (pos + delta) % N
+	
+	# augment
+	++skip
+}
+
+#warn rep state()
+
+print rep (rewind()[ 0 .. 1 ] map int per Math.product)

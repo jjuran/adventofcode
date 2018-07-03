@@ -1,0 +1,36 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/9.txt").lines()
+
+var cities = str^[]
+
+#var routes = str[]^[]
+var routes = str^[]
+
+for route in data do
+{
+	const words = [route / ' ']
+	
+	var src, var dst, const distance = *words[[0, 2, 4]]
+	
+	if src > dst then
+	{
+		src <-> dst
+	}
+	
+	cities[ src ] = true
+	cities[ dst ] = true
+	
+	routes[ src " <-> " dst ] = distance
+}
+
+for x in routes do
+{
+	#warn x.key ": " x.value
+}
+
+const distance = [3, 4, 8, 14, 14, 22, 52] per Math.sum
+
+print distance

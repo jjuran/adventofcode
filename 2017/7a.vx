@@ -1,0 +1,85 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+var data = (load bindir "/7.txt").lines()
+
+var _data =
+"pbga (66)
+xhth (57)
+ebii (61)
+havc (66)
+ktlj (57)
+fwft (72) -> ktlj, cntj, xhth
+qoyq (66)
+padx (45) -> pbga, havc, qoyq
+tknk (41) -> ugml, padx, fwft
+jptl (61)
+ugml (68) -> gyxo, ebii, jptl
+gyxo (61)
+cntj (57)
+".lines()
+
+def nameof
+{
+	return [_ / ' '][ 0 ]
+}
+
+def listof
+{
+	var s = _
+	
+	const n = s.length
+	
+	var i = 0
+	
+	while i < n and s[ i ] != '>' do
+	{
+		++i
+	}
+	
+	i += 2
+	
+	var list = s[ i -> n ] " "
+	
+	translate( &list, ", ", "\n\n" )
+	
+	return list.lines() map { _ or () }
+}
+
+def last
+{
+	return _[ _.length - 1 ]
+}
+
+const n = data.length
+
+var names = []
+var seen = str^[]
+
+var total = 0
+
+for s in data do
+{
+	const name = nameof s
+	
+	if last s != ')' then
+	{
+		const list = listof s
+		
+		names <-- name
+		
+		for x in list do
+		{
+			seen[ x ] = name
+		}
+	}
+}
+
+for x in names do
+{
+	if not (x in seen.keys) then
+	{
+		print x
+	}
+}

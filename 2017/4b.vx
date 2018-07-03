@@ -1,0 +1,48 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/4.txt").lines()
+#const data = ["aa bb", "aa aa"]
+
+def fingerprint
+{
+	const word = _
+	
+	var counts = "\0" * 128
+	
+	for c in word do
+	{
+		const i = int c
+		
+		counts[ i ] = byte (int counts[ i ] + 1)
+	}
+	
+	return counts
+}
+
+var total = 0
+
+for row in data do
+{
+	var seen = str^[]
+	
+	var valid = true
+	
+	for word in [row / ' '] do
+	{
+		const fp = fingerprint word
+		
+		if fp in seen then
+		{
+			valid = false
+			break
+		}
+		
+		seen[ fp ] = true
+	}
+	
+	total += +valid
+}
+
+print total

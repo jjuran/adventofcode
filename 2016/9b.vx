@@ -1,0 +1,43 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/9.txt").lines()[ 0 ]
+
+def decompressed-length
+{
+	const data = _
+	
+	var p = begin data
+	
+	var len = 0
+	
+	while p do
+	{
+		if *p == '(' then
+		{
+			var q = ++p
+			
+			while *q != ')' do  {++q}
+			
+			const marker = q - p
+			
+			const m_len, const m_rep = *([marker / 'x'] map int)
+			
+			p = ++q + m_len
+			
+			const subseq = p - q
+			
+			len += m_rep * decompressed-length subseq
+		}
+		else
+		{
+			++len
+			++p
+		}
+	}
+	
+	return len
+}
+
+print decompressed-length data

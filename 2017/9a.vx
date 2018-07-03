@@ -1,0 +1,40 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/9.txt").lines()[ 0 ]
+
+var score = 0
+
+var level = 0
+
+var p = begin data
+
+const regular-ops
+const garbage-ops
+
+var ops
+
+regular-ops = byte^
+[
+	'{': { score += ++level },
+	'}': { --level },
+	'<': { ops = garbage-ops },
+]
+
+garbage-ops = byte^
+[
+	'!': { ++p },
+	'>': { ops = regular-ops },
+]
+
+ops = regular-ops
+
+while p do
+{
+	const c = *p++
+	
+	c in ops and ops[ c ]()
+}
+
+print score

@@ -1,0 +1,70 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/8.txt").lines()
+
+var screen = [x"00" * 50 (*) 6]
+
+def dump
+{
+	const screen = _
+	
+	var dump = []
+	
+	for i in 0 -> 6 do
+	{
+		var scanline = screen[ i ].string
+		
+		translate( &scanline, "\x00\x01", " X" )
+		
+		dump <-- scanline
+	}
+	
+	return join( "\n", *dump, "" )
+}
+
+for operation in data do
+{
+	#warn dump screen
+	
+	#warn operation
+	
+	const words = [operation / ' ']
+	
+	if words.length == 2 then
+	{
+		const width, const height = *([words[ 1 ] / 'x'] map int)
+		
+		for i in 0 -> height do
+		{
+			screen[ i ] = (x"01" * width) screen[ i ][ width -> 50 ]
+		}
+		
+		continue
+	}
+	
+	const offset = int words[ 4 ]
+	
+	const axis, const index = words[ 2 ] / '='
+	
+	const i = int index
+	
+	if axis == "y" then
+	{
+		screen[ i ] = (screen[ i ] * 2)[ 50 - offset -> 100 - offset ]
+		
+		continue
+	}
+	
+	const copy = packed (0 -> 6 map { screen[ _ ][ i ] })
+	
+	const rotated = (copy * 2)[ 6 - offset -> 12 - offset ]
+	
+	for j in 0 -> 6 do
+	{
+		screen[ j ][ i ] = rotated[ j ]
+	}
+}
+
+print dump screen

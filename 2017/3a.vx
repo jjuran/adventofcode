@@ -1,0 +1,25 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = 361527
+
+def steps
+{
+	var r = 0  # radius
+	var i = 0
+	var x = 1
+	
+	while data > x do
+	{
+		++r
+		i += 2
+		x += 4 * i
+	}
+	
+	const a = abs((x - data) mod i - i/2)
+	
+	return r + a
+}
+
+print steps data
