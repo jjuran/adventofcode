@@ -56,6 +56,9 @@ def toggle
 	return row[ 0 -> x0 ] (packed affected) row[ x1 -> 1000 ]
 }
 
+const n = data.length
+var ii = 0
+
 for step in data do
 {
 	const action
@@ -86,13 +89,15 @@ for step in data do
 	const x0, const y0 = *pt0
 	const x1, const y1 = *pt1
 	
-	warn rep coords
+	OUT <== "%s/" n "\r" % ++ii
 	
 	for i in y0 .. y1 do
 	{
 		light-grid[ i ] = action( light-grid[ i ], x0, x1 + 1 )
 	}
 }
+
+OUT <== (" " * ((str n).length * 2 + 2)) "\r"
 
 var total = 0
 

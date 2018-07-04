@@ -52,6 +52,9 @@ def toggle
 	return a (+) b
 }
 
+const n = data.length
+var ii = 0
+
 for step in data do
 {
 	const action
@@ -84,13 +87,15 @@ for step in data do
 	
 	const mask = make-mask( x0, x1 + 1 )
 	
-	warn rep coords
+	OUT <== "%s/" n "\r" % ++ii
 	
 	for i in y0 .. y1 do
 	{
 		light-grid[ i ] = action( light-grid[ i ], mask )
 	}
 }
+
+OUT <== (" " * ((str n).length * 2 + 2)) "\r"
 
 var total = 0
 
