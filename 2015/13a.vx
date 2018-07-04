@@ -1,0 +1,87 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/13.txt").lines()
+
+const T = str => int
+
+var names = str^[]
+var subscores = str^[]
+
+for row in data do
+{
+	const words = [row[ 0 -> row.length - 1 ] / ' ']
+	
+	const A = words[ 0 ]
+	const B = words[ 10 ]
+	const k = int (words[ 2 ][ 0 ] == 'g') * 2 - 1
+	const n = int words[ 3 ] * k
+	
+	names[ A ] = null
+	names[ B ] = null
+	
+	subscores[ A "-" B ] = n
+}
+
+for A in names.keys do
+{
+	for B in names.keys do
+	{
+		if A >= B then
+		{
+			continue
+		}
+		
+		const ab = A "-" B
+		const ba = B "-" A
+		
+		const sum = subscores[ ab ] + subscores[ ba ]
+		
+		subscores[ ab ] = sum
+		subscores[ ba ] = sum
+	}
+}
+
+const first = names.keys[ 0 ]
+
+def merge (a, b)
+{
+	return [ *a, *b ]
+}
+
+def permutations (data: str[])
+{
+	const n = data.length
+	
+	if n == 1 then
+	{
+		const name = *data
+		
+		return [ name => subscores[ first "-" name ] ]
+	}
+	
+	return 0 -> n map
+	{
+		const i = v
+		
+		const target = data[ i ]
+		const subset (str[]) = merge( data[ 0 -> i ], data[ i + 1 -> n ] )
+		const permus (T[])   = permutations( subset )
+		
+		*(permus map { target => v.value + subscores[ v.key "-" target ] })  \
+	}
+}
+
+const count = names.length
+
+const subset = permutations names.keys[ 1 -> count ]
+
+var best = ()
+
+for v in subset do
+{
+	best = Math.max( best, v.value + subscores[ v.key "-" first ] )
+}
+
+print best
