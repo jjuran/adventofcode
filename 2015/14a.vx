@@ -1,0 +1,42 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/14.txt").lines()
+
+const T = str => int
+
+var stats = str^[]
+
+for row in data do
+{
+	const words = [row[ 0 -> row.length - 1 ] / ' ']
+	
+	const name    = words[ 0 ]
+	const speed   = int words[ 3 ]
+	const stamina = int words[ 6 ]
+	const rest    = int words[ 13 ]
+	
+	stats[ name ] = [ speed, stamina, rest ]
+}
+
+def race (v, d, r)
+{
+	var t = 2503
+	
+	var distance = 0
+	
+	const period = d + r
+	
+	distance = t div period * d * v
+	
+	t = Math.min( t mod period, d )
+	
+	distance += t * v
+	
+	return distance
+}
+
+const furthest = stats map { race .*v.value } per Math.max
+
+print furthest 

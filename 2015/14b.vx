@@ -1,0 +1,56 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/14.txt").lines()
+
+const T = str => int
+
+var stats = str^[]
+
+var distance = str^[]
+var points   = str^[]
+
+var max-distance = 0
+
+for row in data do
+{
+	const words = [row[ 0 -> row.length - 1 ] / ' ']
+	
+	const name    = words[ 0 ]
+	const speed   = int words[ 3 ]
+	const stamina = int words[ 6 ]
+	const rest    = int words[ 13 ]
+	
+	stats[ name ] = record( v: speed, d: stamina, r: rest )
+	
+	distance[ name ] = 0
+	points[ name ]   = 0
+}
+
+for t in 0 -> 2503 do
+{
+	for x in stats do
+	{
+		const rec = x.value
+		
+		const period = rec.d + rec.r
+		
+		if t mod period < rec.d then
+		{
+			max-distance = Math.max( max-distance, (distance[ x.key ] += rec.v) )
+		}
+	}
+	
+	for y in stats do
+	{
+		if distance[ y.key ] == max-distance then
+		{
+			++points[ y.key ]
+		}
+	}
+}
+
+const most = points map { v.value } per Math.max
+
+print most 
