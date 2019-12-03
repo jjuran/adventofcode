@@ -1,0 +1,65 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/2.txt").lines()
+
+const program = [packed data / ','] map {int v.string}
+
+const opcodes = [ null, Math.sum, Math.product ]
+
+var memory
+
+def reset
+{
+	memory = program
+}
+
+def input (a, b)
+{
+	memory[ 1 ] = a
+	memory[ 2 ] = b
+}
+
+def run
+{
+	var PC = 0
+	
+	while true do
+	{
+		const op = memory[ PC++ ]
+		
+		if op == 99 then
+		{
+			break
+		}
+		
+		const i = memory[ PC++ ]
+		const j = memory[ PC++ ]
+		const k = memory[ PC++ ]
+		
+		const a = memory[ i ]
+		const b = memory[ j ]
+		
+		const c = opcodes[ op ]( a, b )
+		
+		memory[ k ] = c
+	}
+}
+
+def output { memory[ 0 ] }
+
+for i in 0 .. 99 do
+{
+	for j in 0 .. 99 do
+	{
+		reset()
+		input( i, j )
+		run()
+		
+		if output() == 19690720 then
+		{
+			print (100 * i + j)
+		}
+	}
+}

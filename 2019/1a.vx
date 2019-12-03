@@ -1,0 +1,14 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/1.txt").lines()
+
+def fuel_cost (mass)
+{
+	return mass div 3 - 2
+}
+
+const result = data map { fuel_cost int v } per {a + b}
+
+print result
