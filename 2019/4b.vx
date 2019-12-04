@@ -1,0 +1,63 @@
+#!/usr/bin/env vx
+
+const data = "138307-654504"
+
+const min, const max = data / '-'
+
+def has_double (s)
+{
+	var c = s[ 0 ]
+	var n = 1
+	
+	for i in 1 -> s.length do
+	{
+		if s[ i ] == c then
+		{
+			++n
+		}
+		else if n == 2 then
+		{
+			return true
+		}
+		else
+		{
+			c = s[ i ]
+			n = 1
+		}
+	}
+	
+	return n == 2
+}
+
+def floor (s)
+{
+	for i in 1 -> s.length do
+	{
+		if s[ i ] < s[ i - 1 ] then
+		{
+			s[ i ] = s[ i - 1 ]
+		}
+	}
+	
+	return s
+}
+
+def inc (s)
+{
+	return floor str (int s + 1)
+}
+
+const ok = has_double
+
+var code = floor min
+
+var n = 0
+
+while code <= max do
+{
+	if ok code then {++n}
+	
+	code = inc code
+}
+
+print n
