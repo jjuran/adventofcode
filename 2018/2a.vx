@@ -1,0 +1,32 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/2.txt").lines()
+
+var n_2 = 0
+var n_3 = 0
+
+def hist (s)
+{
+	var h = vector[u8] (x"00" * 128)
+	
+	for c in s do
+	{
+		h[ u8 c ] = h[ u8 c ] + 1
+	}
+	
+	return h
+}
+
+for row in data do
+{
+	const h = hist row
+	
+	n_2 += +(byte 2 in packed h)
+	n_3 += +(byte 3 in packed h)
+}
+
+const checksum = n_2 * n_3
+
+print checksum
