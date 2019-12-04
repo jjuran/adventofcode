@@ -1,0 +1,33 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/1.txt").lines() map int
+
+var seen = vector[u8] (x"00" * 2^20)
+
+var freq = 0
+
+var n = 0
+
+while true do
+{
+	for d in data do
+	{
+		freq += d
+		
+		const i = freq + 2^19
+		
+		#warn rep (d, freq)
+		
+		if seen[ i ] then
+		{
+			print freq
+			exit 0
+		}
+		
+		seen[ i ] = 1
+	}
+	
+	#print .++n "..."
+}
