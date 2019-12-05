@@ -1,0 +1,84 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/5.txt").lines()[ 0 ]
+
+var s = data
+
+def reactive (a, b)
+{
+	return packed a (+) x"20" == packed b
+}
+
+def find_next_reaction (p)
+{
+	if p then
+	{
+		var c = *p++
+		
+		while p do
+		{
+			if reactive( c, *p ) then
+			{
+				return --p
+			}
+			
+			c = *p++
+		}
+	}
+	
+	return ()
+}
+
+def reaction (s)
+{
+	var p = begin s
+	var r = ""
+	
+	while var next = find_next_reaction p do
+	{
+		var q = next + 2
+		
+		while next > p and (reactive( *--next, *q ) or ++next and false) do
+		{
+			++q
+		}
+		
+		r = r (next - p)
+		
+		p = q
+	}
+	
+	r = r p.rest
+	
+	return r
+}
+
+def complete_reaction (s)
+{
+	var r = reaction s
+	
+	while r != s do
+	{
+		s = r
+		r = reaction s
+	}
+	
+	return r
+}
+
+def expunge (s, c)
+{
+	const pattern = packed c * 2 (+) x"0020"
+	
+	translate( &s, pattern, x"0000" )
+	
+	return string (s ver ...)
+}
+
+assert expunge( "Alpha", 'a' ) == "lph"
+
+const r = complete_reaction data
+
+print Iter.min ('a' .. 'z' map { (complete_reaction expunge( r, v )).length })
