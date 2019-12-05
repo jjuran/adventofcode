@@ -1,0 +1,56 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/5.txt").lines()
+
+var memory = [packed data / ','] map {int v.string}
+
+var PC = 0
+
+const opcodes = [ null, Math.sum, Math.product ]
+
+def run (input)
+{
+	while true do
+	{
+		const opcode = memory[ PC++ ]
+		
+		const op = opcode % 100
+		
+		var modes = opcode div 100
+		
+		if op == 99 then
+		{
+			break
+		}
+		
+		const i = memory[ PC++ ]
+		const a = if modes % 10 then {i} else {memory[ i ]}
+		
+		if op == 3 then
+		{
+			memory[ i ] = input
+			continue
+		}
+		
+		if op == 4 then
+		{
+			print a
+			continue
+		}
+		
+		modes = modes div 10
+		
+		const j = memory[ PC++ ]
+		const b = if modes % 10 then {j} else {memory[ j ]}
+		
+		const k = memory[ PC++ ]
+		
+		const c = opcodes[ op ]( a, b )
+		
+		memory[ k ] = c
+	}
+}
+
+run 1
