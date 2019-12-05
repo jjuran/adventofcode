@@ -1,0 +1,64 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = Iter.sorted (load bindir "/4.txt").lines()
+
+var guards = int^[]
+var sleeps = []
+
+var guard
+
+var sleep_time
+
+for row in data do
+{
+	const minute = int row[ 15 -> 17 ]
+	
+	const code = row[ 19 ]
+	
+	if code == 'G' then
+	{
+		guard = int [substr( row, 26 ) / ' '][ 0 ]
+		
+		guards[ guard ] = []
+	}
+	
+	if code == 'f' then
+	{
+		sleep_time = minute
+	}
+	
+	if code == 'w' then
+	{
+		sleeps <-- guard => [sleep_time, minute]
+	}
+}
+
+def total_sleep (guard)
+{
+	return (sleeps ver {v.key == guard} map {v.value[1] - v.value[0]} per Math.sum) or 0
+}
+
+def sleepiest_minute (guard)
+{
+	const guard_sleeps = sleeps ver {v.key == guard} map {v.value}
+	
+	var minutes = [0 (*) 60]
+	
+	for zzz in guard_sleeps do
+	{
+		for z in zzz[0] -> zzz[1] do
+		{
+			++minutes[ z ]
+		}
+	}
+	
+	return ((Iter.max (0 -> 60 map { v => minutes[ v ] }) via {v.value})).key
+}
+
+const total_sleeps = guards.keys map { v => total_sleep v }
+
+const sleeper = (Iter.max total_sleeps via {v.value}).key
+
+print (sleeper * sleepiest_minute sleeper)
