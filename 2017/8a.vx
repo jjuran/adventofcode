@@ -62,4 +62,4 @@ for instruction in data do
 	}
 }
 
-print Math.max .*registers.values
+print Iter.max registers.values

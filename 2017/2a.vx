@@ -10,8 +10,8 @@ for row in data do
 {
 	const cells = [row / '\t'] map int
 	
-	var minimum = Math.min .*cells
-	var maximum = Math.max .*cells
+	var minimum = Iter.min cells
+	var maximum = Iter.max cells
 	
 	checksum += maximum - minimum
 }
