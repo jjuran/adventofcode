@@ -1,0 +1,105 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/7.txt").lines()
+
+var prereqs = byte^[]
+
+for row0 in data do
+{
+	const a = row0[  5 ]
+	const b = row0[ 36 ]
+	
+	prereqs[ a ] =
+	prereqs[ b ] = []
+}
+
+for row in data do
+{
+	const a = row[  5 ]
+	const b = row[ 36 ]
+	
+	prereqs[ b ] <-- a
+}
+
+def next
+{
+	return prereqs ver {v.value.length == 0} map {v.key} per Math.min
+}
+
+const N = 5
+
+var assigned = "\0" * N
+
+var timers = []
+
+def idle_worker
+{
+	const p = begin assigned
+	const q = p.find '\0'
+	
+	return
+	if q then
+	{
+		(q - p).length,
+	}
+	else
+	{
+		-1,
+	}
+}
+
+def timeof (step)
+{
+	return u8 step - u8 'A' + 61
+}
+
+var T = 0
+
+def assign (worker, step)
+{
+	assigned[ worker ] = step
+	
+	timers <-- worker => T + timeof step
+	
+	prereqs = prereqs ver {v.key != step}
+}
+
+def tick
+{
+	T = timers map {v.value} per Math.min
+	
+	for t in (timers ver {v.value == T}) do
+	{
+		const worker = t.key
+		const step = assigned[ worker ]
+		
+		assigned[ worker ] = '\0'
+		
+		prereqs = prereqs map {v.key => v.value ver {v != step}}
+	}
+	
+	timers = timers ver { v.value != T }
+}
+
+while prereqs do
+{
+	while var step = next() do
+	{
+		const worker = idle_worker()
+		
+		if worker < 0 then
+		{
+			tick()
+		}
+		else
+		{
+			assign( worker, step )
+		}
+	}
+	
+	tick()
+}
+
+print T

@@ -1,0 +1,42 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/7.txt").lines()
+
+var prereqs = byte^[]
+
+for row0 in data do
+{
+	const a = row0[  5 ]
+	const b = row0[ 36 ]
+	
+	prereqs[ a ] =
+	prereqs[ b ] = []
+}
+
+for row in data do
+{
+	const a = row[  5 ]
+	const b = row[ 36 ]
+	
+	prereqs[ b ] <-- a
+}
+
+def next
+{
+	return prereqs ver {v.value.length == 0} map {v.key} per Math.min
+}
+
+var order = []
+
+while prereqs do
+{
+	const step = next()
+	
+	order <-- step
+	
+	prereqs = prereqs ver {v.key != step} map {v.key => v.value ver {v != step}}
+}
+
+print str order
