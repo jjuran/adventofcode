@@ -1,0 +1,62 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/6.txt").lines()
+
+var orbits = str^[]
+
+for row in data do
+{
+	const a, const b = row / ')'
+	
+	orbits[ b ] = a
+}
+
+var indirect_orbits = str^[]
+
+def count_indirect_orbits (sat)
+{
+	if sat == "COM" then {return 0}
+	
+	if sat in indirect_orbits then
+	{
+		return indirect_orbits[ sat ]
+	}
+	
+	const n = 1 + count_indirect_orbits orbits[ sat ]
+	
+	return indirect_orbits[ sat ] = n
+}
+
+var n = 0
+
+var sat_you = orbits[ "YOU" ]
+var sat_san = orbits[ "SAN" ]
+
+var n_you = count_indirect_orbits sat_you
+var n_san = count_indirect_orbits sat_san
+
+while n_you > n_san do
+{
+	++n
+	--n_you
+	sat_you = orbits[ sat_you ]
+}
+
+while n_you < n_san do
+{
+	++n
+	--n_san
+	sat_san = orbits[ sat_san ]
+}
+
+while sat_you != sat_san do
+{
+	n += 2
+	
+	sat_you = orbits[ sat_you ]
+	sat_san = orbits[ sat_san ]
+}
+
+print n
