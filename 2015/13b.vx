@@ -80,11 +80,4 @@ const count = names.length
 
 const subset = permutations names.keys[ 0 -> count ]
 
-var best = ()
-
-for v in subset do
-{
-	best = Math.max( best, v.value + subscores[ v.key "-" first ] )
-}
-
-print best
+print Iter.max (subset map { v.value + subscores[ v.key "-" first ] })
