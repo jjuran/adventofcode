@@ -1,0 +1,45 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/8.txt").lines()[ 0 ]
+
+const tree = [data / ' '] map int
+
+def tree_value (p)
+{
+	const n_children = *p++
+	const n_metadata = *p++
+	
+	var children = []
+	var metadata = []
+	
+	for i in 0 -> n_children do
+	{
+		p, const value = tree_value p
+		
+		children <-- value
+	}
+	
+	for j in 0 -> n_metadata do
+	{
+		metadata <-- *p++
+	}
+	
+	var value
+	
+	if n_children then
+	{
+		value = metadata ver { v and v <= n_children }
+		                 map { children[ v - 1 ] }
+		                 per Math.sum
+	}
+	else
+	{
+		value = metadata per Math.sum
+	}
+	
+	return p, value
+}
+
+print tail tree_value begin tree

@@ -1,0 +1,31 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/8.txt").lines()[ 0 ]
+
+const tree = [data / ' '] map int
+
+def tree_sum (p)
+{
+	const n_children = *p++
+	const n_metadata = *p++
+	
+	var total = 0
+	
+	for i in 0 -> n_children do
+	{
+		p, const sum = tree_sum p
+		
+		total += sum
+	}
+	
+	for j in 0 -> n_metadata do
+	{
+		total += *p++
+	}
+	
+	return p, total
+}
+
+print tail tree_sum begin tree
