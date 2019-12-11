@@ -13,11 +13,51 @@ def machine (core)
 	var memory = core
 	var halted = false
 	
+	var relbase = 0
 	var PC = 0
 	
 	def connect-input (device)
 	{
 		in_dev = device
+	}
+	
+	def read (mode, addr)
+	{
+		if mode == 1 then
+		{
+			return addr  # immediate mode
+		}
+		
+		# load from memory
+		
+		if mode == 2 then
+		{
+			addr += relbase
+		}
+		
+		if addr >= memory.length then
+		{
+			return 0
+		}
+		
+		return memory[ addr ]
+	}
+	
+	def store (mode, addr, value)
+	{
+		if mode == 2 then
+		{
+			addr += relbase
+		}
+		
+		if addr >= memory.length then
+		{
+			const n = Math.max( addr + 1 - memory.length, memory.length )
+			
+			memory <-- (0 (*) n)
+		}
+		
+		memory[ addr ] = value
 	}
 	
 	def step
@@ -35,13 +75,14 @@ def machine (core)
 		}
 		
 		const i = memory[ PC++ ]
-		const a = if modes % 10 then {i} else {memory[ i ]}
 		
 		if op == 3 then
 		{
-			memory[ i ] = in_dev()
+			store( modes % 10, i, in_dev() )
 			return true
 		}
+		
+		const a = read( modes % 10, i )
 		
 		if op == 4 then
 		{
@@ -49,10 +90,16 @@ def machine (core)
 			return false
 		}
 		
+		if op == 9 then
+		{
+			relbase += a
+			return true
+		}
+		
 		modes = modes div 10
 		
 		const j = memory[ PC++ ]
-		const b = if modes % 10 then {j} else {memory[ j ]}
+		const b = read( modes % 10, j )
 		
 		if op == 5 then
 		{
@@ -74,11 +121,13 @@ def machine (core)
 			return true
 		}
 		
+		modes = modes div 10
+		
 		const k = memory[ PC++ ]
 		
 		const c = int opcodes[ op ]( a, b )
 		
-		memory[ k ] = c
+		store( modes % 10, k, c )
 		
 		return true
 	}
