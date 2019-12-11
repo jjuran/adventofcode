@@ -1,0 +1,34 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = (load bindir "/8.txt").lines()[0]
+
+const w = 25
+const h = 6
+
+const npx = w * h
+
+const layers = [data / -npx]
+
+def composite (i)
+{
+	for layer in layers do
+	{
+		if layer[ i ] != '2' then
+		{
+			return layer[ i ]
+		}
+	}
+}
+
+var composed = "\0" * npx
+
+for i in 0 -> npx do
+{
+	composed[ i ] = composite( i )
+}
+
+translate( &composed, "01", " X" )
+
+print (["", composed / h] map { "    " v "\n" })
