@@ -1,0 +1,102 @@
+module intcode
+
+def less   (a, b) {a < b}
+def equals (a, b) {a == b}
+
+const opcodes = [ 0, Math.sum, Math.product, 3, 4, 5, 6, less, equals ]
+
+export
+def machine (core)
+{
+	var in_dev = { return null }
+	var output = ()
+	var memory = core
+	var halted = false
+	
+	var PC = 0
+	
+	def connect-input (device)
+	{
+		in_dev = device
+	}
+	
+	def step
+	{
+		const opcode = memory[ PC++ ]
+		
+		const op = opcode % 100
+		
+		var modes = opcode div 100
+		
+		if op == 99 then
+		{
+			halted = true
+			return false
+		}
+		
+		const i = memory[ PC++ ]
+		const a = if modes % 10 then {i} else {memory[ i ]}
+		
+		if op == 3 then
+		{
+			memory[ i ] = in_dev()
+			return true
+		}
+		
+		if op == 4 then
+		{
+			output = a
+			return false
+		}
+		
+		modes = modes div 10
+		
+		const j = memory[ PC++ ]
+		const b = if modes % 10 then {j} else {memory[ j ]}
+		
+		if op == 5 then
+		{
+			if a then
+			{
+				PC = b
+			}
+			
+			return true
+		}
+		
+		if op == 6 then
+		{
+			if not bool a then
+			{
+				PC = b
+			}
+			
+			return true
+		}
+		
+		const k = memory[ PC++ ]
+		
+		const c = int opcodes[ op ]( a, b )
+		
+		memory[ k ] = c
+		
+		return true
+	}
+	
+	def run (input: ...)
+	{
+		if input then
+		{
+			connect-input input
+		}
+		
+		while step() do
+		{
+			continue
+		}
+		
+		return if not halted then {output}
+	}
+	
+	return record( :connect-input, :run )
+}
