@@ -1,0 +1,117 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../lib/"
+
+const data = (load bindir "/10.txt")
+const pipe = (load bindir "/10-pipe.txt")
+
+const lines = data.lines()
+
+var grid = str lines
+
+const height = lines.length
+const width = grid.length / height
+
+const X, const Y = eval pipe
+
+def set_cell( x, y, v )
+{
+	grid[ x + y * width ] = v
+}
+
+set_cell( X, Y, '*' )  # laser cannon
+
+def contains( x, y )
+{
+	return x in 0 -> width and y in 0 -> height
+}
+
+def angular_ordering (coordinates)
+{
+	const x, const y = *coordinates
+	
+	if x == 0 or y == 0 then
+	{
+		return (+(y == 0) + 2 * +(y - x > 0)) * 10^6
+	}
+	
+	const quadrant = +(x > 0 == y > 0) + 2 * +(x < 0)
+	
+	const slope = if x > 0 == y > 0
+		then {  1000 * y div x }
+		else { -1000 * x div y }
+	
+	return quadrant * 10^6 + slope
+}
+
+def mark_obstructed_along_ray( gridref, x, y, dx, dy )
+{
+	var obstructed = false
+	
+	while contains( (x += dx), (y += dy) ) do
+	{
+		const index = x + y * width
+		
+		if (*gridref)[ index ] == 'X' then
+		{
+			# This spot was already marked, presumably by an earlier dx/dy pass
+			# that's a factor of this one.
+			break
+		}
+		
+		if obstructed then
+		{
+			(*gridref)[ index ] = 'X'
+		}
+		else if grid[ index ] == '#' then
+		{
+			obstructed = true
+		}
+	}
+}
+
+def laser_rotation_sweep_targets
+{
+	for i in 0 -> width do
+	{
+		for j in +(i == 0) -> height do
+		{
+			mark_obstructed_along_ray( &grid, X, Y,  i,  j )
+			mark_obstructed_along_ray( &grid, X, Y,  i, -j )
+			mark_obstructed_along_ray( &grid, X, Y, -i,  j )
+			mark_obstructed_along_ray( &grid, X, Y, -i, -j )
+		}
+	}
+	
+	var targets = []
+	
+	for x in 0 -> width do
+	{
+		for y in 0 -> height do
+		{
+			if grid[ x + y * width ] == '#' then
+			{
+				targets <-- [x - X, y - Y]
+			}
+		}
+	}
+	
+	return Iter.sorted targets via angular_ordering
+}
+
+const targets = laser_rotation_sweep_targets()
+
+def abs_from_rel (x, y)
+{
+	return (X + x, Y + y)
+}
+
+def mux (x, y)
+{
+	return x * 100 + y
+}
+
+const the_200th = targets[ 199 ]
+
+print mux abs_from_rel *the_200th
