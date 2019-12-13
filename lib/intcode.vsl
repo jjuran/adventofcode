@@ -16,6 +16,16 @@ def machine (core)
 	var relbase = 0
 	var PC = 0
 	
+	def peek (addr)
+	{
+		return memory[ addr ]
+	}
+	
+	def poke (addr, value)
+	{
+		memory[ addr ] = value
+	}
+	
 	def connect-input (device)
 	{
 		in_dev = device
@@ -147,5 +157,5 @@ def machine (core)
 		return if not halted then {output}
 	}
 	
-	return record( :connect-input, :run )
+	return record( :peek, :poke, :connect-input, :run )
 }
