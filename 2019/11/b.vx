@@ -1,0 +1,87 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const intcode = import "intcode"
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()[0]
+const core = [data / ','] map int
+
+const machine = intcode.machine core
+
+var painted_panels = str^[]
+
+var x = 0
+var y = 0
+
+var dir = 0  # up/right/down/left
+
+const movements =
+[
+	[0, -1],
+	[1, 0],
+	[0, 1],
+	[-1, 0],
+]
+
+def sample
+{
+	const key = x "," y
+	
+	if key in painted_panels then
+	{
+		return painted_panels[ key ]
+	}
+	
+	return 0
+}
+
+var min_x = 0
+var max_x = 0
+var min_y = 0
+var max_y = 0
+
+painted_panels[ "0,0" ] = 1
+
+while (+) (var c = machine.run sample) do
+{
+	const d = machine.run()
+	
+	# paint a cell
+	painted_panels[ x "," y ] = c
+	
+	# turn left or right
+	dir = (dir + d * 2 - 1) mod 4
+	
+	# move
+	const m = movements[ dir ]
+	
+	x += m[ 0 ]
+	y += m[ 1 ]
+	
+	min_x = Math.min( min_x, x )
+	max_x = Math.max( max_x, x )
+	min_y = Math.min( min_y, y )
+	max_y = Math.max( max_y, y )
+}
+
+const width  = 1 + max_x - min_x
+const height = 1 + max_y - min_y
+
+var image = "0" * (width * height)
+
+for panel in painted_panels do
+{
+	const x, const y = *([panel.key / ','] map int)
+	
+	image[ min_x + x + (min_y + y) * width ] = *(str panel.value)
+}
+
+translate( &image, "01", " X" )
+
+print "\n    ".join ("", image / height, "")

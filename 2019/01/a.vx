@@ -1,0 +1,16 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+def fuel_cost (mass)
+{
+	return mass div 3 - 2
+}
+
+const result = data map { fuel_cost int v } per {a + b}
+
+print result

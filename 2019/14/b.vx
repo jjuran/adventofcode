@@ -1,0 +1,116 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../lib/"
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+def parse (measure)
+{
+	const n, const name = measure / ' '
+	
+	return name => int n
+}
+
+var recipes = str^[]
+var needs_0 = str^[]
+
+for row in data do
+{
+	var p = (begin row).find " => "
+	
+	const reagents = p.past
+	const product = parse (p + 4).rest
+	
+	const factors = [" " reagents / ','] map { parse substr(v, 1) }
+	
+	recipes[ product.key ] = [ product.value, factors ]
+	needs_0[ product.key ] = 0
+}
+
+needs_0[ "ORE" ] = 0
+
+def fuel_cost (fuel)
+{
+	var needs = needs_0
+	
+	needs[ "FUEL" ] = fuel
+	
+	while needs ver {v.value > 0 and v.key != "ORE"} do
+	{
+		for need in (needs ver {v.value > 0}) do
+		{
+			const name = need.key
+			
+			if name == "ORE" then
+			{
+				continue
+			}
+			
+			const needed = needs[ name ]
+			
+			const r = recipes[ name ]
+			
+			const n = r[ 0 ]
+			
+			const coefficient = (needed + n - 1) div n
+			
+			const factors = r[ 1 ]
+			
+			for f in factors do
+			{
+				needs[ f.key ] += f.value * coefficient
+			}
+			
+			needs[ name ] -= n * coefficient
+		}
+	}
+	
+	return needs  # positive ORE, negative leftovers
+}
+
+var n = 1
+
+var needs = fuel_cost 1
+
+var min_fuel = 0
+var max_fuel = -1
+
+while min_fuel != max_fuel do
+{
+	var needs = fuel_cost n
+	
+	if needs[ "ORE" ] > 1000000000000 then
+	{
+		max_fuel = n - 1
+		
+		n = min_fuel + (max_fuel - min_fuel) div 2
+	}
+	else if max_fuel > 0 then
+	{
+		min_fuel = n
+		
+		n = min_fuel + (max_fuel - min_fuel + 1) div 2
+	}
+	else
+	{
+		min_fuel = n
+		
+		n *= 2
+	}
+}
+
+print n
+
+end.
+157 ORE => 5 NZVS
+165 ORE => 6 DCFZ
+44 XJWVT, 5 KHKGT, 1 QDVJ, 29 NZVS, 9 GPVTF, 48 HKGWZ => 1 FUEL
+12 HKGWZ, 1 GPVTF, 8 PSHF => 9 QDVJ
+179 ORE => 7 PSHF
+177 ORE => 5 HKGWZ
+7 DCFZ, 7 PSHF => 2 XJWVT
+165 ORE => 2 GPVTF
+3 DCFZ, 7 NZVS, 5 HKGWZ, 10 PSHF => 8 KHKGT

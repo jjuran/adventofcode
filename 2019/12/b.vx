@@ -1,0 +1,106 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const sieve-of-eratosthenes = import "sieve-of-eratosthenes"
+
+const lcm = (import "lcm").with sieve-of-eratosthenes
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+def parse_line (s)
+{
+	return [" " s[ 1 -> s.length - 1 ] / ','] map { int [substr(v, 1) / '='][1] }
+}
+
+def dimension (positions)
+{
+	const n = positions.length
+	
+	var velocities = [0 (*) n]
+	
+	def state
+	{
+		return rep (0 -> n map { positions[ v ], velocities[ v ] })
+	}
+	
+	const beginning = state()
+	
+	def step
+	{
+		# apply gravity
+		
+		for i in 1 -> n do
+		{
+			const a = positions[ i ]
+			
+			for j in 0 -> i do
+			{
+				const b = positions[ j ]
+				
+				const pull = b <=> a
+				
+				velocities[ i ] += pull
+				velocities[ j ] -= pull
+			}
+		}
+		
+		# apply velocity
+		
+		for j in 0 -> n do
+		{
+			positions[ j ] += velocities[ j ]
+		}
+		
+		return state() != beginning
+	}
+	
+	return record( :step )
+}
+
+const positions = data map parse_line
+
+const axes = "XYZ"
+
+def find_period (i)
+{
+	const axis = axes[ i ] ": "
+	
+	const d = dimension (positions map { v[ i ] })
+	
+	var steps = 0
+	
+	do
+	{
+		++steps
+		
+		if u8 steps == 0 then
+		{
+			OUT <== "\r" axis steps
+		}
+	}
+	while d.step()
+	
+	OUT <== "\r"
+	
+	print "Axis " axes[ i ] " has repeated at step " steps
+	
+	return steps
+}
+
+const cycles = 0 -> 3 map find_period
+
+print rep cycles
+
+print lcm cycles
+
+end.
+<x=-1, y=0, z=2>
+<x=2, y=-10, z=-7>
+<x=4, y=-8, z=8>
+<x=3, y=5, z=-1>

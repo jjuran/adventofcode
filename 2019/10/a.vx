@@ -1,0 +1,99 @@
+#!/usr/bin/env vx -Z
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const lines = data.lines()
+
+const grid = str lines
+
+const height = lines.length
+const width = grid.length / height
+
+def contains( x, y )
+{
+	return x in 0 -> width and y in 0 -> height
+}
+
+def mark_obstructed_along_ray( gridref, x, y, dx, dy )
+{
+	var obstructed = false
+	
+	while contains( (x += dx), (y += dy) ) do
+	{
+		const index = x + y * width
+		
+		if (*gridref)[ index ] == 'X' then
+		{
+			# This spot was already marked, presumably by an earlier dx/dy pass
+			# that's a factor of this one.
+			break
+		}
+		
+		if obstructed then
+		{
+			(*gridref)[ index ] = 'X'
+		}
+		else if grid[ index ] == '#' then
+		{
+			obstructed = true
+		}
+	}
+}
+
+def count_asteroids( grid, index )
+{
+	if grid[ index ] != '#' then
+	{
+		return 0
+	}
+	
+	const x = index mod width
+	const y = index div width
+	
+	for i in 0 -> width do
+	{
+		for j in +(i == 0) -> height do
+		{
+			mark_obstructed_along_ray( &grid, x, y,  i,  j )
+			mark_obstructed_along_ray( &grid, x, y,  i, -j )
+			mark_obstructed_along_ray( &grid, x, y, -i,  j )
+			mark_obstructed_along_ray( &grid, x, y, -i, -j )
+		}
+	}
+	
+	return (grid ver {v == '#'}).length - 1
+}
+
+var max_count = 0
+var max_index = "-"
+
+OUT <== "Max: [" max_index "] " max_count
+
+for i in 0 -> grid.length do
+{
+	const count = count_asteroids( grid, i )
+	
+	if count > max_count then
+	{
+		max_count = count
+		max_index = i
+	}
+	
+	OUT <== "\r" "Max: [" max_index "] " max_count " | [" i "] " "   "
+	OUT <== "\r" "Max: [" max_index "] " max_count " | [" i "] " count
+}
+
+OUT <== "\r" "Max: [" max_index "] " max_count (" " * " | [123] 123".length)
+OUT <== "\n"
+
+const x = max_index mod width
+const y = max_index div width
+
+print "# " rep (x, y)
+print max_count
+
+rewrite bindir "/10-pipe.txt" <== rep (x, y), "\n"
