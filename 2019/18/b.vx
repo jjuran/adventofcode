@@ -1,0 +1,363 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+# Example a4.txt produces four solutions for part 1, only two of which are
+# minimal in part 2.  But as long as official input produces only solution,
+# this is sufficient.
+
+const knowledge_input = getenv "KNOWLEDGE_INPUT"
+	or throw "KNOWLEDGE_INPUT must be set"
+
+const data = load input_path
+
+const lines = data.lines()
+
+const width  = lines[ 0 ].length
+const height = lines.length
+
+var image = str lines
+
+const upper = 'A' .. 'Z'
+const lower = 'a' .. 'z'
+
+const alpha = upper | lower
+
+def isalpha (c)
+{
+	return c in alpha
+}
+
+const dirs =
+[
+	[  0, -1 ],  # N
+	[  0,  1 ],  # S
+	[ -1,  0 ],  # W
+	[  1,  0 ],  # E
+]
+
+def find (c)
+{
+	const p = (begin image).find c
+	
+	return if p then {p.past.length}
+}
+
+# Nothing can be at (0,0), because that's a wall.
+
+const start = find '@'
+
+var all_keys  = [ 0 (*) 26 ]
+var all_doors = [ 0 (*) 26 ]
+
+var n_keys = 0
+
+for k in 'a' .. 'z' do
+{
+	const i = find k
+	
+	if i isa () then {break}
+	
+	all_keys[ u8 k - u8 'a' ] = i
+	
+	++n_keys
+}
+
+all_keys = all_keys[ 0 -> n_keys ]
+
+var n_doors = 0
+
+for D in 'A' .. 'Z' do
+{
+	if const i = find D then
+	{
+		all_doors[ u8 D - u8 'A' ] = i
+		
+		++n_doors
+	}
+}
+
+def compose (x, y)
+{
+	return x + y * width
+}
+
+def decompose (i)
+{
+	return i mod width, i div width
+}
+
+def neighbors (i)
+{
+	const x, const y = decompose i
+	
+	return dirs map { [v[0] + x, v[1] + y] }
+	            ver { v[0] in 0 -> width and v[1] in 0 -> height }
+	            map { compose *v }
+}
+
+def valid_moves (i)
+{
+	return neighbors i ver { image[ v ] != '#' }
+}
+
+var distances = str^[]
+
+var beyond = byte^[]
+var pathto = byte^[]
+
+def compute_distances_from_start (dungeon, start, path)
+{
+	const A = dungeon[ start ]
+	
+	display "Distances from start: " path
+	
+	if not A in beyond.keys then
+	{
+		beyond[ A ] = []
+	}
+	
+	dungeon[ start ] = '+'
+	
+	var frontier = [start]
+	
+	var distance = 0
+	
+	while frontier do
+	{
+		var new_frontier = []
+		
+		for edge in frontier do
+		{
+			const c = dungeon[ edge ]
+			
+			if isalpha c then
+			{
+				beyond[ A ] <-- c => distance
+				
+				if not c in beyond.keys then
+				{
+					pathto[ c ] = ""
+				}
+				
+				pathto[ c ] = path
+				
+				distances[ str (A, c) ] = distance
+				distances[ str (c, A) ] = distance
+				
+				compute_distances_from_start( dungeon, edge, path c )
+				continue
+			}
+			
+			dungeon[ edge ] = '+'
+			
+			const moves = valid_moves edge ver { dungeon[ v ] != '+' }
+			
+			new_frontier <-- *moves
+		}
+		
+		++distance
+		
+		frontier = new_frontier
+	}
+}
+
+def path_between (A, B)
+{
+	assert A != B
+	
+	const b = pathto[ B ]
+	
+	if A == '@' then
+	{
+		return b B
+	}
+	
+	const a = pathto[ A ]
+	
+	var p = begin a
+	var q = begin b
+	
+	while p and q and *p == *q do
+	{
+		++p, ++q
+	}
+	
+	return A -p.rest q.rest B
+}
+
+def distance_between (A, B)
+{
+	const key = str _
+	
+	if key in distances.keys then
+	{
+		return distances[ key ]
+	}
+	
+	var distance = 0
+	
+	var p = begin path_between _
+	var q = p + 1
+	
+	while q do
+	{
+		const a = *p++
+		const b = *q++
+		
+		if a == b then {continue}
+		
+		const subkey = str (a, b)
+		
+		const d =
+			if subkey in distances.keys
+				then {distances[ subkey ]}
+				else {distance_between (a, b)}
+		
+		distance += d
+	}
+	
+	return distances[ key ] = distance
+}
+
+def measure_path (A, sequence)
+{
+	var distance = 0
+	
+	var p = begin A sequence
+	var q = p + 1
+	
+	while q do
+	{
+		distance += distance_between (*p++, *q++)
+	}
+	
+	return distance
+}
+
+def compute_distances_from (start)
+{
+	const A = image[ start ]
+	
+	display "Distances from " A
+	
+	assert not A in "#."
+	
+	var copy = image
+	
+	copy[ start ] = '+'
+	
+	var leads = [start]
+	
+	var distance = 0
+	
+	while leads do
+	{
+		var new_leads = []
+		
+		for lead in leads do
+		{
+			const c = copy[ lead ]
+			
+			copy[ lead ] = '+'
+			
+			if isalpha c then
+			{
+				distances[ str (A, c) ] = distance
+				continue
+			}
+			
+			const moves = valid_moves lead ver { copy[ v ] != '+' }
+			
+			new_leads <-- *moves
+		}
+		
+		++distance
+		
+		leads = new_leads
+	}
+}
+
+compute_distances_from_start( image, start, "" )
+
+def precompute_distances
+{
+	compute_distances_from start
+	
+	for k in all_keys do
+	{
+		compute_distances_from k
+	}
+	
+	for D in (all_doors ver ...) do
+	{
+		compute_distances_from D
+	}
+}
+
+precompute_distances()
+
+const center
+
+if image[ start + 1 ] == '.' then
+{
+	image[ start - width - 1 ] = '@'
+	image[ start - width     ] = '#'
+	image[ start - width + 1 ] = '@'
+	
+	image[ start         - 1 ] = '#'
+	image[ start             ] = '#'
+	image[ start         + 1 ] = '#'
+	
+	image[ start + width - 1 ] = '@'
+	image[ start + width     ] = '#'
+	image[ start + width + 1 ] = '@'
+	
+	center = start
+}
+else
+{
+	center = start + width + 1
+}
+
+const center_x = center mod width
+
+def quadrant (i)
+{
+	return 2 * +(i > center) + +(i mod width > center_x)
+}
+
+def fix_paths
+{
+	beyond[ '@' ] = beyond[ '@' ] map { v.key => v.value - 2 }
+	
+	for d in distances do
+	{
+		if '@' in d.key then
+		{
+			distances[ d.key ] = distances[ d.key ] - 2
+		}
+	}
+}
+
+const mapped = knowledge_input map { v => quadrant find v }
+const sorted = Iter.sorted mapped via { v.value }
+
+const quadrants = 0 -> 4 map { const q = v; byte^(sorted ver { v.value == q }) }
+
+const key_lists = quadrants map { str v.keys }
+
+fix_paths()
+
+const numbers = key_lists map {measure_path( '@', v )}
+
+display ""
+
+print Math.sum *numbers
