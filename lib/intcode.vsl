@@ -166,5 +166,18 @@ def machine (core)
 		return if not halted then {output}
 	}
 	
-	return record( :peek, :poke, :connect-input, :run )
+	def suspend
+	{
+		return record( :memory, :RB, :PC )
+	}
+	
+	def resume (state)
+	{
+		memory = state.memory
+		
+		RB = state.RB
+		PC = state.PC
+	}
+	
+	return record( :peek, :poke, :connect-input, :run, :suspend, :resume )
 }
