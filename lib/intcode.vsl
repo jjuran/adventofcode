@@ -13,7 +13,7 @@ def machine (core)
 	var memory = core
 	var halted = false
 	
-	var relbase = 0
+	var RB = 0  # Relative Base register
 	var PC = 0
 	
 	def peek (addr)
@@ -42,7 +42,7 @@ def machine (core)
 		
 		if mode == 2 then
 		{
-			addr += relbase
+			addr += RB
 		}
 		
 		if addr >= memory.length then
@@ -57,7 +57,7 @@ def machine (core)
 	{
 		if mode == 2 then
 		{
-			addr += relbase
+			addr += RB
 		}
 		
 		if addr >= memory.length then
@@ -102,7 +102,7 @@ def machine (core)
 		
 		if op == 9 then
 		{
-			relbase += a
+			RB += a
 			return true
 		}
 		
