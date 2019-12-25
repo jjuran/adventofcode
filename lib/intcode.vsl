@@ -88,7 +88,16 @@ def machine (core)
 		
 		if op == 3 then
 		{
-			store( modes % 10, i, in_dev() )
+			const input = in_dev()
+			
+			if input isa () then
+			{
+				PC -= 2
+				output = null
+				return false
+			}
+			
+			store( modes % 10, i, input )
 			return true
 		}
 		
