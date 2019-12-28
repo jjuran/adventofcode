@@ -54,7 +54,7 @@ var score_box = ""
 
 def update_score
 {
-	const score_offset = (max_wall_x - "Score: 12345".length) div 2
+	const score_offset = (max_wall_x + 1) div 2 - "Score: ".length
 	const score_indent = " " * score_offset
 	
 	score_box = score_indent "Score: " score
