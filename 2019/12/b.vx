@@ -37,13 +37,13 @@ def dimension (positions)
 		
 		for i in 1 -> n do
 		{
-			const a = positions[ i ]
+			const a (int) = positions[ i ]
 			
 			for j in 0 -> i do
 			{
-				const b = positions[ j ]
+				const b (int) = positions[ j ]
 				
-				const pull = b <=> a
+				const pull (int) = b <=> a
 				
 				velocities[ i ] += pull
 				velocities[ j ] -= pull
