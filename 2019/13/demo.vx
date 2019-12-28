@@ -39,12 +39,19 @@ const CSI = ESC "["
 
 const CLEAN = CSI "H" CSI "J"  # home, clear to end
 
+const RESET = CSI "0m"
+const RED   = CSI "31m"
+const GREEN = CSI "32m"
+const GREY  = CSI "37m"
+const AMBER = CSI "93m"
+const WHITE = CSI "97m"
+
 def GOTO (x, y)
 {
 	return CSI (y + 1) ";" (x + 1) "H"
 }
 
-const sprites = " X#_o"
+const sprites = " X#_*"
 
 var ball_x
 var paddle_x
@@ -57,7 +64,7 @@ def update_score
 	const score_offset = (max_wall_x + 1) div 2 - "Score: ".length
 	const score_indent = " " * score_offset
 	
-	score_box = score_indent "Score: " score
+	score_box = score_indent WHITE "Score: " AMBER score RESET
 }
 
 def joystick
@@ -90,19 +97,31 @@ while var tuple = thrice machine.run do
 			height = y + 1
 		}
 		
+		var color = ""
+		
 		if t == Tile_ball then
 		{
 			ball_x = x
+			
+			color = AMBER
 		}
 		else if t == Tile_paddle then
 		{
 			paddle_x = x
+			
+			color = WHITE
+		}
+		else if t == Tile_block then
+		{
+			color = [GREEN, RED][ y % 2 ]
 		}
 		else if t == Tile_wall then
 		{
 			max_wall_x = Math.max( x, max_wall_x )
+			
+			color = GREY
 		}
 		
-		OUT <== GOTO(x + 4, y + 3) sprites[ t ] GOTO(0, height + 3)
+		OUT <== GOTO(x + 4, y + 3) color sprites[ t ] RESET GOTO(0, height + 3)
 	}
 }
