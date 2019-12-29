@@ -6,14 +6,9 @@ const min, const max = data / '-'
 
 def has_double (s6)
 {
-	const a,
-	const b,
-	const c,
-	const d,
-	const e,
-	const f = *s6
+	const bytes = packed s6
 	
-	return a == b or b == c or c == d or d == e or e == f
+	return '\0' in bytes[ 0 -> 5 ] ~ bytes[ 1 -> 6 ]
 }
 
 def floor (s)
