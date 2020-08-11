@@ -11,13 +11,9 @@ const n = 6
 
 var suffix = 0
 
-while true do
+while (hex md5 data ++suffix)[ 0 -> n ] != "0" * n do
 {
-	const input = data .++suffix
-	
-	const output = hex md5 input
-	
-	if output[ 0 -> n ] == "0" * n then {break}
+	# just loop
 }
 
 print suffix
