@@ -12,20 +12,15 @@ var ip = 0
 
 const range = 0 -> data.length
 
+var offset
+
 while ip in range do
 {
 	++total
 	
-	if u16 total == 0 then
-	{
-		#warn rep (total, ip)
-	}
+	offset = data[ ip ]
 	
-	const offset = data[ ip ]
-	
-	const k = +(offset < 3) * 2 - 1
-	
-	data[ ip ] = offset + k
+	data[ ip ] = offset + +(offset < 3) * 2 - 1
 	
 	ip += offset
 }
