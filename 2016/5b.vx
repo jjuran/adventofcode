@@ -12,13 +12,11 @@ var password = " " * 8
 
 while ' ' in password do
 {
-	const input = data .++suffix
-	
-	const output = hex md5 input
-	
-	if output[ 0 -> n ] == "0" * n then
+	if (hex md5 data ++suffix)[ 0 -> n ] == "0" * n then
 	{
-		warn rep (input, output)
+		const output = hex md5 data suffix
+		
+		warn rep (data suffix, output)
 		
 		const o6 = output[ 5 ]
 		
