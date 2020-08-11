@@ -1,0 +1,72 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const digit = '0' .. '9'
+const number = digit+ => int
+
+var p = begin load input_path
+
+p = p.find "row"
+
+const row, const col = p += ["row ", number, ", column ", number]
+
+def diagonalize (row, col)
+{
+	--row
+	--col
+	
+	var i = 0
+	
+	while row or col do
+	{
+		if col then
+		{
+			i += col
+			
+			row += col
+			col  = 0
+		}
+		else
+		{
+			++i
+			
+			col = row - 1
+			row = 0
+		}
+	}
+	
+	return i
+}
+
+def modpower (b, e, m)
+{
+	var result = 1
+	
+	while e > 0 do
+	{
+		if e % 2 then
+		{
+			result = result * b mod m
+		}
+		
+		b = b * b mod m
+		
+		e = e div 2
+	}
+	
+	return result
+}
+
+const seed    = 20151125
+const factor  = 252533
+const modulus = 33554393
+
+def generate_nth_code (index)
+{
+	return seed * modpower( factor, index, modulus ) % modulus
+}
+
+print generate_nth_code diagonalize (row, col)
