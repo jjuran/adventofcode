@@ -1,0 +1,120 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const intcode = import "intcode"
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()[0]
+const core = [data / ','] map int
+
+const machine = intcode.machine core
+
+const Space = ' '
+const Wall  = '#'
+const Floor = '.'
+const Prune = 'x'
+const O2sys = '!'
+
+var floorplan = str^[]
+var distances = str^[]
+
+distances[ "0,0" ] = 0
+
+var X = 0
+var Y = 0
+
+const moves =
+[
+	null,
+	[  0, -1 ],  # N
+	[  0,  1 ],  # S
+	[ -1,  0 ],  # W
+	[  1,  0 ],  # E
+]
+
+def forward (dir)
+{
+	const m = moves[ dir ]
+	
+	return X + m[ 0 ], Y + m[ 1 ]
+}
+
+def sample (x, y)
+{
+	const key = x "," y
+	
+	return if key in floorplan then { floorplan[ key ] } else { Space }
+}
+
+def is_known (x, y)
+{
+	return x "," y in floorplan
+}
+
+def is_dead_end (x, y)
+{
+	return (1 .. 4 ver { sample forward v in Wall Prune "" }).length == 3
+}
+
+def uncharted
+{
+	return 1 .. 4 ver { not is_known forward v }
+}
+
+def open
+{
+	return 1 .. 4 ver { sample forward v == Floor }
+}
+
+var next_pos
+
+def input
+{
+	const dir = head *uncharted() or head *open()
+	
+	next_pos = forward dir
+	
+	return dir
+}
+
+const tokens = Wall Floor O2sys ""
+
+var n_steps = 0
+
+for output in receiver (machine.run % input) do
+{
+	if output == 2 then
+	{
+		break
+	}
+	
+	const key = ",".join next_pos
+	
+	const c = tokens[ output ]
+	
+	floorplan[ key ] = c
+	
+	if output != 0 then
+	{
+		OUT <== "\r" "Steps: " ++n_steps
+		
+		if not key in distances then
+		{
+			distances[ key ] = distances[ X "," Y ] + 1
+		}
+		
+		if is_dead_end( X, Y ) then
+		{
+			floorplan[ X "," Y ] = Prune
+		}
+		
+		X, Y = next_pos
+	}
+}
+
+print "\r" "Distance: " (distances[ X "," Y ] + 1)

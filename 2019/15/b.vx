@@ -1,0 +1,249 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const intcode = import "intcode"
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()[0]
+const core = [data / ','] map int
+
+const machine = intcode.machine core
+
+const Space = ' '
+const Droid = 'D'
+const Wall  = '#'
+const Floor = '.'
+const Prune = 'x'
+const O2sys = '@'
+const O2air = 'O'
+
+var floorplan = str^[]
+var distances = str^[]
+
+distances[ "0,0" ] = 0
+
+var X = 0
+var Y = 0
+
+const moves =
+[
+	null,
+	[  0, -1 ],  # N
+	[  0,  1 ],  # S
+	[ -1,  0 ],  # W
+	[  1,  0 ],  # E
+]
+
+def forward (dir)
+{
+	const m = moves[ dir ]
+	
+	return X + m[ 0 ], Y + m[ 1 ]
+}
+
+def sample (x, y)
+{
+	const key = x "," y
+	
+	return if key in floorplan then { floorplan[ key ] } else { Space }
+}
+
+def is_known (x, y)
+{
+	return x "," y in floorplan
+}
+
+def is_dead_end (x, y)
+{
+	return (1 .. 4 ver { sample forward v in Wall Prune "" }).length == 3
+}
+
+def uncharted
+{
+	return 1 .. 4 ver { not is_known forward v }
+}
+
+def open
+{
+	return 1 .. 4 ver { sample forward v == Floor }
+}
+
+var next_pos
+
+def next_dir
+{
+	return head *uncharted() or head *open()
+}
+
+var dir
+
+def input
+{
+	next_pos = forward dir
+	
+	return dir
+}
+
+const tokens = Wall Floor O2sys ""
+
+def gridify
+{
+	const keys = floorplan.keys
+	
+	const xkeys = keys map {int [v / ','][0]}
+	const ykeys = keys map {int [v / ','][1]}
+	
+	const min_x = Iter.min xkeys
+	const max_x = Iter.max xkeys
+	const min_y = Iter.min ykeys
+	const max_y = Iter.max ykeys
+	
+	const width  = max_x + 1 - min_x
+	const height = max_y + 1 - min_y
+	
+	const npx = width * height
+	
+	var grid = " " * npx
+	
+	for kv in floorplan do
+	{
+		const x, const y = *([kv.key / ','] map int)
+		
+		grid[ (x - min_x) + (y - min_y) * width ] = kv.value
+	}
+	
+	grid[ (X - min_x) + (Y - min_y) * width ] = Droid
+	
+	return grid, height
+}
+
+var n_steps = 0
+
+while true do
+{
+	dir = next_dir()
+	
+	const output = machine.run input
+	
+	const key = ",".join next_pos
+	
+	const c = tokens[ output ]
+	
+	floorplan[ key ] = c
+	
+	if output != 0 then
+	{
+		OUT <== "\r" "Steps: " ++n_steps
+		
+		if not key in distances then
+		{
+			distances[ key ] = distances[ X "," Y ] + 1
+		}
+		
+		if is_dead_end( X, Y ) then
+		{
+			floorplan[ X "," Y ] = Prune
+		}
+		
+		X, Y = next_pos
+		
+		if output == 2 then
+		{
+			break
+		}
+	}
+}
+
+const oxypos = X, Y
+
+print "\r" "Oxygen system at " rep oxypos
+
+while dir = next_dir() do
+{
+	const output = machine.run input
+	
+	const key = ",".join next_pos
+	
+	const c = tokens[ output ]
+	
+	floorplan[ key ] = c
+	
+	if output != 0 then
+	{
+		OUT <== "\r" "Steps: " ++n_steps
+		
+		if not key in distances then
+		{
+			distances[ key ] = distances[ X "," Y ] + 1
+		}
+		
+		if is_dead_end( X, Y ) then
+		{
+			floorplan[ X "," Y ] = Prune
+		}
+		
+		X, Y = next_pos
+	}
+}
+
+print "\r" "Pumping oxygen..."
+
+floorplan[ ",".join oxypos ] = O2sys
+
+var oxymap, const height = gridify()
+
+const keys = floorplan.keys
+
+const xkeys = keys map {int [v / ','][0]}
+const ykeys = keys map {int [v / ','][1]}
+
+const min_x = Iter.min xkeys
+const max_x = Iter.max xkeys
+const min_y = Iter.min ykeys
+const max_y = Iter.max ykeys
+
+const width  = max_x + 1 - min_x
+#const height = max_y + 1 - min_y
+
+var timer = 0
+
+var oxyfills = [ [oxypos] ]
+
+while true do
+{
+	var newfills = []
+	
+	for oxy in oxyfills do
+	{
+		for m in moves[ 1 .. 4 ] do
+		{
+			const x = oxy[0] + m[0]
+			const y = oxy[1] + m[1]
+			
+			const index = x - min_x + (y - min_y) * width
+			
+			if oxymap[ index ] in Prune Floor Droid "" then
+			{
+				newfills <-- [x, y]
+				
+				oxymap[ index ] = O2air
+			}
+		}
+	}
+	
+	if not newfills then
+	{
+		break
+	}
+	
+	++timer
+	
+	oxyfills = newfills
+}
+
+print "Completed in " timer " minutes."
