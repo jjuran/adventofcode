@@ -1,0 +1,87 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()[0]
+
+const digits = packed (   '0' ..    '9')
+const values = packed ('\x00' .. '\x09')
+
+var signal = translated( data, digits, values )
+
+const N = signal.length
+
+def zipmulsum (signal, i)
+{
+	signal = "+" signal
+	++i
+	
+	const Nmod = N div i * i
+	
+	var sum = 0
+	
+	const leading_zeros = i - 1
+	const skip = 1 + leading_zeros
+	
+	var j = skip
+	
+	const inc = 2 * i
+	
+	while j <= N do
+	{
+		for cpos in signal[ j -> Math.min( j + i, N + 1 ) ] do
+		{
+			sum += int cpos
+		}
+		
+		j += inc
+		
+		if j > N then {break}
+		
+		for cneg in signal[ j -> Math.min( j + i, N + 1 ) ] do
+		{
+			sum -= int cneg
+		}
+		
+		j += inc
+	}
+	
+	return sum
+}
+
+def fft (signal)
+{
+	const half_N = N div 2
+	
+	for i in 0 -> half_N do
+	{
+		signal[ i ] = byte (abs zipmulsum( signal, i ) % 10)
+	}
+	
+	# second half
+	
+	# last digit remains the same
+	
+	for i2 in -(N - 2) .. -half_N do
+	{
+		signal[ -i2 ] = byte ((u8 signal[ -i2 ] + u8 signal[ -i2 + 1 ]) % 10)
+	}
+	
+	return signal
+}
+
+for i in 0 -> 100 do
+{
+	OUT <== "\r" i
+	
+	signal = fft signal
+}
+
+OUT <== "\r" "    "
+OUT <== "\n"
+
+const output = signal[ 0 -> 8 ]
+
+print translated( output, values, digits )

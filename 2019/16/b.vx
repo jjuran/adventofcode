@@ -1,0 +1,46 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()[0]
+
+const digits = packed (   '0' ..    '9')
+const values = packed ('\x00' .. '\x09')
+
+const offset = int data[ 0 -> 7 ]
+
+var signal = translated( data, digits, values )
+
+signal = signal * 10^4
+
+const N = signal.length
+
+def fft (signal)
+{
+	# second half
+	
+	# last digit remains the same
+	
+	for i2 in -(N - 2) .. -offset do
+	{
+		signal[ -i2 ] = byte ((u8 signal[ -i2 ] + u8 signal[ -i2 + 1 ]) % 10)
+	}
+	
+	return signal
+}
+
+for i in 0 -> 100 do
+{
+	OUT <== "\r" i
+	
+	signal = fft signal
+}
+
+OUT <== "\r" "    "
+OUT <== "\n"
+
+const output = substr( signal, offset, 8 )
+
+print translated( output, values, digits )
