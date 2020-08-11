@@ -6,7 +6,7 @@ const data = (load bindir "/5.txt").lines()[ 0 ]
 
 def reactive (a, b)
 {
-	return packed a (+) x"20" == packed b
+	return packed a ~ x"20" == packed b
 }
 
 def find_next_reaction (p)

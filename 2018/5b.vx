@@ -8,7 +8,7 @@ var s = data
 
 def reactive (a, b)
 {
-	return packed a (+) x"20" == packed b
+	return packed a ~ x"20" == packed b
 }
 
 def find_next_reaction (p)
@@ -70,7 +70,7 @@ def complete_reaction (s)
 
 def expunge (s, c)
 {
-	const pattern = packed c * 2 (+) x"0020"
+	const pattern = packed c * 2 ~ x"0020"
 	
 	translate( &s, pattern, x"0000" )
 	

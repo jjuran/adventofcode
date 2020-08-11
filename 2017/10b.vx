@@ -49,7 +49,7 @@ for i in 0 -> 64 do
 
 def xor
 {
-	return head _ (+) tail _
+	return head _ ~ tail _
 }
 
 def densify

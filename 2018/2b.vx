@@ -12,7 +12,7 @@ def run
 	{
 		for b in data do
 		{
-			const x = packed a (+) packed b
+			const x = packed a ~ packed b
 			
 			const d = x ver ...
 			
