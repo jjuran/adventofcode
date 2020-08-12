@@ -1,0 +1,114 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const digit = '0' .. '9'
+const number = digit+ => int
+const format = [number, " players; last marble is worth ", number => {_ * 100}]
+
+var p = begin data
+
+const n_players, const nth_marble = p += format
+
+var scores = [0 (*) n_players]
+
+const n_brackets = nth_marble div 23
+
+var current_player = 0
+
+const skip_delta = 22 - 6           # 16
+const divisor    = 21 + skip_delta  # 37
+const margin     = 8
+
+def trace_marble (k, pos)
+{
+	var n = 2 + k * 21
+	
+	while k > 0 do
+	{
+		const skips = (n - margin - pos) div divisor
+		
+		if pos > 0 and skips > 0 then
+		{
+			pos += skips * skip_delta
+			k   -= skips
+			
+			n = 2 + k * 21
+		}
+		
+		for i in 1 .. 22 do
+		{
+			--n
+			
+			if pos == 0 then
+			{
+				return n + 2 * (k - 1)  # Found it
+			}
+			
+			if ++pos >= n then
+			{
+				pos -= n
+			}
+		}
+		
+		pos = (pos - 6) mod ++n
+		
+		--k
+	}
+	
+	return 0
+}
+
+def trace_removed_marble (k)
+{
+	return trace_marble (k, k * 21 - 5)
+}
+
+assert trace_marble (0,  0) == 0
+
+assert 0 .. 1 + 21 map (trace_marble % 1) ==
+[
+	22, 11,  1, 12,  6, 13,  3, 14,  7, 15,
+	 0, 16,  8, 17,  4, 18,  9, 19,  2, 20,
+	10, 21,  5,
+]
+
+assert 0 .. 1 + 42 map (trace_marble % 2) ==
+[
+	45,  2, 24, 20, 25, 10, 26, 21, 27,  5,
+	28, 22, 29, 11, 30,  1, 31, 12, 32,  6,
+	33, 13, 34,  3, 35, 14, 36,  7, 37, 15,
+	38,  0, 39, 16, 40,  8, 41, 17, 42,  4,
+	43, 18, 44, 19,
+]
+
+assert trace_marble (2,  0) == 45
+assert trace_marble (2,  1) ==  2
+assert trace_marble (2,  2) == 24
+assert trace_marble (2, 42) == 44
+assert trace_marble (2, 43) == 19
+
+assert trace_removed_marble 0 == 0
+assert trace_removed_marble 1 == 9
+assert trace_removed_marble 2 == 17
+assert trace_removed_marble 3 == 11
+assert trace_removed_marble 4 == 15
+assert trace_removed_marble 5 == 50
+assert trace_removed_marble 6 == 58
+
+for k in 1 .. n_brackets do
+{
+	ERR <== "\r" "Bracket: " k "/" n_brackets
+	
+	scores[ current_player ] += k * 23 + trace_removed_marble k
+	
+	current_player = (current_player + 1) % n_players
+}
+
+ERR <== "\r\n"
+
+print (scores per Math.max)
