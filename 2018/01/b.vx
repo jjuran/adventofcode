@@ -8,6 +8,8 @@ const data = (load input_path).lines() map int
 
 var seen = vector[u8] (x"00" * 2^20)
 
+seen[ 0 + 2^19 ] = 1
+
 var freq = 0
 
 var n = 0
