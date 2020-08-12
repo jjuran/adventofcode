@@ -13,8 +13,6 @@ def reactive (a, b)
 
 def find_next_reaction (p)
 {
-	assert bool p
-	
 	var c = *p++
 	
 	while p do
@@ -35,7 +33,7 @@ def reaction (s)
 	var p = begin s
 	var r = ""
 	
-	while var next = find_next_reaction p do
+	while p and (var next = find_next_reaction p) do
 	{
 		var q = next + 2
 		
