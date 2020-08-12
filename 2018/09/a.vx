@@ -14,92 +14,101 @@ var p = begin data
 
 const n_players, const nth_marble = p += format
 
-def same-endian-fields (T)
-{
-	const fields = type: T,
-	               encode: T.encode-native,
-	               decode: T.decode-native,
-	               size: T.size
-	
-	return fields
-}
-
-def native (T)
-{
-	const fields = order: native,
-	               same-endian-fields T
-	
-	return record fields
-}
-
 var scores = [0 (*) n_players]
 
-const Vector = vector[ native u32 ]
+const n_brackets = nth_marble div 23
 
-var circle = Vector x"00000000"
-
-var current_marble = 0
 var current_player = 0
 
-var next_23 = 23
+const skip_delta = 22 - 6           # 16
+const divisor    = 21 + skip_delta  # 37
+const margin     = 8
 
-def clockwise (n)
+def trace_marble (k, pos)
 {
-	return (current_marble + n) mod circle.length
-}
-
-def insert_at (v, i)
-{
-	i *= u32.size
+	var n = 2 + k * 21
 	
-	var tmp = Vector x"00000000"
-	
-	tmp[ 0 ] = v
-	
-	var bytes = packed circle
-	
-	bytes = bytes[ 0 -> i ] (packed tmp) bytes[ i -> bytes.size ]
-	
-	circle = Vector bytes
-}
-
-def remove_at (i)
-{
-	const v = circle[ i ]
-	
-	i *= u32.size
-	
-	var bytes = packed circle
-	
-	bytes = bytes[ 0 -> i ] bytes[ i + 4 -> bytes.size ]
-	
-	circle = Vector bytes
-	
-	return v
-}
-
-for m in 1 .. nth_marble do
-{
-	const i
-	
-	if m == next_23 then
+	while k > 0 do
 	{
-		i = clockwise -7
+		const skips = (n - margin - pos) div divisor
 		
-		scores[ current_player ] += m + remove_at i
+		if pos > 0 and skips > 0 then
+		{
+			pos += skips * skip_delta
+			k   -= skips
+			
+			n = 2 + k * 21
+		}
 		
-		next_23 += 23
-	}
-	else
-	{
-		i = clockwise 2
+		for i in 1 .. 22 do
+		{
+			--n
+			
+			if pos == 0 then
+			{
+				return n + 2 * (k - 1)  # Found it
+			}
+			
+			if ++pos >= n then
+			{
+				pos -= n
+			}
+		}
 		
-		insert_at( m, i )
+		pos = (pos - 6) mod ++n
+		
+		--k
 	}
 	
-	current_marble = i
+	return 0
+}
+
+def trace_removed_marble (k)
+{
+	return trace_marble (k, k * 21 - 5)
+}
+
+assert trace_marble (0,  0) == 0
+
+assert 0 .. 1 + 21 map (trace_marble % 1) ==
+[
+	22, 11,  1, 12,  6, 13,  3, 14,  7, 15,
+	 0, 16,  8, 17,  4, 18,  9, 19,  2, 20,
+	10, 21,  5,
+]
+
+assert 0 .. 1 + 42 map (trace_marble % 2) ==
+[
+	45,  2, 24, 20, 25, 10, 26, 21, 27,  5,
+	28, 22, 29, 11, 30,  1, 31, 12, 32,  6,
+	33, 13, 34,  3, 35, 14, 36,  7, 37, 15,
+	38,  0, 39, 16, 40,  8, 41, 17, 42,  4,
+	43, 18, 44, 19,
+]
+
+assert trace_marble (2,  0) == 45
+assert trace_marble (2,  1) ==  2
+assert trace_marble (2,  2) == 24
+assert trace_marble (2, 42) == 44
+assert trace_marble (2, 43) == 19
+
+assert trace_removed_marble 0 == 0
+assert trace_removed_marble 1 == 9
+assert trace_removed_marble 2 == 17
+assert trace_removed_marble 3 == 11
+assert trace_removed_marble 4 == 15
+assert trace_removed_marble 5 == 50
+assert trace_removed_marble 6 == 58
+
+for k in 1 .. n_brackets do
+{
+	ERR <== "\r" "Bracket: " k "/" n_brackets
+	
+	scores[ current_player ] += k * 23 + trace_removed_marble k
 	
 	current_player = (current_player + 1) % n_players
 }
+
+ERR <== "\r\n"
 
 print (scores per Math.max)
