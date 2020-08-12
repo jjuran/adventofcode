@@ -1,0 +1,76 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const N = data.length
+
+var RF = [0, 0]  # register file
+var IP = 0       # instruction pointer
+
+def TPL (reg)
+{
+	RF[ reg ] *= 3
+}
+
+def HLF (reg)
+{
+	RF[ reg ] = RF[ reg ] div 2
+}
+
+def INC (reg)
+{
+	++RF[ reg ]
+}
+
+def JMP (offset)
+{
+	IP += offset - 1
+}
+
+def JIE (reg, offset)
+{
+	if RF[ reg ] % 2 == 0 then
+	{
+		IP += offset - 1
+	}
+}
+
+def JIO (reg, offset)
+{
+	if RF[ reg ] == 1 then
+	{
+		IP += offset - 1
+	}
+}
+
+const digit = '0' .. '9'
+
+const num = ['+', digit+ => int] | (['-', digit+] => int)
+const reg = 'a' .. 'b' => {u8 *_ - u8 'a'}
+
+const hlf = ["hlf ", reg]            => HLF
+const tpl = ["tpl ", reg]            => TPL
+const inc = ["inc ", reg]            => INC
+const jmp = ["jmp ",            num] => JMP
+const jie = ["jie ", reg, ", ", num] => JIE
+const jio = ["jio ", reg, ", ", num] => JIO
+
+const illegal = ~byteclass()* => { throw "Illegal instruction: " _ }
+
+const grammar = hlf | tpl | inc | jmp | jie | jio | illegal
+
+var A = 0
+var B = 0
+
+while IP < N do
+{
+	var p = begin data[ IP++ ]
+	
+	p += grammar
+}
+
+print RF[ 1 ]  # print the value in register `b`
