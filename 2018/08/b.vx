@@ -35,6 +35,7 @@ def tree_value (p)
 		value = metadata ver { v and v <= n_children }
 		                 map { children[ v - 1 ] }
 		                 per Math.sum
+		                 or 0
 	}
 	else
 	{
