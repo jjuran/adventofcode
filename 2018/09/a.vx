@@ -1,0 +1,105 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const digit = '0' .. '9'
+const number = digit+ => int
+const format = [number, " players; last marble is worth ", number]
+
+var p = begin data
+
+const n_players, const nth_marble = p += format
+
+def same-endian-fields (T)
+{
+	const fields = type: T,
+	               encode: T.encode-native,
+	               decode: T.decode-native,
+	               size: T.size
+	
+	return fields
+}
+
+def native (T)
+{
+	const fields = order: native,
+	               same-endian-fields T
+	
+	return record fields
+}
+
+var scores = [0 (*) n_players]
+
+const Vector = vector[ native u32 ]
+
+var circle = Vector x"00000000"
+
+var current_marble = 0
+var current_player = 0
+
+var next_23 = 23
+
+def clockwise (n)
+{
+	return (current_marble + n) mod circle.length
+}
+
+def insert_at (v, i)
+{
+	i *= u32.size
+	
+	var tmp = Vector x"00000000"
+	
+	tmp[ 0 ] = v
+	
+	var bytes = packed circle
+	
+	bytes = bytes[ 0 -> i ] (packed tmp) bytes[ i -> bytes.size ]
+	
+	circle = Vector bytes
+}
+
+def remove_at (i)
+{
+	const v = circle[ i ]
+	
+	i *= u32.size
+	
+	var bytes = packed circle
+	
+	bytes = bytes[ 0 -> i ] bytes[ i + 4 -> bytes.size ]
+	
+	circle = Vector bytes
+	
+	return v
+}
+
+for m in 1 .. nth_marble do
+{
+	const i
+	
+	if m == next_23 then
+	{
+		i = clockwise -7
+		
+		scores[ current_player ] += m + remove_at i
+		
+		next_23 += 23
+	}
+	else
+	{
+		i = clockwise 2
+		
+		insert_at( m, i )
+	}
+	
+	current_marble = i
+	
+	current_player = (current_player + 1) % n_players
+}
+
+print (scores per Math.max)
