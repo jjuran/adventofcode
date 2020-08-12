@@ -2,7 +2,9 @@
 
 const bindir = dirname realpath argv[ 0 ]
 
-const data = Iter.sorted (load bindir "/4.txt").lines()
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = Iter.sorted (load input_path).lines()
 
 var guards = int^[]
 var sleeps = []
@@ -35,11 +37,6 @@ for row in data do
 	}
 }
 
-def total_sleep (guard)
-{
-	return (sleeps ver {v.key == guard} map {v.value[1] - v.value[0]} per Math.sum) or 0
-}
-
 def sleepiest_minute (guard)
 {
 	const guard_sleeps = sleeps ver {v.key == guard} map {v.value}
@@ -54,11 +51,14 @@ def sleepiest_minute (guard)
 		}
 	}
 	
-	return ((Iter.max (0 -> 60 map { v => minutes[ v ] }) via {v.value})).key
+	return (Iter.max (0 -> 60 map { v => minutes[ v ] }) via {v.value})
 }
 
-const total_sleeps = guards.keys map { v => total_sleep v }
+const frequent_sleeps = guards.keys map { v => sleepiest_minute v }
 
-const sleeper = (Iter.max total_sleeps via {v.value}).key
+const maximum = Iter.max frequent_sleeps via {v.value.value}
 
-print (sleeper * sleepiest_minute sleeper)
+const sleeper = maximum.key
+const minute  = maximum.value.key
+
+print (sleeper * minute)

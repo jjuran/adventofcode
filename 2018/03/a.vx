@@ -2,7 +2,9 @@
 
 const bindir = dirname realpath argv[ 0 ]
 
-const data = (load bindir "/3.txt").lines()
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
 
 var fabric = vector[u8, 1000^2]()
 
@@ -41,39 +43,6 @@ for row in data do
 	}
 }
 
-var id
+const overlapped = [*fabric] ver {v > 1}
 
-for row2 in data do
-{
-	const p = (begin row2).find '@' + 2
-	
-	const claim = p.rest
-	
-	var q = (begin claim).find ':'
-	
-	const offset = q.past
-	
-	q += 2
-	
-	const area = q.rest
-	
-	const x, const y = *([offset / ','] map int)
-	const w, const h = *([area   / 'x'] map int)
-	
-	const indices = rect_indices( x, y, w, h )
-	
-	id = (p + -3).past
-	
-	for i in indices do
-	{
-		if fabric[ i ] > 1 then
-		{
-			id = null
-			break
-		}
-	}
-	
-	if id then {break}
-}
-
-print substr( id, 1 )
+print overlapped.length
