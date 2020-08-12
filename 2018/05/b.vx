@@ -42,7 +42,7 @@ def reaction (s)
 	{
 		var q = next + 2
 		
-		while next > p and (reactive( *--next, *q ) or ++next and false) do
+		while q and next > p and (reactive( *--next, *q ) or (++next and 0)) do
 		{
 			++q
 		}
