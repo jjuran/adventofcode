@@ -24,18 +24,16 @@ const ingredients = p += ingredlist
 
 const n_properties = 4
 const n_ingredients = ingredients.length
+const v_ingredients = ingredients.values
+const i_ingredients = 0 -> n_ingredients
 
 assert n_ingredients == 4
 
 def calc_property (recipe, i)
 {
-	const values = ingredients.values
-	
-	const n = n_ingredients
-	
-	const total = 0 -> n map { recipe[ v ] * values[ v ][ i ] } per Math.sum
-	
-	return if total > 0 then {total} else {0}
+	return Math.max( i_ingredients map { recipe[ v ] * v_ingredients[ v ][ i ] }
+	                               per Math.sum,
+	                 0 )
 }
 
 def cookie_score (recipe)
