@@ -1,0 +1,183 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+def parse_coordinates (p)
+{
+	assert *p++ == '<'
+	
+	while *p == ' ' do {++p}
+	
+	var q = p.find ','
+	
+	const x = int (q - p)
+	
+	p = q + ", ".length
+	
+	while *p == ' ' do {++p}
+	
+	q = p.find '>'
+	
+	const y = int (q - p)
+	
+	return q + 1, x, y
+}
+
+def parse (s)
+{
+	var p = begin s
+	
+	p += "position=".length
+	
+	p, const x, const y = parse_coordinates p
+	
+	p += " velocity=".length
+	
+	p, const dx, const dy = parse_coordinates p
+	
+	return [x, y, dx, dy]
+}
+
+def project (t, particle)
+{
+	var x, var y, const dx, const dy = *particle
+	
+	x += dx * t
+	y += dy * t
+	
+	return [x, y]
+}
+
+def bounding_box (particles)
+{
+	const min_x = particles map { v[ 0 ] } per Math.min
+	const min_y = particles map { v[ 1 ] } per Math.min
+	
+	const max_x = particles map { v[ 0 ] } per Math.max
+	const max_y = particles map { v[ 1 ] } per Math.max
+	
+	return [min_x, min_y, max_x, max_y]
+}
+
+def center_of_gravity (particles)
+{
+	const x = (particles map { v[ 0 ] } per Math.sum) div particles.length
+	const y = (particles map { v[ 1 ] } per Math.sum) div particles.length
+	
+	return [x, y]
+}
+
+def mass_vector (particles)
+{
+	const dx = particles map { v[ 2 ] } per Math.sum
+	const dy = particles map { v[ 3 ] } per Math.sum
+	
+	return [dx, dy]
+}
+
+const particles = data map parse
+
+def clustering_shift (t)
+{
+	const box0 = bounding_box (particles map project %   t)
+	const box1 = bounding_box (particles map project % ++t)
+	
+	const w0 = box0[ 2 ] - box0[ 0 ]
+	const w1 = box1[ 2 ] - box1[ 0 ]
+	const h0 = box0[ 3 ] - box0[ 1 ]
+	const h1 = box1[ 3 ] - box1[ 1 ]
+	
+	const shifts =
+	[
+		w1 <=> w0,
+		h1 <=> h0,
+	]
+	
+	#warn "Shift: " (rep box0) " vs. " rep box1
+	
+	if Math.max *shifts == Math.min *shifts then
+	{
+		return shifts[ 0 ]
+	}
+	
+	return 0
+}
+
+const mvec = mass_vector particles
+
+var T = 0
+
+var min_t = 0
+
+while clustering_shift T < 0 do
+{
+	min_t = T
+	
+	ERR <== "\r" "T = " T
+	
+	const points = particles map project % T
+	
+	const cog = center_of_gravity points
+	
+	const dt_x = cog[ 0 ] * points.length div -mvec[ 0 ]
+	const dt_y = cog[ 1 ] * points.length div -mvec[ 1 ]
+	
+	const dt = Math.min (abs dt_x, abs dt_y) div 2
+	
+	if dt == 0 then {break}
+	
+	T += dt
+}
+
+var inc = min_t
+
+while inc > 0 do
+{
+	T = min_t
+	
+	while clustering_shift T < 0 do
+	{
+		min_t = T
+		
+		ERR <== "\r" "T = " T
+		
+		T += inc
+	}
+	
+	inc = inc div 2
+}
+
+warn "\r" "T = " T
+
+const points = particles map project % T
+
+const min_x = Iter.min (points map {v[ 0 ]})
+const max_x = Iter.max (points map {v[ 0 ]})
+const min_y = Iter.min (points map {v[ 1 ]})
+const max_y = Iter.max (points map {v[ 1 ]})
+
+assert min_x >= 0
+assert min_y >= 0
+
+const width  = max_x + 1 - min_x
+const height = max_y + 1 - min_y
+
+const npx = width * height
+
+var grid = " " * npx
+
+for point in points do
+{
+	var x, var y = *point
+	
+	x -= min_x
+	y -= min_y
+	
+	grid[ x + width * y ] = '*'
+}
+
+print "\n    ".join( "", grid / height, "" )
