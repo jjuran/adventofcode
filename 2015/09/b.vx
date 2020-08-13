@@ -1,0 +1,38 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+var cities = str^[]
+
+#var routes = str[]^[]
+var routes = str^[]
+
+for route in data do
+{
+	const words = [route / ' ']
+	
+	var src, var dst, const distance = *words[[0, 2, 4]]
+	
+	if src > dst then
+	{
+		src <-> dst
+	}
+	
+	cities[ src ] = true
+	cities[ dst ] = true
+	
+	routes[ src " <-> " dst ] = distance
+}
+
+for x in routes do
+{
+	#warn x.key ": " x.value
+}
+
+const distance = [105, 125, 107, 136, 144, 149, 143] per Math.sum
+
+print distance

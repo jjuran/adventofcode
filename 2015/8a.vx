@@ -1,9 +1,0 @@
-#!/usr/bin/env vx
-
-const bindir = dirname realpath argv[ 0 ]
-
-const data = (load bindir "/8.txt").lines()
-
-const total = data map { v.length - (eval v).length } per Math.sum
-
-print total

@@ -1,0 +1,83 @@
+#!/usr/bin/env vx
+
+const sample-data = "211"
+
+#const data = sample-data
+const data = "1113122113"
+
+var memo = str^[]
+
+def split
+{
+	const s (str) = _
+	
+	var result = []
+	
+	var p = begin s
+	
+	var q = p
+	
+	while '2' in p.rest do
+	{
+		while *p++ != '2' do {}
+		
+		const rest = p.rest
+		
+		if substr( rest, 0, 2 ) == "31"
+		or substr( rest, 0, 3 ) in ["131", "132"]
+		or substr( rest, 0, 4 ) == "1113" then
+		{
+			result <-- p - q
+			
+			q = p
+		}
+	}
+	
+	result <-- q.rest
+	
+	#warn rep result
+	
+	return result
+}
+
+def look-and-say
+{
+	const s (str) = _
+	
+	if s in memo then
+	{
+		return *memo[ s ]
+	}
+	
+	var result = ""
+	
+	var p = begin s
+	
+	while p do
+	{
+		const q = p
+		const c = *p++
+		
+		while p and *p == c do
+		{
+			++p
+		}
+		
+		result = str( result, (p - q).length, c )
+	}
+	
+	return *(memo[ s ] = split result)
+}
+
+var x = [data]
+
+for i in 1 .. 40 do
+{
+	x = x map look-and-say
+	
+	#warn rep x
+	
+	warn i ": " .(str x).length
+}
+
+print .(str x).length

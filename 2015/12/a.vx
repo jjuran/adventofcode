@@ -1,0 +1,36 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()[ 0 ]
+
+const ev = eval data
+
+var sum = 0
+
+def descend
+{
+	if _ isa int then
+	{
+		sum += _
+	}
+	else if _ isa array then
+	{
+		for x in _ do
+		{
+			descend x
+		}
+	}
+	else if _ isa function then
+	{
+		const table = str^[ _() ]
+		
+		descend table.values
+	}
+}
+
+descend ev
+
+print sum

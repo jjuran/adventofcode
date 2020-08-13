@@ -1,0 +1,49 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()[ 0 ]
+
+const sample-data = "^v^v^v^v^v"
+
+const moves = byte^
+[
+	'^': [0, 1],
+	'v': [0, -1],
+	'>': [1, 0],
+	'<': [-1, 0],
+]
+
+var one = [0, 0]
+var two = [0, 0]
+
+var visited = str^[ "0,0": true ]
+
+const key = join % ","
+
+var total = 1
+
+for m in data do
+{
+	const delta = moves[ m ]
+	
+	const dx, const dy = *delta
+	
+	one[ 0 ] += dx
+	one[ 1 ] += dy
+	
+	const k = key .*one
+	
+	if not k in visited then
+	{
+		++total
+		
+		visited[ k ] = true
+	}
+	
+	one <-> two
+}
+
+print total

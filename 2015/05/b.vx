@@ -1,0 +1,46 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const sample-data = ["aaa"]
+
+def nice
+{
+	const s = _
+	
+	var found = false
+	
+	for i in 2 -> s.length do
+	{
+		if s[ i - 2 ] == s[ i ] then
+		{
+			found = true
+			break
+		}
+	}
+	
+	if not found then {return false}
+	
+	for j in 0 -> s.length - 3 do
+	{
+		const pair = s[ j -> j + 2 ]
+		
+		for k in j + 2 -> s.length - 1 do
+		{
+			if s[ k -> k + 2 ] == pair then
+			{
+				return true
+			}
+		}
+	}
+	
+	return false
+}
+
+const total = (data ver nice).length
+
+print total

@@ -1,0 +1,112 @@
+#!/usr/bin/env vx
+
+const data = "hxbxwxba"
+
+def two-pair
+{
+	const word = _
+	
+	var first-pair = '\0'
+	var last-char  = '\0'
+	
+	for c in word do
+	{
+		const same = c == last-char
+		
+		last-char = c
+		
+		if same then
+		{
+			if first-pair and first-pair != c then
+			{
+				return true
+			}
+			
+			first-pair = c
+		}
+	}
+	
+	return false
+}
+
+def straight
+{
+	const word = _
+	
+	var ups = 0
+	
+	var last-char = '\0'
+	
+	for c in word do
+	{
+		if u8 c - 1 == u8 last-char then
+		{
+			if ++ups == 2 then
+			{
+				return true
+			}
+		}
+		else
+		{
+			ups = 0
+		}
+		
+		last-char = c
+	}
+	
+	return false
+}
+
+def secure
+{
+	const password = _
+	
+	for c in "iol" do
+	{
+		if c in password then
+		{
+			return false
+		}
+	}
+	
+	return straight password and two-pair password
+}
+
+def increment
+{
+	var word = _
+	
+	var i = word.length
+	
+	while word[ --i ] == 'z' do
+	{
+		word[ i ] = 'a'
+	}
+	
+	word[ i ] = byte (u8 word[ i ] + 1)
+	
+	return word
+}
+
+var password = data
+
+def next
+{
+	var password = _
+	
+	do
+	{
+		OUT <== "\r" password
+		
+		password = increment password
+	}
+	while not secure password
+	
+	return password
+}
+
+password = next^2 password
+
+OUT <== "\r"
+
+print password
