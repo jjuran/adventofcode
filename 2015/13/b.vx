@@ -1,6 +1,11 @@
 #!/usr/bin/env vx
 
 const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const permute = (import "permute").permute
 
 const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
@@ -49,37 +54,22 @@ for A in names.keys do
 }
 
 const first = ""
-
-def merge (a, b)
-{
-	return [ *a, *b ]
-}
-
-def permutations (data: str[])
-{
-	const n = data.length
-	
-	if n == 1 then
-	{
-		const name = *data
-		
-		return [ name => subscores[ first "-" name ] ]
-	}
-	
-	return 0 -> n map
-	{
-		const i = v
-		
-		const target = data[ i ]
-		const subset (str[]) = merge( data[ 0 -> i ], data[ i + 1 -> n ] )
-		const permus (T[])   = permutations( subset )
-		
-		*(permus map { target => v.value + subscores[ v.key "-" target ] })  \
-	}
-}
-
 const count = names.length
 
-const subset = permutations names.keys[ 0 -> count ]
+def score (order)
+{
+	const subtotal = subscores[ first "-" order[ 0 ] ]
+	               + subscores[ first "-" order[ count - 2 ] ]
+	
+	order <-- first
+	
+	order = [first, *order]
+	
+	const keys = 0 -> count map { "-".join *order[[v, v + 1]] }
+	
+	return keys map { subscores[ v ] } per Math.sum
+}
 
-print Iter.max (subset map { v.value + subscores[ v.key "-" first ] })
+const scores = permute names.keys[ 0 -> count ] map score
+
+print Iter.max scores
