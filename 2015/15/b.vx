@@ -1,0 +1,79 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+def mapify (k, v) { k => v }
+
+const alpha = 'A' .. 'Z' | 'a' .. 'z'
+const digit = '0' .. '9'
+const number = ['-'?, digit+] => int
+const word = alpha+
+
+const property = [ word, " ", number ]
+const proplist = [ property, [", ", property]* ]
+const ingredient = [ word => str, ": ", proplist => { [_] } ] => mapify
+const ingredlist = [ingredient, '\n']+ => { str^[_] }
+
+var p = begin data
+
+const ingredients = p += ingredlist
+
+const n_properties = 4
+const n_ingredients = ingredients.length
+
+assert n_ingredients == 4
+
+def calc_property (recipe, i)
+{
+	const values = ingredients.values
+	
+	const n = n_ingredients
+	
+	const total = 0 -> n map { recipe[ v ] * values[ v ][ i ] } per Math.sum
+	
+	return if total > 0 then {total} else {0}
+}
+
+def cookie_score (recipe)
+{
+	if calc_property( recipe, 4 ) != 500 then
+	{
+		return 0
+	}
+	
+	return 0 -> n_properties map calc_property % recipe per Math.product
+}
+
+var best_recipe = [0 (*) n_ingredients]
+var best_score = 0
+
+for i in 1 -> 100 - 1 - 1 - 1 do
+{
+	OUT <== "\r" "i = " i ", best is " rep(best_recipe) ": " best_score "  "
+	
+	for j in 1 -> 100 - i - 1 - 1 do
+	{
+		for k in 1 -> 100 - i - j - 1 do
+		{
+			const l = 100 - i - j - k
+			
+			const recipe = [i, j, k, l]
+			
+			const score = cookie_score recipe
+			
+			if score > best_score then
+			{
+				best_score  = score
+				best_recipe = recipe
+			}
+		}
+	}
+}
+
+OUT <== "\r" (" " * "i = 97, best is [12, 34, 56, 78]: 12345678".length) "\r"
+
+print rep(best_recipe) ": " best_score
