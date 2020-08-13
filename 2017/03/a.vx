@@ -1,7 +1,5 @@
 #!/usr/bin/env vx
 
-const bindir = dirname realpath argv[ 0 ]
-
 const data = 361527
 
 def steps

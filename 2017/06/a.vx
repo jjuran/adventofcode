@@ -2,13 +2,15 @@
 
 const bindir = dirname realpath argv[ 0 ]
 
-var data = (load bindir "/6.txt")
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+var data = (load input_path)
 
 translate( &data, "\t", "\n" )
 
 data = data.lines() map int
 
-#data = [0, 2, 7, 0]
+#var data = [0, 2, 7, 0]
 
 const n = data.length
 
@@ -31,19 +33,17 @@ def select
 
 var seen = str^[]
 
+#seen[ rep data ] = true
+
 var total = 0
 
 while true do
 {
 	const key = rep data
 	
-	if key in seen then
-	{
-		total -= seen[ key ]
-		break
-	}
+	if key in seen then {break}
 	
-	seen[ key ] = total
+	seen[ key ] = true
 	
 	++total
 	

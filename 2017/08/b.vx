@@ -2,7 +2,9 @@
 
 const bindir = dirname realpath argv[ 0 ]
 
-var data = (load bindir "/8.txt").lines()
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
 
 var _data =
 "b inc 5 if a > 1
@@ -39,6 +41,8 @@ def add
 	}
 }
 
+var maximum = 0
+
 for instruction in data do
 {
 	const reg,
@@ -59,7 +63,9 @@ for instruction in data do
 		}
 		
 		add( reg, arg )
+		
+		maximum = Math.max( maximum, registers[ reg ] )
 	}
 }
 
-print Iter.max registers.values
+print maximum

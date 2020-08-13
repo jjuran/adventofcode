@@ -7,7 +7,9 @@ const sample = "5 9 2 8
 3 8 6 5
 ".lines()
 
-const data = (load bindir "/2.txt").lines()
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
 
 var checksum = 0
 
