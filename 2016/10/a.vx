@@ -2,7 +2,9 @@
 
 const bindir = dirname realpath argv[ 0 ]
 
-const data = (load bindir "/10.txt").lines()
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
 
 var inputs = []
 
@@ -82,12 +84,16 @@ while doubles do
 	const low  = Math.min chips
 	const high = Math.max chips
 	
+	if [low, high] == [17, 61] then
+	{
+		print bot
+		break
+	}
+	
 	const gate = gates[ bot ]
 	
 	distribute( low,  gate[ 0 ] )
 	distribute( high, gate[ 1 ] )
 }
-
-print (outputs[ 0 .. 2 map str ] per Math.product)
 
 end.

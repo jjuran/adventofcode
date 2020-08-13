@@ -2,7 +2,9 @@
 
 const bindir = dirname realpath argv[ 0 ]
 
-const data = (load bindir "/6.txt").lines()
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
 
 const len = data[ 0 ].length
 
@@ -28,9 +30,9 @@ def most_frequent_in
 		histogram[ i ] = byte (u8 histogram[ i ] + 1)
 	}
 	
-	const max = histogram per Math.max
+	const min = histogram per Math.min
 	
-	const i = find( histogram, max )
+	const i = find( histogram, min )
 	
 	return byte (i + u8 'a')
 }
