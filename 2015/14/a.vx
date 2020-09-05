@@ -39,6 +39,6 @@ def race (v, d, r)
 	return distance
 }
 
-const furthest = stats map { race .*v.value } per Math.max
+const furthest = stats map { race *v.value } per Math.max
 
 print furthest 

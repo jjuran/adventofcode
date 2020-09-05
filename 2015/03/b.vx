@@ -34,7 +34,7 @@ for m in data do
 	one[ 0 ] += dx
 	one[ 1 ] += dy
 	
-	const k = key .*one
+	const k = key *one
 	
 	if not k in visited then
 	{

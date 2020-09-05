@@ -12,8 +12,8 @@ for line in data do
 {
 	const edges = [line / ' '] map {_ or ()} map int
 	
-	const sum = Math.sum .*edges
-	const max = Math.max .*edges
+	const sum = Math.sum *edges
+	const max = Math.max *edges
 	
 	if sum - max > max then
 	{

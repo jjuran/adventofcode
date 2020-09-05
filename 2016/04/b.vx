@@ -46,7 +46,7 @@ def checksum
 	return result
 }
 
-const abc = str .*('a' .. 'z')
+const abc = str *('a' .. 'z')
 
 const abc_2 = abc * 2
 

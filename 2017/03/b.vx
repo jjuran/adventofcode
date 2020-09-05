@@ -23,7 +23,7 @@ def adjacent-sum
 	{
 		const dx, const dy = *d
 		
-		const k = key .[x + dx, y + dy]
+		const k = key [x + dx, y + dy]
 		
 		if k in cells then {sum += cells[ k ]}
 	}
@@ -31,16 +31,11 @@ def adjacent-sum
 	return sum
 }
 
-def populate
-{
-	
-}
-
 def generate-path
 {
 	const yield = _
 	
-	yield .[0, 0]
+	yield [0, 0]
 	
 	var r = 0  # radius
 	var i = 0
@@ -55,22 +50,22 @@ def generate-path
 		
 		for N in 0 -> i do
 		{
-			yield .[x, ++y]
+			yield [x, ++y]
 		}
 		
 		for W in 0 -> i do
 		{
-			yield .[--x, y]
+			yield [--x, y]
 		}
 		
 		for S in 0 -> i do
 		{
-			yield .[x, --y]
+			yield [x, --y]
 		}
 		
 		for E in 0 -> i do
 		{
-			yield .[++x, y]
+			yield [++x, y]
 		}
 	}
 }

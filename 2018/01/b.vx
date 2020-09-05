@@ -22,8 +22,6 @@ while true do
 		
 		const i = freq + 2^19
 		
-		#warn rep (d, freq)
-		
 		if seen[ i ] then
 		{
 			print freq
@@ -32,6 +30,4 @@ while true do
 		
 		seen[ i ] = 1
 	}
-	
-	#print .++n "..."
 }
