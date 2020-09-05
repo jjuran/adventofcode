@@ -35,8 +35,6 @@ def split
 	
 	result <-- q.rest
 	
-	#warn rep result
-	
 	return result
 }
 
@@ -70,14 +68,15 @@ def look-and-say
 }
 
 var x = [data]
+var n
 
 for i in 1 .. 50 do
 {
 	x = x map look-and-say
 	
-	#warn rep x
+	n = (str x).length
 	
-	warn i ": " .(str x).length
+	warn i ": " n
 }
 
-print .(str x).length
+print n
