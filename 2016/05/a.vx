@@ -1,5 +1,12 @@
 #!/usr/bin/env vx
 
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
 const data = "ugkcyxxp"
 
 const n = 5
@@ -14,10 +21,12 @@ while password.length < 8 do
 	{
 		const output = hex md5 data suffix
 		
-		warn rep (data suffix, output)
+		display password "  " output "  " data suffix
 		
 		password = password output[ 5 ]
 	}
 }
+
+display ""
 
 print password
