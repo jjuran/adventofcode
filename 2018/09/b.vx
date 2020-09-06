@@ -107,7 +107,7 @@ assert trace_removed_marble 6 == 58
 
 for k in 1 .. n_brackets do
 {
-	display k "/" n_brackets
+	display^+(k % 64 == 0) k "/" n_brackets
 	
 	scores[ current_player ] += k * 23 + trace_removed_marble k
 	
