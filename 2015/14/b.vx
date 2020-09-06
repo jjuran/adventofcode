@@ -53,6 +53,6 @@ for t in 0 -> 2503 do
 	}
 }
 
-const most = points map { v.value } per Math.max
+const most = points map .value per Math.max
 
 print most 
