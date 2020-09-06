@@ -5,6 +5,7 @@ const libdir = bindir "/../../lib/"
 
 const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
 
+const display = (import "status") { OUT <== _ }
 const intcode = import "intcode"
 
 const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
@@ -44,15 +45,17 @@ machine.connect-input joystick
 
 var n_blocks = 0
 
+var score = 0
+
 while var tuple = thrice machine.run do
 {
 	const x, const y, const t = tuple
 	
 	if x < 0 then
 	{
-		const score = t
+		score = t
 		
-		OUT <== "\r" "Score: " score
+		display "Score: " score
 	}
 	else
 	{
@@ -68,9 +71,11 @@ while var tuple = thrice machine.run do
 		{
 			++n_blocks
 			
-			OUT <== "\r" n_blocks
+			display "" n_blocks
 		}
 	}
 }
 
-OUT <== "\n"
+display ""
+
+print score
