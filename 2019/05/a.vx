@@ -38,7 +38,7 @@ def run (input)
 		
 		if op == 4 then
 		{
-			print a
+			print^+(a != 0) a
 			continue
 		}
 		
