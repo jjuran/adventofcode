@@ -1,6 +1,11 @@
 #!/usr/bin/env vx
 
 const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
 
 const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
@@ -117,7 +122,7 @@ while clustering_shift T < 0 do
 {
 	min_t = T
 	
-	ERR <== "\r" "T = " T
+	display "T = " T
 	
 	const points = particles map project % T
 	
@@ -143,7 +148,7 @@ while inc > 0 do
 	{
 		min_t = T
 		
-		ERR <== "\r" "T = " T
+		display "T = " T
 		
 		T += inc
 	}
@@ -151,7 +156,9 @@ while inc > 0 do
 	inc = inc div 2
 }
 
-warn "\r" "T = " T
+display ""
+
+print T
 
 const points = particles map project % T
 
