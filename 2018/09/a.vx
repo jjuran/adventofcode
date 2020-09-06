@@ -1,6 +1,11 @@
 #!/usr/bin/env vx
 
 const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
 
 const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
@@ -102,13 +107,13 @@ assert trace_removed_marble 6 == 58
 
 for k in 1 .. n_brackets do
 {
-	ERR <== "\r" "Bracket: " k "/" n_brackets
+	display k "/" n_brackets
 	
 	scores[ current_player ] += k * 23 + trace_removed_marble k
 	
 	current_player = (current_player + 1) % n_players
 }
 
-ERR <== "\r\n"
+display ""
 
 print (scores per Math.max)
