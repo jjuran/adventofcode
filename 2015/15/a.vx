@@ -74,4 +74,4 @@ for i in 1 -> 100 - 1 - 1 - 1 do
 
 display ""
 
-print rep(best_recipe) ": " best_score
+print best_score
