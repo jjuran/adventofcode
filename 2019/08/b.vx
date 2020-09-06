@@ -33,4 +33,4 @@ for i in 0 -> npx do
 
 translate( &composed, "01", " X" )
 
-print (["", composed / h] map { "    " v "\n" })
+print "\n" (["", composed / h] map { "    " v "\n" })

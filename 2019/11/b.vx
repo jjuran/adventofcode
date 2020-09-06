@@ -84,4 +84,4 @@ for panel in painted_panels do
 
 translate( &image, "01", " X" )
 
-print "\n    ".join ("", image / height, "")
+print "\n    ".join ("\n", image / height, "")
