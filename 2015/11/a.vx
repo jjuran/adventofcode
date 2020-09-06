@@ -9,6 +9,18 @@ const display = (import "status") { OUT <== _ }
 
 const data = "hxbxwxba"
 
+var report = null
+
+const throttle = thread
+{
+	while true do
+	{
+		report = display
+		
+		sleep 0.05  # 20fps
+	}
+}
+
 def two-pair
 {
 	const word = _
@@ -95,7 +107,8 @@ var password = data
 
 while not secure password do
 {
-	display password
+	report password
+	report = null
 	
 	password = increment password
 }
@@ -103,3 +116,5 @@ while not secure password do
 display ""
 
 print password
+
+exit 0
