@@ -5,6 +5,7 @@ const libdir = bindir "/../../lib/"
 
 const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
 
+const display = (import "status") { OUT <== _ }
 const intcode = import "intcode"
 
 const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
@@ -138,7 +139,7 @@ while true do
 	
 	if output != 0 then
 	{
-		OUT <== "\r" "Steps: " ++n_steps
+		display "Steps: " ++n_steps
 		
 		if not key in distances then
 		{
@@ -161,7 +162,7 @@ while true do
 
 const oxypos = X, Y
 
-print "\r" "Oxygen system at " rep oxypos
+display "Oxygen system at " rep oxypos
 
 while dir = next_dir() do
 {
@@ -175,8 +176,6 @@ while dir = next_dir() do
 	
 	if output != 0 then
 	{
-		OUT <== "\r" "Steps: " ++n_steps
-		
 		if not key in distances then
 		{
 			distances[ key ] = distances[ X "," Y ] + 1
@@ -191,7 +190,7 @@ while dir = next_dir() do
 	}
 }
 
-print "\r" "Pumping oxygen..."
+display "Pumping oxygen..."
 
 floorplan[ ",".join oxypos ] = O2sys
 
@@ -246,4 +245,6 @@ while true do
 	oxyfills = newfills
 }
 
-print "Completed in " timer " minutes."
+display ""
+
+print timer

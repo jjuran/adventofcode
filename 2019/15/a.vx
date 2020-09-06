@@ -5,6 +5,7 @@ const libdir = bindir "/../../lib/"
 
 const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
 
+const display = (import "status") { OUT <== _ }
 const intcode = import "intcode"
 
 const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
@@ -101,7 +102,7 @@ for output in receiver (machine.run % input) do
 	
 	if output != 0 then
 	{
-		OUT <== "\r" "Steps: " ++n_steps
+		display "Steps: " ++n_steps
 		
 		if not key in distances then
 		{
@@ -117,4 +118,6 @@ for output in receiver (machine.run % input) do
 	}
 }
 
-print "\r" "Distance: " (distances[ X "," Y ] + 1)
+display ""
+
+print (distances[ X "," Y ] + 1)
