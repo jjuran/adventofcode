@@ -1,6 +1,11 @@
 #!/usr/bin/env vx -Z
 
 const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
 
 const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
@@ -71,7 +76,7 @@ def count_asteroids( grid, index )
 var max_count = 0
 var max_index = "-"
 
-OUT <== "Max: [" max_index "] " max_count
+display "Max: [" max_index "] " max_count
 
 for i in 0 -> grid.length do
 {
@@ -83,17 +88,14 @@ for i in 0 -> grid.length do
 		max_index = i
 	}
 	
-	OUT <== "\r" "Max: [" max_index "] " max_count " | [" i "] " "   "
-	OUT <== "\r" "Max: [" max_index "] " max_count " | [" i "] " count
+	display "Max: [" max_index "] " max_count " | [" i "] " count
 }
 
-OUT <== "\r" "Max: [" max_index "] " max_count (" " * " | [123] 123".length)
-OUT <== "\n"
+display ""
 
 const x = max_index mod width
 const y = max_index div width
 
-print "# " rep (x, y)
 print max_count
 
 rewrite bindir "/10-pipe.txt" <== rep (x, y), "\n"
