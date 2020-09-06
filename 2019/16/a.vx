@@ -1,6 +1,11 @@
 #!/usr/bin/env vx
 
 const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
 
 const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
@@ -74,13 +79,12 @@ def fft (signal)
 
 for i in 0 -> 100 do
 {
-	OUT <== "\r" i
+	display "" i
 	
 	signal = fft signal
 }
 
-OUT <== "\r" "    "
-OUT <== "\n"
+display ""
 
 const output = signal[ 0 -> 8 ]
 
