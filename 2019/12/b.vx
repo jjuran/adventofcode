@@ -5,6 +5,8 @@ const libdir = bindir "/../../lib/"
 
 const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
 
+const display = (import "status") { OUT <== _ }
+
 const sieve-of-eratosthenes = import "sieve-of-eratosthenes"
 
 const lcm = (import "lcm").with sieve-of-eratosthenes
@@ -81,20 +83,22 @@ def find_period (i)
 		
 		if u8 steps == 0 then
 		{
-			OUT <== "\r" axis steps
+			display axis steps
 		}
 	}
 	while d.step()
 	
-	OUT <== "\r"
-	
-	print "Axis " axes[ i ] " has repeated at step " steps
+	display ""
 	
 	return steps
 }
 
 const cycles = 0 -> 3 map find_period
 
-print rep cycles
+display rep cycles
 
-print lcm cycles
+const result = lcm cycles
+
+display ""
+
+print result
