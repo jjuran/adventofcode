@@ -64,18 +64,8 @@ def straight
 	return false
 }
 
-def secure
+def secure (password)
 {
-	const password = _
-	
-	for c in "iol" do
-	{
-		if c in password then
-		{
-			return false
-		}
-	}
-	
 	return straight password and two-pair password
 }
 
@@ -88,7 +78,15 @@ def increment (word)
 		word[ i ] = 'a'
 	}
 	
-	word[ i ] = byte (u8 word[ i ] + 1)
+	var c = word[ i ]
+	
+	do
+	{
+		c = byte (u8 c + 1)
+	}
+	while c in "iol"
+	
+	word[ i ] = c
 	
 	return word
 }
