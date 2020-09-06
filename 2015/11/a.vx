@@ -1,5 +1,12 @@
 #!/usr/bin/env vx
 
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
 const data = "hxbxwxba"
 
 def two-pair
@@ -72,10 +79,8 @@ def secure
 	return straight password and two-pair password
 }
 
-def increment
+def increment (word)
 {
-	var word = _
-	
 	var i = word.length
 	
 	while word[ --i ] == 'z' do
@@ -92,11 +97,11 @@ var password = data
 
 while not secure password do
 {
-	OUT <== "\r" password
+	display password
 	
 	password = increment password
 }
 
-OUT <== "\r"
+display ""
 
 print password

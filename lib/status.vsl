@@ -1,0 +1,17 @@
+export
+def status (output)
+{
+	var displayed = ""
+	
+	def display (text)
+	{
+		const back = "\b" * displayed.length
+		const clear = "\x1b[K"
+		
+		output back clear text
+		
+		displayed = text
+	}
+	
+	return display
+}

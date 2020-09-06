@@ -1,6 +1,11 @@
 #!/usr/bin/env vx
 
 const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
 
 const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
@@ -89,7 +94,7 @@ for step in data do
 	
 	const mask = make-mask( x0, x1 + 1 )
 	
-	OUT <== "%s/" n "\r" % ++ii
+	display (++ii "/" n)
 	
 	for i in y0 .. y1 do
 	{
@@ -97,7 +102,7 @@ for step in data do
 	}
 }
 
-OUT <== (" " * ((str n).length * 2 + 2)) "\r"
+display ""
 
 var total = 0
 

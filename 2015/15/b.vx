@@ -1,6 +1,11 @@
 #!/usr/bin/env vx
 
 const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
 
 const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
@@ -51,7 +56,7 @@ var best_score = 0
 
 for i in 1 -> 100 - 1 - 1 - 1 do
 {
-	OUT <== "\r" "i = " i ", best is " rep(best_recipe) ": " best_score "  "
+	display ("i = " i ", best is " rep(best_recipe) ": " best_score)
 	
 	for j in 1 -> 100 - i - 1 - 1 do
 	{
@@ -72,6 +77,6 @@ for i in 1 -> 100 - 1 - 1 - 1 do
 	}
 }
 
-OUT <== "\r" (" " * "i = 97, best is [12, 34, 56, 78]: 12345678".length) "\r"
+display ""
 
 print rep(best_recipe) ": " best_score

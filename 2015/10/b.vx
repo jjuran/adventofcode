@@ -1,5 +1,12 @@
 #!/usr/bin/env vx
 
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
 const sample-data = "211"
 
 #const data = sample-data
@@ -76,7 +83,9 @@ for i in 1 .. 50 do
 	
 	n = (str x).length
 	
-	warn i ": " n
+	display (i ": " n)
 }
+
+display ""
 
 print n
