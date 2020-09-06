@@ -8,30 +8,8 @@ const data = (load input_path).lines()
 
 var screen = [x"00" * 50 (*) 6]
 
-def dump
-{
-	const screen = _
-	
-	var dump = []
-	
-	for i in 0 -> 6 do
-	{
-		var scanline = screen[ i ].string
-		
-		translate( &scanline, "\x00\x01", " X" )
-		
-		dump <-- scanline
-	}
-	
-	return join( "\n", *dump, "" )
-}
-
 for operation in data do
 {
-	#warn dump screen
-	
-	#warn operation
-	
 	const words = [operation / ' ']
 	
 	if words.length == 2 then
@@ -68,8 +46,6 @@ for operation in data do
 		screen[ j ][ i ] = rotated[ j ]
 	}
 }
-
-warn dump screen
 
 const count = screen map { _ map u8 per Math.sum } per Math.sum
 
