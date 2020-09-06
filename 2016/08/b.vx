@@ -20,18 +20,14 @@ def dump
 		
 		translate( &scanline, "\x00\x01", " X" )
 		
-		dump <-- scanline
+		dump <-- "   " scanline
 	}
 	
-	return join( "\n", *dump, "" )
+	return join( "\n", "\n", *dump, "" )
 }
 
 for operation in data do
 {
-	#warn dump screen
-	
-	#warn operation
-	
 	const words = [operation / ' ']
 	
 	if words.length == 2 then
