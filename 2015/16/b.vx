@@ -1,0 +1,73 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const scan = str^(DATA.lines() map eval)
+
+def parse (s)
+{
+	var p = begin s
+	
+	p += "Sue ".length
+	
+	var q = p.find ':'
+	
+	const i = int (q - p)
+	
+	q += ": ".length
+	
+	return i => str^[eval q.rest]
+}
+
+def matching (sue)
+{
+	const details = sue.value
+	
+	for compound in scan do
+	{
+		const key = compound.key
+		
+		if not key in details then
+		{
+			continue
+		}
+		
+		var cmp = compound.value <=> details[ key ]
+		
+		if key in ["cats", "trees"] then
+		{
+			++cmp
+		}
+		else if key in ["pomeranians", "goldfish"] then
+		{
+			--cmp
+		}
+		
+		if cmp != 0 then
+		{
+			return false
+		}
+	}
+	
+	return true
+}
+
+const matches = data map parse ver matching
+
+print matches[ 0 ].key
+
+end.
+children: 3
+cats: 7
+samoyeds: 2
+pomeranians: 3
+akitas: 0
+vizslas: 0
+goldfish: 5
+trees: 3
+cars: 2
+perfumes: 1
