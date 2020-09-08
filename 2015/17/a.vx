@@ -1,0 +1,45 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const total_eggnog = 150
+
+const container_sizes = (load input_path).lines() map int
+const container_count = container_sizes.length
+
+const limit = 2^container_count
+
+var bitmask = 0
+
+def in_bitmask (index)
+{
+	return bitmask div 2^index mod 2
+}
+
+var solutions = 0
+
+while ++bitmask < limit do
+{
+	const current_indices = 0 -> container_count ver in_bitmask
+	
+	if container_sizes[ current_indices ] per Math.sum == total_eggnog then
+	{
+		++solutions
+	}
+	
+	if bitmask mod 256 == 0 then
+	{
+		display "" solutions " (" bitmask "/" limit ")"
+	}
+}
+
+display ""
+
+print solutions
