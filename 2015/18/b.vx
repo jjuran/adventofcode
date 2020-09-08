@@ -1,0 +1,73 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const width = ((begin data).find '\n').past.length
+const stride = width + 1
+
+const blank_line = (" " * width) "\n"
+
+var grid = "\r" blank_line data blank_line
+
+const neighbor_offsets = -1 .. 1 map { v - stride, v, v + stride } ver ...
+
+def count_neighbors (index)
+{
+	return (neighbor_offsets ver {grid[ index + v ] == '#'}).length
+}
+
+const corner_indices = [1, width] map {v + stride, v + stride * width}
+
+for corner in corner_indices do
+{
+	grid[ corner ] = '#'
+}
+
+def step
+{
+	var new_grid = grid
+	
+	for j in 0 -> width do
+	{
+		for i in 0 -> width do
+		{
+			const index = 1 + i + (1 + j) * stride
+			
+			const n = count_neighbors index
+			
+			if n != 2 then
+			{
+				new_grid[ index ] = ".#"[+(n == 3)]
+			}
+		}
+	}
+	
+	grid = take new_grid
+	
+	for i in corner_indices do
+	{
+		grid[ i ] = '#'
+	}
+}
+
+for i in 0 -> 100 do
+{
+	display i "/100"
+	
+	step()
+}
+
+const count = str(grid ver {v == '#'}).length
+
+display ""
+
+print count
