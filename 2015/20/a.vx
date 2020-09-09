@@ -1,0 +1,56 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input = if argc > 1 then {argv[ 1 ]} else {"29000000"}
+
+const target = int input div 10  # Divide everything by ten
+
+def gift_count (house)
+{
+	var count (int) = 1 + house
+	
+	var elf (int) = 1
+	
+	while ++elf^2 < house do
+	{
+		if house mod elf == 0 then
+		{
+			count += elf + house div elf
+		}
+	}
+	
+	if elf^2 == house then
+	{
+		count += elf
+	}
+	
+	return count
+}
+
+# Use the target as an arbitrary upper bound
+
+for house in 1 .. target do
+{
+	const gifts (int) = gift_count house
+	
+	if house mod 2^9 == 0 then
+	{
+		display "#" house ": " gifts "0 gifts"  # x10
+	}
+	
+	if gifts >= target then
+	{
+		display ""
+		
+		print house
+		break
+	}
+}
+
+end.
