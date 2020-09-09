@@ -1,0 +1,97 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const n = data.length - 2
+
+const upper = 'A' .. 'Z'
+const lower = 'a' .. 'z'
+const alpha = upper | lower
+
+const word = alpha+ => str
+
+var molecule = data[ n + 1 ]
+var patterns = str^[]
+
+for replacement in data[ 0 -> n ] do
+{
+	var p = begin replacement
+	
+	const atom, const submolecule = p += [word, " => ", word]
+	
+	assert not submolecule in patterns
+	
+	patterns[ submolecule ] = atom
+}
+
+def score (key)
+{
+	# The purpose of this function is to defer the consumption of a scarce
+	# resource (the unique submolecule at the head) until other options have
+	# been exhausted.
+	
+	# Unfortunately, solving this problem requires information that's absent
+	# from the problem description and can only be gleaned from analysis of
+	# the input.  The "CRn" prefix below is presumably specific to my input
+	# and should be replaced with something general, but without more input
+	# to test, I can't be sure (a) that the code does in fact work across
+	# multiple inputs, or even (b) that I haven't relied upon an inference
+	# that is itself an artifact of my particular puzzle input.
+	
+	# The sample inputs are no use here, since they don't exhibit the complex
+	# internal structure of the actual puzzle input.  Fortunately, they still
+	# run successfully even with the second equality test below inoperative.
+	
+	if patterns[ key ] == "e" or substr (key, 0, 3) == "CRn" then
+	{
+		return -1
+	}
+	
+	return key.length
+}
+
+patterns = -(Iter.sorted patterns.keys via score) map { v => patterns[ v ] }
+
+def steps_to_e (molecule)
+{
+	var steps = 0
+	
+	var progress = false
+	
+	do
+	{
+		progress = false
+		
+		for pat in patterns do
+		{
+			if var p = (begin molecule).find pat.key then
+			{
+				const q = p
+				
+				p += pat.key
+				
+				++steps
+				
+				progress = true
+				
+				molecule = q.past pat.value p.rest
+				
+				if molecule == "e" then
+				{
+					return steps
+				}
+				
+				break
+			}
+		}
+	}
+	while progress
+	
+	return 0
+}
+
+print steps_to_e molecule
