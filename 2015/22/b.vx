@@ -1,0 +1,178 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const digit = '0' .. '9'
+const upper = 'A' .. 'Z'
+const lower = 'a' .. 'z'
+const alpha = upper | lower
+const alnum = alpha | digit
+const title = (alpha | ' ')+ => str
+const value = digit+ => int
+const field = [title, ": ", value] => { head _ => tail _ }
+const sheet = [field, "\n"]+ => { str^[ _ ] }
+
+def parse_stats (text)
+{
+	var p = begin text
+	
+	return p += sheet
+}
+
+const boss_stats_table = parse_stats load input_path
+
+const Boss_HP     = boss_stats_table[ "Hit Points" ]
+const Boss_damage = boss_stats_table[ "Damage" ]
+
+const spell_names = [ "Missile Drain Shield Poison Recharge" / ' ' ]
+const spell_costs = [    53,    73,   113,   173,    229 ]
+const spell_times = [     0,     0,     6,     6,      5 ]
+
+const initial_state =
+	boss_HP:    Boss_HP,
+	player_HP:  50,
+	armor:      0,
+	mana:       500,
+	spent:      0,
+	timers:     [ 0 (*) 5 ]
+
+def battle_round (state, spell)
+{
+	var boss_HP   = state.boss_HP
+	var player_HP = state.player_HP
+	var armor     = state.armor
+	var mana      = state.mana
+	var spent     = state.spent
+	var timers    = state.timers
+	
+	const Missile  = { boss_HP -= 4 }
+	const Drain    = { boss_HP -= 2; player_HP += 2 }
+	const Shield   = { armor   += 7 }
+	
+	const Poison   = { boss_HP -= 3 }
+	const Recharge = { mana    += 101 }
+	
+	const spell_magic = [ Missile, Drain, Shield, ..., ... ]
+	const spell_recur = [ ..., ..., ..., Poison, Recharge ]
+	const effect_ends = [ ..., ..., { armor -= 7 }, ..., ... ]
+	
+	const take_effects =
+	{
+		for effect in 2 .. 4 do
+		{
+			if timers[ effect ] > 0 then
+			{
+				spell_recur[ effect ]()
+				
+				if --timers[ effect ] == 0 then
+				{
+					effect_ends[ effect ]()
+				}
+			}
+		}
+		
+		if boss_HP <= 0 then
+		{
+			# Poison killed the boss
+			return spent
+		}
+	}
+	
+	# Player's turn
+	
+	if --player_HP == 0 then
+	{
+		return -1  # Death by cherry tap
+	}
+	
+	take_effects()
+	
+	if (const cost = spell_costs[ spell ]) > mana then
+	{
+		return -1  # insufficient Vespene gas
+	}
+	
+	mana  -= cost
+	spent += cost
+	
+	if timers[ spell ] > 0 then
+	{
+		return -1  # Spell already in effect
+	}
+	
+	spell_magic[ spell ]()
+	
+	if const duration = spell_times[ spell ] then
+	{
+		timers[ spell ] = duration
+	}
+	
+	if boss_HP <= 0 then
+	{
+		# Missile or Drain killed the boss
+		return spent
+	}
+	
+	# Boss' turn
+	
+	take_effects()
+	
+	const damage = Math.max (Boss_damage - armor, 1)
+	
+	if (player_HP -= damage) <= 0 then
+	{
+		return -1  # You have died
+	}
+	
+	return record (:boss_HP, :player_HP, :armor, :mana, :spent, :timers)
+}
+
+var memo = []
+
+var minimum = 0
+
+def simulate (state)
+{
+	const r = rep state
+	
+	if r in memo then
+	{
+		return ()
+	}
+	
+	memo <-- r
+	
+	for spell in 0 .. 4 do
+	{
+		var result = battle_round (state, spell)
+		
+		if result isa int then
+		{
+			if result > 0 and (result < minimum or minimum == 0) then
+			{
+				minimum = result
+				
+				display "" result
+			}
+		}
+		else if result.spent <= minimum or minimum == 0 then
+		{
+			simulate result
+		}
+	}
+}
+
+simulate record initial_state
+
+display ""
+
+print minimum
+
+end.
