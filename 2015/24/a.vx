@@ -1,0 +1,183 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines() map int
+
+const total_weight = data per Math.sum
+const equal_weight = total_weight / 3
+
+assert equal_weight isa int
+
+def package_count_bound (data)
+{
+	var n = 0
+	var total = 0
+	
+	for w in data do
+	{
+		++n
+		total += w
+		
+		if total >= equal_weight then
+		{
+			return n
+		}
+	}
+}
+
+const desc = -data
+
+const lower_bound = package_count_bound desc
+
+def find (seq, x)  { if x in seq then {x} }
+
+def find_n_with_sum (n, sum, seq, chan, others=[])
+{
+	assert n > 0
+	
+	if n == 1 then
+	{
+		if const found = find (seq, sum) then
+		{
+			const solution = [found, *others]
+			
+			chan <== solution
+		}
+	}
+	else
+	{
+		while seq.length >= n do
+		{
+			const x = seq[ 0 ]
+			
+			seq = [ tail *seq ]
+			
+			if x < sum then
+			{
+				find_n_with_sum (n - 1, sum - x, seq, chan, [x, *others])
+			}
+		}
+	}
+}
+
+def find_any_with_sum (sum, seq)
+{
+	while seq do
+	{
+		const x = seq[ 0 ]
+		
+		seq = [ tail *seq ]
+		
+		if x == sum then
+		{
+			return true
+		}
+		
+		if x < sum and find_any_with_sum (sum - x, seq) then
+		{
+			return true
+		}
+	}
+	
+	return false
+}
+
+def removing (seq, sans)
+{
+	var result = []
+	
+	var p = begin seq
+	var q = begin sans
+	
+	while q do
+	{
+		assert bool p
+		
+		if *p < *q then
+		{
+			result <-- *p++
+		}
+		else
+		{
+			assert *p++ == *q++
+		}
+	}
+	
+	while p do
+	{
+		result <-- *p++
+	}
+	
+	return result
+}
+
+var best_N  = data.length            # overkill, but works
+var best_QE = data per Math.product  # ditto
+
+def measure (solution)
+{
+	const N = solution.length
+	
+	if N < best_N then
+	{
+		best_N = N
+		best_QE = solution per Math.product
+		
+		display "N: " best_N ", QE: " best_QE
+	}
+	else if N == best_N then
+	{
+		const QE = solution per Math.product
+		
+		if QE < best_QE then
+		{
+			best_QE = QE
+			
+			display "N: " best_N ", QE: " best_QE
+		}
+	}
+}
+
+def phase2 (selection)
+{
+	# data and selection are both ascending, as required.
+	
+	const remaining = removing (data, selection)
+	
+	# find_any_with_sum() has no ordering requirements, but desc is faster.
+	
+	if find_any_with_sum (equal_weight, -remaining) then
+	{
+		measure selection
+	}
+}
+
+for n in lower_bound .. data.length div 3 do
+{
+	display "Trying " n " packages..."
+	
+	var chan = channel()
+	
+	var th = thread { while var selection = <=chan do { phase2 selection } }
+	
+	find_n_with_sum (n, equal_weight, desc, chan)
+	
+	chan.close()
+	
+	if best_N < data.length then
+	{
+		break
+	}
+}
+
+display ""
+
+print best_QE
