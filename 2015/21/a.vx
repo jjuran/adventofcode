@@ -34,11 +34,8 @@ def stat (s)
 	return p += digit+ => int
 }
 
-def subparse_aisle
+def subparse_aisle (headings, listings: ...)
 {
-	const headings =   head _
-	const listings = [ tail _ ]
-	
 	var column_names   = []
 	var column_offsets = []
 	
@@ -61,7 +58,7 @@ def subparse_aisle
 	
 	const offsets = column_offsets
 	
-	const items = listings map
+	const items = [listings] map
 	{
 		const listing = v
 		
