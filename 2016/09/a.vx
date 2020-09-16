@@ -12,11 +12,9 @@ var len = 0
 
 while p do
 {
-	if *p == '(' then
+	if *p++ == '(' then
 	{
-		var q = ++p
-		
-		while *q != ')' do  {++q}
+		var q = p.find ')'
 		
 		const marker = q - p
 		
@@ -29,7 +27,6 @@ while p do
 	else
 	{
 		++len
-		++p
 	}
 }
 

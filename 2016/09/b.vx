@@ -16,11 +16,9 @@ def decompressed-length
 	
 	while p do
 	{
-		if *p == '(' then
+		if *p++ == '(' then
 		{
-			var q = ++p
-			
-			while *q != ')' do  {++q}
+			var q = p.find ')'
 			
 			const marker = q - p
 			
@@ -35,7 +33,6 @@ def decompressed-length
 		else
 		{
 			++len
-			++p
 		}
 	}
 	
