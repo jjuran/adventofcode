@@ -11,40 +11,17 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 const data = (load input_path).lines()
 
-def parse_coordinates (p)
-{
-	assert *p++ == '<'
-	
-	while *p == ' ' do {++p}
-	
-	var q = p.find ','
-	
-	const x = int (q - p)
-	
-	p = q + ", ".length
-	
-	while *p == ' ' do {++p}
-	
-	q = p.find '>'
-	
-	const y = int (q - p)
-	
-	return q + 1, x, y
-}
+const space = ' '*
+const digit = '0' .. '9'
+const coord = ['-'?, digit+] => int
+const tuple = ['<', space, coord, [',', space, coord]*, '>']
+const datum = ["position=", tuple, " velocity=", tuple] => { [_] }
 
 def parse (s)
 {
 	var p = begin s
 	
-	p += "position=".length
-	
-	p, const x, const y = parse_coordinates p
-	
-	p += " velocity=".length
-	
-	p, const dx, const dy = parse_coordinates p
-	
-	return [x, y, dx, dy]
+	return p += datum
 }
 
 def project (t, particle)
