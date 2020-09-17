@@ -1,0 +1,107 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const data = "01111001100111011"
+
+def negated (s)
+{
+	return (packed s ~ x"01" * s.length).string
+}
+
+def dragon_curve (s)
+{
+	return s "0" negated -s
+}
+
+assert dragon_curve "1" == "100"
+assert dragon_curve "0" == "001"
+assert dragon_curve "11111" == "11111000000"
+assert dragon_curve "111100001010" == "1111000010100101011110000"
+
+def expansion (seed, size)
+{
+	while seed.length < size do
+	{
+		seed = dragon_curve seed
+	}
+	
+	return seed[ 0 -> size ]
+}
+
+assert expansion ("10000", 20) == "10000011110010000111"
+
+const cs3table = str ({ [*_, *(_ map {1 - v})] }^7 [1, 0])
+
+	# 00000000 -> 1111 -> 11 -> 1
+	# 00000001 -> 1110 -> 10 -> 0
+	# 00000010 -> 1110 -> 10 -> 0
+	# 00000011 -> 1111 -> 11 -> 1
+	# 00000100 -> 1101 -> 10 -> 0
+	# 00000101 -> 1100 -> 11 -> 1
+	# 00000110 -> 1100 -> 11 -> 1
+	# 00000111 -> 1101 -> 10 -> 0
+	# 00001000 -> 1101 -> 10 -> 0
+	# 00001001 -> 1100 -> 11 -> 1
+	# 00001010 -> 1100 -> 11 -> 1
+	# 00001011 -> 1101 -> 10 -> 0
+	# 00001100 -> 1111 -> 11 -> 1
+	# 00001101 -> 1110 -> 10 -> 0
+	# 00001110 -> 1110 -> 10 -> 0
+	# 00001111 -> 1111 -> 11 -> 1
+	# ...
+
+def checksum (s)
+{
+	while s.length % 8 == 0 do
+	{
+		var result = " " * (s.length / 8)
+		
+		var p = begin s
+		
+		for i in 0 -> result.length do
+		{
+			if i % 2^13 == 0 then
+			{
+				display ("Checksumming %s/%s bytes" % (p.past.length, s.length))
+			}
+			
+			result[ i ] = cs3table[ u8 *(unbin p.rest[ 0 -> 8 ]) ]
+			
+			p += 8
+		}
+		
+		s <- result
+	}
+	
+	while s.length % 2 == 0 do
+	{
+		var result = ""
+		
+		var p = begin s
+		
+		while p do
+		{
+			display ("Checksumming %s/%s bytes" % (p.past.length, s.length))
+			
+			result .= "01"[[ +(*p++ == *p++) ]]
+		}
+		
+		s <- result
+	}
+	
+	return s
+}
+
+assert checksum "110010110100" == "100"
+
+const result = checksum expansion (data, 35651584)
+
+display ""
+
+print result

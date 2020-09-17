@@ -1,0 +1,46 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = "01111001100111011"
+
+def negated (s)
+{
+	return (packed s ~ x"01" * s.length).string
+}
+
+def dragon_curve (s)
+{
+	return s "0" negated -s
+}
+
+assert dragon_curve "1" == "100"
+assert dragon_curve "0" == "001"
+assert dragon_curve "11111" == "11111000000"
+assert dragon_curve "111100001010" == "1111000010100101011110000"
+
+def expansion (seed, size)
+{
+	while seed.length < size do
+	{
+		seed = dragon_curve seed
+	}
+	
+	return seed[ 0 -> size ]
+}
+
+assert expansion ("10000", 20) == "10000011110010000111"
+
+def checksum (s)
+{
+	while s.length % 2 == 0 do
+	{
+		s = [s / -2] map { byte (u8 '0' + +(v[0] == v[1])) } per str
+	}
+	
+	return s
+}
+
+assert checksum "110010110100" == "100"
+
+print checksum expansion (data, 272)
