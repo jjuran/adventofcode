@@ -5,6 +5,7 @@ const libdir = bindir "/../../lib/"
 
 const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
 
+const display = (import "status") { OUT <== _ }
 const intcode = import "intcode"
 
 const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
@@ -12,11 +13,27 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 const data = (load input_path).lines()[0]
 const core = [data / ','] map int
 
+var line = ""
+var prompt = ""
+
+display "Booting ASCII..."
+
 var input_queue = begin DATA
 
 def input
 {
 	const c = *input_queue++
+	
+	if c != '\n' then
+	{
+		prompt .= str c
+		
+		display prompt
+	}
+	else if not input_queue then
+	{
+		display "Robot in motion..."
+	}
 	
 	return int c
 }
@@ -30,7 +47,24 @@ for output in receiver machine.run do
 {
 	if output > 127 then
 	{
+		display ""
+		
 		print output
+	}
+	else
+	{
+		if output != u8 '\n' then
+		{
+			line .= str byte output
+			
+			display line
+		}
+		else
+		{
+			prompt = ">>> "
+			
+			line = ""
+		}
 	}
 }
 
