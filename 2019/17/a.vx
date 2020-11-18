@@ -1,0 +1,64 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const intcode = import "intcode"
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()[0]
+const core = [data / ','] map int
+
+const machine = intcode.machine core
+
+var text = ""
+
+for output in receiver machine.run do
+{
+	text = text byte output
+}
+
+const lines = text.lines() ver ...
+
+const width  = lines[ 0 ].length
+const height = lines.length
+
+const image = str lines
+
+def is_scaffold (x, y)
+{
+	return image[ x + y * width ] == '#'
+}
+
+const moves =
+[
+	[  0, -1 ],  # N
+	[  0,  1 ],  # S
+	[ -1,  0 ],  # W
+	[  1,  0 ],  # E
+]
+
+def is_intersection (i, j)
+{
+	const neighbors = moves map { [v[0] + i, v[1] + j] }
+	
+	return is_scaffold( i, j ) and (neighbors ver {is_scaffold *v}).length > 2
+}
+
+var sum = 0
+
+for i in 1 -> width - 1 do
+{
+	for j in 1 -> height - 1 do
+	{
+		if is_intersection( i, j ) then
+		{
+			sum += i * j
+		}
+	}
+}
+
+print sum

@@ -1,0 +1,42 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const intcode = import "intcode"
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()[0]
+const core = [data / ','] map int
+
+var input_queue = begin DATA
+
+def input
+{
+	const c = *input_queue++
+	
+	return int c
+}
+
+const machine = intcode.machine core
+
+machine.poke( 0, 2 )
+machine.connect-input input
+
+for output in receiver machine.run do
+{
+	if output > 127 then
+	{
+		print output
+	}
+}
+
+end.
+A,B,A,C,A,B,C,B,C,B
+R,10,R,10,R,6,R,4
+R,10,R,10,L,4
+R,4,L,4,L,10,L,10
+n
