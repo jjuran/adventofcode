@@ -1,0 +1,37 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const N = 40
+
+var data = " " load input_path  # e.g. " .^^.^.^^^^\n"
+
+var total = (data ver { v == '.' }).length
+
+def next (row)
+{
+	var result = row
+	
+	for i in 1 -> row.length - 1 do
+	{
+		const left  = row[ i - 1 ] == '^'
+		const right = row[ i + 1 ] == '^'
+		
+		const is_safe = +(left == right)
+		
+		result[ i ] = "^."[ is_safe ]
+		
+		total += is_safe
+	}
+	
+	return result
+}
+
+for i in 1 -> N do
+{
+	data = next data
+}
+
+print total
