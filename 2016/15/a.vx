@@ -1,0 +1,44 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path)
+
+const digit = '0' .. '9'
+const value = digit+ => int
+
+const disc_record =
+[
+	"Disc #",
+	value, " has ",
+	value, " positions; at time=0, it is at position ",
+	value, ".\n",
+]
+
+const schema = (disc_record => {[_]})+
+
+var p = begin data
+
+const initial_discs = [p += schema]
+
+var T = 0
+var M = 1  # super modulus
+
+for disc in initial_discs do
+{
+	const dt, const m, const k = *disc
+	
+	var delay = -(k + T + dt) mod m
+	
+	while delay mod M != 0 do
+	{
+		delay += m
+	}
+	
+	T += delay
+	M *= m
+}
+
+print T
