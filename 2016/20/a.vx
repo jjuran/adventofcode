@@ -1,0 +1,36 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const digit = '0' .. '9'
+const value = digit+ => int
+
+const IP_range =
+[
+	value, "-",
+	value, "\n",
+]
+
+const schema = (IP_range => {[_]})+
+
+var p = begin data
+
+const IP_ranges = Iter.sorted [p += schema] via { v[0] }
+
+var min = 0
+
+for r in IP_ranges do
+{
+	if r[ 0 ] > min then
+	{
+		break
+	}
+	
+	min = Math.max( min, r[ 1 ] + 1 )
+}
+
+print min
