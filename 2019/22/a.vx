@@ -1,0 +1,59 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const lines = data.lines()
+
+const N = 10007
+
+const card = 2019
+
+var position = card
+
+def reverse
+{
+	position = N - 1 - position
+}
+
+def cut (n)
+{
+	if n < 0 then
+	{
+		n = N + n
+	}
+	
+	position = (position - n) mod N
+}
+
+def radix (inc)
+{
+	position = position * inc % N
+}
+
+for row in lines do
+{
+	const words = [row / ' ']
+	
+	if words[ 0 ] == "cut" then
+	{
+		const n = int words[ 1 ]
+		
+		cut n
+	}
+	else if words[ 1 ] == "with" then
+	{
+		const increment = int words[ 3 ]
+		
+		radix increment
+	}
+	else
+	{
+		reverse()
+	}
+}
+
+print position

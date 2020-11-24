@@ -1,0 +1,142 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const lines = data.lines()
+
+const count = 101741582076661
+
+const N = 119315717514047
+
+const position = 2020
+
+var card = position
+
+const id_matrix = [1, 0, 0, 1]
+
+def matrix_mul (a, b)
+{
+	var result = []
+	
+	result <-- a[ 0 ] * b[ 0 ] + a[ 1 ] * b[ 2 ]
+	result <-- a[ 0 ] * b[ 1 ] + a[ 1 ] * b[ 3 ]
+	result <-- a[ 2 ] * b[ 0 ] + a[ 3 ] * b[ 2 ]
+	result <-- a[ 2 ] * b[ 1 ] + a[ 3 ] * b[ 3 ]
+	
+	return result map {v mod N}
+}
+
+def translation (x)
+{
+	return [1, 0, x, 1]
+}
+
+def scale (x)
+{
+	return [x, 0, 0, 1]
+}
+
+var matrix = id_matrix
+
+def modpower (b, e, m)
+{
+	var result = 1
+	
+	while e > 0 do
+	{
+		if e % 2 then
+		{
+			result = result * b mod m
+		}
+		
+		b = b * b mod m
+		
+		e = e div 2
+	}
+	
+	return result
+}
+
+def radix (inc)
+{
+	const inverse = modpower( inc, (N - 2), N )
+	
+	matrix = matrix_mul( matrix, scale inverse )
+	
+	card = card * inverse mod N
+}
+
+def cut (n)
+{
+	if n < 0 then
+	{
+		n = N + n
+	}
+	
+	card = (card + n) mod N
+	
+	matrix = matrix_mul( matrix, translation n )
+}
+
+def reverse
+{
+	cut 1
+	
+	radix (N - 1)
+}
+
+def shuffle
+{
+	for row in -lines do
+	{
+		const words = [row / ' ']
+		
+		if words[ 0 ] == "cut" then
+		{
+			const n = int words[ 1 ]
+			
+			cut n
+		}
+		else if words[ 1 ] == "with" then
+		{
+			const increment = int words[ 3 ]
+			
+			radix increment
+		}
+		else
+		{
+			reverse()
+		}
+	}
+}
+
+def matrix_power (m, e)
+{
+	var result = id_matrix
+	
+	while e > 0 do
+	{
+		if e % 2 then
+		{
+			result = matrix_mul( result, m )
+		}
+		
+		m = matrix_mul( m, m )
+		
+		e = e div 2
+	}
+	
+	return result
+}
+
+shuffle()
+
+matrix = matrix_power( matrix, count )
+
+const result = matrix_mul( translation position, matrix )
+
+print result[ 2 ]
