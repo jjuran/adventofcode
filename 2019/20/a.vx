@@ -1,0 +1,184 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const lines = data.lines()
+
+const width  = lines[ 0 ].length
+const height = lines.length
+
+const maze = str lines
+
+var portkeys = str^[]
+var portals  = int^[]
+
+var distances = int^[]
+
+const upper = packed ('A' .. 'Z')
+
+def isupper (c) { c in upper }
+
+def decompose (offset)
+{
+	return offset mod width, offset div width
+}
+
+const dirs =
+[
+	-width,  # N
+	width,  # S
+	-1,  # W
+	1,  # E
+]
+
+def record_portal (label, p)
+{
+	const offset = p.past.length
+	
+	if not label in portkeys then
+	{
+		portkeys[ label ] = offset
+	}
+	else
+	{
+		const other = portkeys[ label ]
+		
+		display "Portal " label " at " rep ([other, offset] map decompose)
+		
+		portals[ offset ] = other
+		portals[ other ] = offset
+	}
+}
+
+def find_portal_labels
+{
+	var p = begin maze
+	var q
+	var c
+	
+	const top    = p + width
+	const bottom = p + (maze.length - width)
+	
+	var n = 0
+	
+	while p do
+	{
+		if not isupper (c = *p++) then {continue}
+		
+		var c_
+		
+		if isupper (c_ = *p++) then
+		{
+			# horizontal label
+			
+			const label = c c_ ""
+			
+			if *p == '.' then
+			{
+				# label on left
+				
+				record_portal( label, p )
+			}
+			else if *(q = p + -3) == '.' then
+			{
+				# label on right
+				
+				record_portal( label, q )
+			}
+			else
+			{
+				throw "Unattached label?"
+			}
+			
+			continue
+		}
+		
+		p -= 2
+		
+		if p >= top and isupper *(q = p + -width) then
+		{
+			# bottom of vertical label
+			
+			const label = *q c ""
+			
+			if q >= top and *(q -= width) == '.' then
+			{
+				record_portal( label, q )
+			}
+		}
+		else if p <= bottom and isupper *(q = p + width) then
+		{
+			# top of vertical label
+			
+			const label = c *q ""
+			
+			if q <= bottom and *(q += width) == '.' then
+			{
+				record_portal( label, q )
+			}
+		}
+		
+		++p
+	}
+	
+	#warn n
+}
+
+find_portal_labels()
+
+const start, const finish = *portkeys[[ "AA", "ZZ" ]]
+
+def compute_distances
+{
+	var copy = maze
+	
+	var distance = 0
+	var frontier = [start]
+	
+	while frontier do
+	{
+		var new_frontier = []
+		
+		for f in frontier do
+		{
+			if copy[ f ] != '.' then {continue}
+			
+			copy[ f ] = ','
+			
+			distances[ f ] = distance
+			
+			if f in portals then
+			{
+				new_frontier <-- portals[ f ]
+			}
+			
+			for d in dirs do
+			{
+				const offset = f + d
+				
+				new_frontier <-- offset
+			}
+		}
+		
+		frontier = new_frontier
+		
+		++distance
+	}
+}
+
+display "Computng distances..."
+
+compute_distances()
+
+display ""
+
+print distances[ finish ]

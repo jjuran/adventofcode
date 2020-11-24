@@ -1,0 +1,336 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const lines = data.lines()
+
+const width  = lines[ 0 ].length
+const height = lines.length
+
+const maze = str lines
+
+var portkeys = str^[]
+var all_portals = int^[]
+
+var interportal_distances = str^[]
+
+const upper = packed ('A' .. 'Z')
+
+def isupper (c) { c in upper }
+
+def decompose (offset)
+{
+	return offset mod width, offset div width
+}
+
+const dirs =
+[
+	-width,  # N
+	width,  # S
+	-1,  # W
+	1,  # E
+]
+
+def is_inner (offset)
+{
+	const x = offset mod width
+	const y = offset div width
+	
+	return x in 3 -> width - 3 and y in 3 -> height - 3
+}
+
+var reverse_lookup = int^[]
+
+def record_portal (label, p)
+{
+	var offset = p.past.length
+	
+	reverse_lookup[ offset ] = label
+	
+	if not label in portkeys then
+	{
+		portkeys[ label ] = offset
+	}
+	else
+	{
+		var other = portkeys[ label ]
+		
+		display "Portal " label " at " rep ([other, offset] map decompose)
+		
+		if is_inner other then
+		{
+			offset <-> other
+		}
+		
+		# offset is inside and other is outside
+		
+		all_portals[ offset ] = other
+		all_portals[ other ] = offset
+	}
+}
+
+var top_left     = 0
+var bottom_right = 0
+
+def find_portal_labels
+{
+	var p = begin maze
+	var q
+	var c
+	
+	const top    = p + width
+	const bottom = p + (maze.length - width)
+	
+	while p do
+	{
+		const c = *p++
+		
+		if c == '#' then
+		{
+			const offset = (p + -1).past.length
+			
+			bottom_right = offset
+			
+			if top_left == 0 then
+			{
+				top_left = offset
+			}
+		}
+		
+		if not isupper c then {continue}
+		
+		var c_
+		
+		if isupper (c_ = *p++) then
+		{
+			# horizontal label
+			
+			const label = c c_ ""
+			
+			if *p == '.' then
+			{
+				# label on left
+				
+				record_portal( label, p )
+			}
+			else if *(q = p + -3) == '.' then
+			{
+				# label on right
+				
+				record_portal( label, q )
+			}
+			else
+			{
+				throw "Unattached label?"
+			}
+			
+			continue
+		}
+		
+		p -= 2
+		
+		if p >= top and isupper *(q = p + -width) then
+		{
+			# bottom of vertical label
+			
+			const label = *q c ""
+			
+			if q >= top and *(q -= width) == '.' then
+			{
+				record_portal( label, q )
+			}
+		}
+		else if p <= bottom and isupper *(q = p + width) then
+		{
+			# top of vertical label
+			
+			const label = c *q ""
+			
+			if q <= bottom and *(q += width) == '.' then
+			{
+				record_portal( label, q )
+			}
+		}
+		
+		++p
+	}
+}
+
+find_portal_labels()
+
+const start, const finish = *portkeys[[ "AA", "ZZ" ]]
+
+var reachable_portals = int^(all_portals.keys map {v => []})
+
+reachable_portals[ start  ] = []
+reachable_portals[ finish ] = []
+
+def nameof (offset)
+{
+	const layer = if is_inner offset then {"inner"} else {"outer"}
+	
+	return layer " " reverse_lookup[ offset ]
+}
+
+def compute_distances (portal)
+{
+	var copy = maze
+	
+	var distance = 0
+	var frontier = [portal.value]
+	
+	while frontier do
+	{
+		var new_frontier = []
+		
+		for f in frontier do
+		{
+			if copy[ f ] != '.' then {continue}
+			
+			copy[ f ] = ','
+			
+			if (f in all_portals or f == finish) and f != portal.value then
+			{
+				interportal_distances[ portal.value "-" f ] = distance
+				
+				reachable_portals[ portal.value ] <-- f
+				
+				display (nameof portal.value) " reaches " nameof f
+			}
+			
+			for d in dirs do
+			{
+				const offset = f + d
+				
+				new_frontier <-- offset
+			}
+		}
+		
+		frontier = new_frontier
+		
+		++distance
+	}
+}
+
+compute_distances (AA: start)
+compute_distances (ZZ: finish)
+
+for p in all_portals do
+{
+	compute_distances p
+}
+
+var paths = [0: [start => 0]]
+var exits = []
+
+var best_distance_to = str^[]
+
+def is_best_distance_to (distance, site, level)
+{
+	const key = site ":" level
+	
+	if key in best_distance_to and best_distance_to[ key ] < distance then
+	{
+		return false
+	}
+	
+	best_distance_to[ key ] = distance
+	return true
+}
+
+def compute_paths
+{
+	const minimum = Iter.min (paths map {v.key})
+	
+	const min_paths = paths ver {v.key == minimum}
+	const more_paths = paths ver {v.key > minimum}
+	
+	var new_paths = more_paths
+	
+	for path in min_paths do
+	{
+		const distance = path.key
+		const portals  = path.value
+		
+		const last = portals[ portals.length - 1 ]
+		
+		const index = last.key
+		const level = last.value
+		
+		for reachable in reachable_portals[ index ] do
+		{
+			const inward  = is_inner reachable
+			const outward = not inward
+			const is_exit = reachable == finish
+			
+			if level == 0 and outward and not is_exit then
+			{
+				continue
+			}
+			
+			if level > 0 and (is_exit or reachable == start) then
+			{
+				# We found ZZ/AA, but not at level 0, so it's really a wall.
+				continue
+			}
+			
+			const interportal = index "-" reachable
+			
+			var added_distance = interportal_distances[ interportal ]
+			
+			if is_exit then
+			{
+				exits <-- distance + added_distance
+				
+				continue
+			}
+			
+			++added_distance
+			
+			const next_index = all_portals[ reachable ]
+			const next_level = level + +inward + -outward
+			
+			const next_portal = next_index => next_level
+			
+			const new_distance = distance + added_distance
+			
+			if is_best_distance_to( new_distance, next_index, next_level ) then
+			{
+				new_paths <-- new_distance => [ *portals, next_portal ]
+			}
+		}
+	}
+	
+	paths = new_paths
+	
+	if exits then
+	{
+		exits = [Iter.min exits]
+		
+		paths = paths ver { v.key < *exits }
+	}
+}
+
+while paths do
+{
+	compute_paths()
+	
+	display "Path count: " paths.length
+	
+	if exits then
+	{
+		display ""
+		
+		print *exits
+		break
+	}
+}
