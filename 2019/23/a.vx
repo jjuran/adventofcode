@@ -1,0 +1,136 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const intcode = import "intcode"
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()[0]
+const core = [data / ','] map int
+
+const N = 50
+
+const all_ids = 0 -> N
+
+const Idle = '-'
+const Ready = '*'
+const Running = '!'
+
+var input_queues = all_ids map {[ v ]}
+
+var status = str Ready * N
+
+var T = time()
+
+def debug (s)
+{
+	const t = time() - T
+	
+	OUT <== "\r" t ": " s
+}
+
+def info (s)
+{
+	const t = time() - T
+	
+	print "\r" (" " * 80) "\r" t ": " s
+}
+
+def new_machine (id)
+{
+	def input
+	{
+		if const len = input_queues[ id ].length then
+		{
+			const next = input_queues[ id ][ 0 ]
+			
+			input_queues[ id ] = input_queues[ id ][ 1 -> len ]
+			
+			return next
+		}
+		else
+		{
+			const was_idle = status[ id ] == Idle
+			
+			status[ id ] = Idle
+			
+			debug status
+			
+			if was_idle then
+			{
+				return ()
+			}
+			
+			return -1
+		}
+	}
+	
+	const machine = intcode.machine core
+	
+	machine.connect-input input
+	
+	return id => machine
+}
+
+var machines = all_ids map new_machine
+
+def run (id)
+{
+	status[ id ] = Running
+	
+	debug status
+	
+	const machine = machines[ id ].value
+	
+	while true do
+	{
+		const output = machine.run()
+		
+		if output isa () then
+		{
+			info "Machine " id " halted"
+			break
+		}
+		else if output isa null then
+		{
+			break
+		}
+		else
+		{
+			const dst = output
+			
+			const x = machine.run()
+			const y = machine.run()
+			
+			if dst == 255 then
+			{
+				info "\n" y
+				exit 0
+			}
+			else
+			{
+				info "Sending " rep(x, y) " from #" id " to #" dst
+				
+				status[ dst ] = Ready
+				
+				input_queues[ dst ] <-- (x, y)
+			}
+			
+			debug status
+		}
+	}
+}
+
+while true do
+{
+	const runnable = (all_ids ver { input_queues[ v ] }) or all_ids
+	
+	for id in runnable do
+	{
+		run id
+	}
+}
