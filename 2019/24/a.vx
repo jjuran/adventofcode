@@ -1,0 +1,82 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const lines = data.lines()
+
+const width  = lines[ 0 ].length
+const height = lines.length
+
+var grid = str lines
+
+const N = grid.length
+
+def biodiversity
+{
+	return 0 -> N map { +(grid[ v ] == '#') * 2^v } per Math.sum
+}
+
+def count_adjacent (i)
+{
+	var total = 0
+	
+	if i - width >= 0 then
+	{
+		total += +(grid[ i - width ] == '#')
+	}
+	
+	if i + width < N then
+	{
+		total += +(grid[ i + width ] == '#')
+	}
+	
+	const x = i mod width
+	
+	if x > 0 then
+	{
+		total += +(grid[ i - 1 ] == '#')
+	}
+	
+	if x + 1 < width then
+	{
+		total += +(grid[ i + 1 ] == '#')
+	}
+	
+	return total
+}
+
+def predicate (i)
+{
+	const n_adjacent = count_adjacent i
+	
+	var has_bug = grid[ i ] == '#'
+	
+	has_bug = if has_bug then {n_adjacent == 1} else { n_adjacent in 1 .. 2 }
+	
+	return ".#"[ +has_bug ]
+}
+
+def step
+{
+	grid = str (0 -> N map predicate)
+}
+
+var grids = []
+
+var n = 0
+
+for i in 0 -> 100 do
+{
+	grids <-- grid
+	
+	step()
+	++n
+	
+	if grid in grids then {break}
+}
+
+print biodiversity()
