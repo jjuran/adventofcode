@@ -1,0 +1,44 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+const intcode = import "intcode"
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()[0]
+const core = [data / ','] map int
+
+var i = -1
+
+const max_i = 50 * 50 - 1
+
+var input_queue
+
+def input
+{
+	return *input_queue++
+}
+
+var sum = 0
+
+for j in 0 -> 50 * 50 do
+{
+	const machine = intcode.machine core
+	
+	input_queue = begin [ j mod 50, j div 50 ]
+	
+	const output = machine.run input
+	
+	sum += output
+	
+	display sum " " j
+}
+
+display ""
+
+print sum

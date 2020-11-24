@@ -1,0 +1,173 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+const intcode = import "intcode"
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()[0]
+const core = [data / ','] map int
+
+var input_queue
+
+def input
+{
+	return *input_queue++
+}
+
+def query (x, y)
+{
+	const machine = intcode.machine core
+	
+	input_queue = begin [ x, y ]
+	
+	return machine.run input
+}
+
+const ship_size = 100
+
+var edge = 10
+
+var grid = " " * edge^2
+
+def embiggen (new_edge)
+{
+	var new_grid = " " * new_edge^2
+	
+	for row in 0 -> edge do
+	{
+		for col in 0 -> edge do
+		{
+			new_grid[ col + row * new_edge ] = grid[ col + row * edge ]
+		}
+	}
+	
+	edge = new_edge
+	grid = new_grid
+}
+
+var min_x = 0
+
+const tiles = ".#"
+
+def update (x, y)
+{
+	const r = query _
+	
+	display "Minimum X: " min_x "  Current: " x "," y
+	
+	grid[ x + y * edge ] = tiles[ r ]
+	
+	return r
+}
+
+def fill_bottom (limit)
+{
+	for x in min_x -> limit do
+	{
+		update( x, limit - 1 )
+	}
+}
+
+def bottom_row
+{
+	return substr( grid, grid.length - edge )
+}
+
+def right_col
+{
+	return str ([grid / edge] map { v[edge - 1] })
+}
+
+def get_row (y)
+{
+	return substr( grid, y * edge, edge )
+}
+
+def left_beam_edge (row)
+{
+	return (begin row).find('#').past.length
+}
+
+def right_beam_edge (row)
+{
+	return (begin -row).find('#').rest.length
+}
+
+def check_ship_beam
+{
+	const top    = get_row (edge - ship_size)
+	const bottom = bottom_row()
+	
+	const bottom_left = left_beam_edge bottom
+	const top_right   = right_beam_edge top
+	
+	min_x = left_beam_edge top
+	
+	return top_right - bottom_left
+}
+
+fill_bottom edge
+
+while 1 do
+{
+	const bottom = bottom_row()
+	const right = right_col()
+	
+	const width  = str(bottom ver {v == '#'}).length
+	
+	const maximum = width
+	
+	if maximum < ship_size then
+	{
+		if width then
+		{
+			min_x = (begin bottom).find('#').past.length
+		}
+		
+		const new_edge = edge * ship_size div (maximum or 2)
+		
+		if new_edge > edge then
+		{
+			embiggen new_edge
+			
+			fill_bottom (new_edge - ship_size + 1)
+			fill_bottom new_edge
+			
+			continue
+		}
+	}
+	
+	while true do
+	{
+		const width = check_ship_beam()
+		
+		assert width <= ship_size
+		
+		if width == ship_size then
+		{
+			break
+		}
+		
+		const new_edge = edge + (ship_size - width)
+		
+		embiggen new_edge
+		
+		fill_bottom (new_edge - ship_size + 1)
+		fill_bottom new_edge
+	}
+	
+	break
+}
+
+const X = left_beam_edge bottom_row()
+const Y = edge - ship_size
+
+display ""
+
+print (X * 10000 + Y)
