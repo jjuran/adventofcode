@@ -39,13 +39,12 @@ for output in receiver machine.run do
 	}
 }
 
-# (not A or not B or not C) and D
+# not (A and B and C) and D
 
 end.
-NOT A J
-NOT B T
-OR T J
-NOT C T
-OR T J
+OR A J
+AND B J
+AND C J
+NOT J J
 AND D J
 WALK

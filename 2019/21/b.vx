@@ -39,17 +39,15 @@ for output in receiver machine.run do
 	}
 }
 
-# (not A or not B or not C) and D and (E or H)
+# not (A and B and C) and D and (E or H)
 
 end.
-NOT A J
-NOT B T
-OR T J
-NOT C T
-OR T J
+OR A J
+AND B J
+AND C J
+NOT J J
 AND D J
-NOT E T
-NOT T T
+OR E T
 OR H T
 AND T J
 RUN
