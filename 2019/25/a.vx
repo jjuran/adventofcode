@@ -1,0 +1,168 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const intcode = import "intcode"
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()[0]
+const core = [data / ','] map int
+
+const dirs = str^
+[
+	north: [0, 1],
+	south: [0, -1],
+	east:  [-1, 0],
+	west:  [1, 0],
+]
+
+var input_queue = begin DATA
+
+var output_queue = ""
+
+def input
+{
+	return
+	if input_queue then
+	{
+		const c = *input_queue++
+		
+		OUT <== c
+		
+		int c,
+	}
+}
+
+const machine = intcode.machine core
+
+machine.connect-input input
+
+def run_command (s)
+{
+	input_queue = begin s "\n"
+	
+	var output_queue = ""
+	
+	for output in receiver machine.run do
+	{
+		if output isa null then
+		{
+			return output_queue
+		}
+		
+		if output < 128 then
+		{
+			OUT <== byte output
+			
+			output_queue = output_queue byte output
+		}
+	}
+	
+	return output_queue
+}
+
+# Phase 0
+
+for command in DATA.lines() do
+{
+	run_command command
+}
+
+const objects =
+[
+	"fuel cell",
+	"easter egg",
+	"cake",
+	"ornament",
+	"hologram",
+	"dark matter",
+	"klein bottle",
+	"hypercube",
+]
+
+for o in objects do
+{
+	run_command "drop " o
+}
+
+const saved_machine_state = machine.suspend()
+
+def find_passcode (s)
+{
+	const prompt = "get in by typing "
+	
+	var p = (begin s).find prompt
+	
+	return if p then { p += prompt.length; (p.find " on the keypad") - p }
+}
+
+def attempt (bits)
+{
+	print ""
+	print "Object set #" bits
+	print ""
+	
+	machine.resume saved_machine_state
+	
+	var carried = []
+	
+	for b in 0 -> 8 do
+	{
+		const k = 2^(7 - b)
+		
+		if bits >= k then
+		{
+			bits -= k
+			carried <-- objects[ b ]
+			
+			run_command "take " objects[ b ]
+		}
+	}
+	
+	const response = run_command "west"
+	
+	if const passcode = find_passcode response then
+	{
+		print "\n" "Carrying: " rep carried
+		
+		print "\n    Main airlock passcode:  " passcode "\n"
+	}
+}
+
+attempt 0b01001110  # 0x4e, 78: easter egg, hologram, dark matter, klein bottle
+
+end.
+south
+west
+take fuel cell
+west
+take easter egg
+east
+east
+north
+north
+north
+east
+east
+take cake
+west
+west
+south
+south
+east
+take ornament
+east
+take hologram
+east
+take dark matter
+north
+north
+east
+take klein bottle
+north
+take hypercube
+north
