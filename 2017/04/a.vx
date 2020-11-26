@@ -5,7 +5,6 @@ const bindir = dirname realpath argv[ 0 ]
 const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 const data = (load input_path).lines()
-#const data = ["aa bb", "aa aa"]
 
 var total = 0
 

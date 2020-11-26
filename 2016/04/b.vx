@@ -6,8 +6,6 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 const data = (load input_path).lines()
 
-#const data = ["aaaaa-bbb-z-y-x-123[abxyz]"]
-
 def find
 {
 	const haystack, const needle = _

@@ -6,10 +6,8 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 const data = (load input_path).lines()[ 0 ]
 
-#const lens = [3, 4, 1, 5]
 const lens = [data / ','] map int
 
-#const N = 5
 const N = 256
 
 var list = packed (0 -> N map byte)
