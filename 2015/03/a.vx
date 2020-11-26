@@ -6,8 +6,6 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 const data = (load input_path).lines()[ 0 ]
 
-const sample-data = "^v^v^v^v^v"
-
 const moves = byte^
 [
 	'^': [0, 1],

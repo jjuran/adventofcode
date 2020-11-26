@@ -10,8 +10,6 @@ translate( &data, "\t", "\n" )
 
 data = data.lines() map int
 
-#var data = [0, 2, 7, 0]
-
 const n = data.length
 
 def select
