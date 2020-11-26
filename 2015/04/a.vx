@@ -1,8 +1,5 @@
 #!/usr/bin/env vx
 
-const sample-data = "abcdef"
-
-#const data = sample-data
 const data = "ckczppom"
 
 const n = 5

@@ -7,9 +7,6 @@ const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
 
 const display = (import "status") { OUT <== _ }
 
-const sample-data = "211"
-
-#const data = sample-data
 const data = "1113122113"
 
 var memo = str^[]
