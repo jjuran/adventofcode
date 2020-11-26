@@ -6,21 +6,23 @@ let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 var data = (load input_path).lines() map int
 
+let init = data map i64.encode per packed
+
+var core = vector[ i64, data.length ] init
+
 var total = 0
 
 var ip = 0
 
-let range = 0 -> data.length
-
-var offset
+let range = 0 -> core.length
 
 while ip in range do
 {
 	++total
 	
-	offset = data[ ip ]
+	let offset = core[ ip ]
 	
-	data[ ip ] = offset + +(offset < 3) * 2 - 1
+	core[ ip ] = offset + +(offset < 3) * 2 - 1
 	
 	ip += offset
 }
