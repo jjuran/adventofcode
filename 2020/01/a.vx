@@ -13,6 +13,8 @@ for a in data do
 		if a + b == 2020 then
 		{
 			print (a * b)
+			
+			exit 0
 		}
 	}
 }
