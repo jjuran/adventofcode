@@ -1,0 +1,26 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const digit = '0' .. '9'
+const lower = 'a' .. 'z'
+
+const number = digit+ => int
+const passwd = [ number, '-', number, ' ', lower => {*_}, ": ", lower+ => str ]
+
+def valid (s)
+{
+	var p = begin s
+	
+	const low, const high, const c, const password = p += passwd
+	
+	return +(password[ low - 1 ] == c)  -  +(password[ high - 1 ] == c)
+}
+
+const conforming = data ver valid
+
+print conforming.length
