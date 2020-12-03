@@ -1,0 +1,35 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const height = data.length
+const width  = data[ 0 ].length
+
+def is_tree (x, y)
+{
+	return data[ y ][ x mod width ] == '#'
+}
+
+def count_trees (dx, dy)
+{
+	const trees = 1 -> height div dy ver { is_tree( dx * v, dy * v ) }
+	
+	return trees.length
+}
+
+const slopes = DATA.lines() map { [eval v] }
+
+const product = slopes map { count_trees *v } per Math.product
+
+print product
+
+end.
+1, 1
+3, 1
+5, 1
+7, 1
+1, 2
