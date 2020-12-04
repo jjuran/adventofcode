@@ -1,0 +1,108 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const digit = '0' .. '9'
+const lower = 'a' .. 'z'
+const alnum = digit | lower
+const vchar = alnum | '#'
+const space = ' ' | '\n'
+const xdigit = digit | 'a' .. 'f'
+
+const field = [lower (*) 3] => str
+const value = vchar+ => str
+
+const pair = [field, ":", value] => {head _ => tail _}
+const row = [pair, [space, pair]*] => {[_]}
+const set = [row,  ["\n\n", row]*] => {[_]}
+
+const fields = DATA.lines()
+
+def year_within (range)
+{
+	return lambda (v)
+	{
+		return v.length == 4 and int v in range
+	}
+}
+
+def matches (pattern)
+{
+	return lambda (v)
+	{
+		var p = begin v
+		
+		return (+) (p += pattern) and not p
+	}
+}
+
+def height (v)
+{
+	var p = begin v
+	
+	if const num = p += digit+ => int then
+	{
+		const unit = p.rest
+		
+		if unit == "cm" then
+		{
+			return num in 150 .. 193
+		}
+		
+		if unit == "in" then
+		{
+			return num in 59 .. 76
+		}
+	}
+	
+	return false
+}
+
+const validation = str^
+[
+	byr: year_within (1920 .. 2002),
+	iyr: year_within (2010 .. 2020),
+	eyr: year_within (2020 .. 2030),
+	hgt: height,
+	hcl: matches ['#', xdigit (*) 6],
+	ecl: { _ in ["amb blu brn gry grn hzl oth" / ' '] },
+	pid: matches [digit (*) 9],
+	cid: {true},
+]
+
+def is_valid (passport)
+{
+	const keys = passport map .key
+	
+	const missing = fields ver { not v in keys }
+	
+	if not missing then
+	{
+		const malformed = passport ver { not validation[ v.key ] v.value }
+		
+		return not malformed
+	}
+	
+	return false
+}
+
+var p = begin data
+
+const passports = p += set
+
+const valid_passports = passports ver is_valid
+
+print valid_passports.length
+
+end.
+byr
+iyr
+eyr
+hgt
+hcl
+ecl
+pid
