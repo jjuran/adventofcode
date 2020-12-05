@@ -1,0 +1,16 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+def seat_from_code (code)
+{
+	return eval "0b" translated( code, "FBLR", "0101" )
+}
+
+const maximum = data map seat_from_code per Math.max
+
+print maximum
