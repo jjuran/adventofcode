@@ -1,0 +1,53 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+def parse (s)
+{
+	const words = [s / ' ']
+	
+	const style = words[ 0 ]
+	const color = words[ 1 ]
+	const count = words[ 4 ]
+	
+	if count == "no" then
+	{
+		return style " " color => []
+	}
+	
+	const indices = 1 -> words.length div 4 map {v * 4}
+	
+	const subcolors = indices map
+	{
+		" ".join *(words[ v + 1 .. v + 2 ]) => int words[ v ],
+	}
+	
+	return style " " color => subcolors
+}
+
+const color_map = str^(data map parse)
+
+var count_memo = str^[]
+
+def count_nested (n, color)
+{
+	if color in count_memo then
+	{
+		return count_memo[ color ] * n
+	}
+	
+	const contents = color_map[ color ]
+	
+	const sum = 1 + int (contents map { count_nested (v.value, v.key) }
+	                              per Math.sum)
+	
+	count_memo[ color ] = sum
+	
+	return sum * n
+}
+
+print (count_nested (1, "shiny gold") - 1)
