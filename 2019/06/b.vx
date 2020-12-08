@@ -15,20 +15,11 @@ for row in data do
 	orbits[ b ] = a
 }
 
-var indirect_orbits = str^[]
-
 def count_indirect_orbits (sat)
 {
 	if sat == "COM" then {return 0}
 	
-	if sat in indirect_orbits then
-	{
-		return indirect_orbits[ sat ]
-	}
-	
-	const n = 1 + count_indirect_orbits orbits[ sat ]
-	
-	return indirect_orbits[ sat ] = n
+	return 1 + count_indirect_orbits orbits[ sat ]
 }
 
 var n = 0
