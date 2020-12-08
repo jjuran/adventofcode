@@ -33,21 +33,19 @@ const color_map = str^(data map parse)
 
 var count_memo = str^[]
 
-def count_nested (n, color)
+def count_nested (color)
 {
 	if color in count_memo then
 	{
-		return count_memo[ color ] * n
+		return count_memo[ color ]
 	}
 	
 	const contents = color_map[ color ]
 	
-	const sum = 1 + int (contents map { count_nested (v.value, v.key) }
+	const sum = 1 + int (contents map { v.value * count_nested v.key }
 	                              per Math.sum)
 	
-	count_memo[ color ] = sum
-	
-	return sum * n
+	return count_memo[ color ] = sum
 }
 
-print (count_nested (1, "shiny gold") - 1)
+print (count_nested "shiny gold" - 1)
