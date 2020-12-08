@@ -15,6 +15,29 @@ def parse (s)
 	return [opcode, int operand]
 }
 
+def visited_set (program)
+{
+	var seen = x"00" * n
+	
+	var PC = 0
+	
+	while PC < n and not seen[ PC ] do
+	{
+		const op = program[ PC ]
+		
+		seen[ PC ] = '\xFF'
+		
+		++PC
+		
+		if op[0] == "jmp" then
+		{
+			PC += op[ 1 ] - 1
+		}
+	}
+	
+	return seen
+}
+
 def accumulation (program)
 {
 	var seen = x"00" * n
@@ -45,8 +68,10 @@ def accumulation (program)
 
 const program = data map parse
 
-const jmps = 0 -> n ver { program[ v ][ 0 ] == "jmp" }
-const nops = 0 -> n ver { program[ v ][ 0 ] == "nop" }
+const seen = visited_set program
+
+const jmps = 0 -> n ver { seen[ v ] and program[ v ][ 0 ] == "jmp" }
+const nops = 0 -> n ver { seen[ v ] and program[ v ][ 0 ] == "nop" }
 
 const jmp_fixes = jmps map { var x = program; x[ v ][ 0 ] = "nop"; x }
 const nop_fixes = nops map { var x = program; x[ v ][ 0 ] = "jmp"; x }
