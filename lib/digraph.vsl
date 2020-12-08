@@ -1,0 +1,26 @@
+module digraph
+
+export
+def transposed (graph)
+{
+	var transpose = str^[]
+	
+	for node in graph do
+	{
+		const src = node.key
+		
+		for dst in node.value do
+		{
+			if dst in transpose then
+			{
+				transpose[ dst ] <-- src
+			}
+			else
+			{
+				transpose[ dst ] = [src]
+			}
+		}
+	}
+	
+	return transpose
+}
