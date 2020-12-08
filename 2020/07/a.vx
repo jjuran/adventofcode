@@ -31,35 +31,8 @@ def parse (s)
 	return style " " color => subcolors
 }
 
-const color_map = str^(data map parse)
+const transpose = digraph.transposed (data map parse)
 
-const inverse_map = digraph.transposed color_map
+const count = digraph.closure( transpose, "shiny gold" ).length - 1
 
-var gold_carriers = str^[]
-
-var working_set = [ "shiny gold" ]
-
-while working_set do
-{
-	var new_set = str^[]
-	
-	for c in working_set do
-	{
-		if not c in gold_carriers then
-		{
-			gold_carriers[ c ] = 1
-		
-			if c in inverse_map then
-			{
-				for s in inverse_map[ c ] do
-				{
-					new_set[ s ] = 1
-				}
-			}
-		}
-	}
-	
-	working_set = new_set.keys
-}
-
-print (gold_carriers.length - 1)
+print count
