@@ -70,8 +70,10 @@ const program = data map parse
 
 const seen = visited_set program
 
-const jmps = 0 -> n ver { seen[ v ] and program[ v ][ 0 ] == "jmp" }
-const nops = 0 -> n ver { seen[ v ] and program[ v ][ 0 ] == "nop" }
+const candidates = 0 -> n ver { seen[ v ] and program[ v ][ 1 ] != 1 }
+
+const jmps = candidates ver { program[ v ][ 0 ] == "jmp" }
+const nops = candidates ver { program[ v ][ 0 ] == "nop" }
 
 const jmp_fixes = jmps map { var x = program; x[ v ][ 0 ] = "nop"; x }
 const nop_fixes = nops map { var x = program; x[ v ][ 0 ] = "jmp"; x }
