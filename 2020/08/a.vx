@@ -1,0 +1,41 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+def parse (s)
+{
+	const opcode, const operand = s / ' '
+	
+	return [opcode, int operand]
+}
+
+const program = data map parse
+
+var seen = x"00" * program.length
+
+var ACC = 0
+var PC = 0
+
+while not seen[ PC ] do
+{
+	const op = program[ PC ]
+	
+	seen[ PC ] = '\xFF'
+	
+	++PC
+	
+	if op[0] == "jmp" then
+	{
+		PC += op[ 1 ] - 1
+	}
+	else if op[0] == "acc" then
+	{
+		ACC += op[ 1 ]
+	}
+}
+
+print ACC

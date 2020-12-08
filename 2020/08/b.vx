@@ -1,0 +1,64 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const n = data.length
+
+def parse (s)
+{
+	const opcode, const operand = s / ' '
+	
+	return [opcode, int operand]
+}
+
+def accumulation (program)
+{
+	var seen = x"00" * n
+	
+	var ACC = 0
+	var PC = 0
+	
+	while PC < n and not seen[ PC ] do
+	{
+		const op = program[ PC ]
+		
+		seen[ PC ] = '\xFF'
+		
+		++PC
+		
+		if op[0] == "jmp" then
+		{
+			PC += op[ 1 ] - 1
+		}
+		else if op[0] == "acc" then
+		{
+			ACC += op[1]
+		}
+	}
+	
+	return [ACC] (*) (PC >= n)
+}
+
+const program = data map parse
+
+const jmps = 0 -> n ver { program[ v ][ 0 ] == "jmp" }
+const nops = 0 -> n ver { program[ v ][ 0 ] == "nop" }
+
+const jmp_fixes = jmps map { var x = program; x[ v ][ 0 ] = "nop"; x }
+const nop_fixes = nops map { var x = program; x[ v ][ 0 ] = "jmp"; x }
+
+const fixed_programs = [*jmp_fixes, *nop_fixes]
+
+for fixed in fixed_programs do
+{
+	if const acc = accumulation fixed then
+	{
+		print *acc
+		
+		exit 0
+	}
+}
