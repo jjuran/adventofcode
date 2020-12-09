@@ -28,13 +28,15 @@ def transposed (graph)
 export
 def closure (graph, node)
 {
+	const T = typeof node
+	
 	var result = []
 	
 	var working_set = [ node ]
 	
 	while working_set do
 	{
-		var new_set = str^[]
+		var new_set = T^[]
 		
 		for c in working_set do
 		{
