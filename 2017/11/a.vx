@@ -1,0 +1,39 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const hex_distance = import "hex_distance"
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = [(load input_path).lines()[ 0 ] / ',']
+
+var pale = 0
+var dexter = 0
+var sinister = 0
+
+const axis = str^
+[
+	n: &pale, nw: &dexter, ne: &sinister,
+	s: &pale, se: &dexter, sw: &sinister,
+]
+
+for dir in data do
+{
+	*axis[ dir ] += dir[ 0 ] <=> 'q'  # 'n' < 'q' (-1); 's' > 'q' (1)
+}
+
+print hex_distance (dexter, pale, sinister)
+
+end.
+
+  \ n  /
+nw +--+ ne
+  /    \
+-+      +-
+  \    /
+sw +--+ se
+  / s  \
