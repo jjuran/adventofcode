@@ -24,7 +24,7 @@ def dimension (positions)
 {
 	const n = positions.length
 	
-	var velocities = [0 (*) n]
+	var velocities (int[]) = [0 (*) n]
 	
 	def state
 	{
