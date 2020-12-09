@@ -1,0 +1,36 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines() map int
+
+const n = data.length
+
+def valid (bases, value)
+{
+	for i in bases do
+	{
+		for j in bases do
+		{
+			if i != j and i + j == value then
+			{
+				return true
+			}
+		}
+	}
+	
+	return false
+}
+
+for i in 25 -> n do
+{
+	const bases = Iter.sorted data[ i - 25 -> i ]
+	
+	if not valid (bases, data[ i ]) then
+	{
+		print data[ i ]
+		break
+	}
+}

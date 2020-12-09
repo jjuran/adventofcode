@@ -1,0 +1,72 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines() map int
+
+const n = data.length
+
+def valid (bases, value)
+{
+	for i in bases do
+	{
+		for j in bases do
+		{
+			if i != j and i + j == value then
+			{
+				return true
+			}
+		}
+	}
+	
+	return false
+}
+
+def find_invalid
+{
+	for i in 25 -> n do
+	{
+		const bases = Iter.sorted data[ i - 25 -> i ]
+		
+		if not valid (bases, data[ i ]) then
+		{
+			return i
+		}
+	}
+}
+
+const invalid_index  = find_invalid()
+const invalid_number = data[ invalid_index ]
+
+const preceding = -data[ 0 -> invalid_index ]
+
+var i = 0
+
+def find_last_of_sum (i)
+{
+	var sum = preceding[ i ]
+	
+	do
+	{
+		sum += preceding[ ++i ]
+	}
+	while sum < invalid_number
+	
+	return i (*) (sum == invalid_number)
+}
+
+while true do
+{
+	if preceding[ i ] < invalid_number then
+	{
+		if const j = find_last_of_sum i then
+		{
+			print Math.sum (Iter.min, Iter.max) preceding[ i .. j ]
+			break
+		}
+	}
+	
+	++i
+}
