@@ -10,8 +10,7 @@ const adapters = Iter.sorted data
 
 const diffs = [1, *(adapters gap {b - a}), 3]
 
-var factors = []
-
+var x = 1
 var n = 0
 
 const combos_lookup = [2, 4, 7]
@@ -26,13 +25,11 @@ for d in diffs do
 	{
 		if n > 1 then
 		{
-			factors <-- combos_lookup[ n - 2 ]
+			x *= combos_lookup[ n - 2 ]
 		}
 		
 		n = 0
 	}
 }
-
-const x = factors per Math.product
 
 print x
