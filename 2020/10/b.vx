@@ -1,0 +1,45 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines() map int
+
+const adapters = Iter.sorted data
+
+var diffs = [1]
+
+for i in 1 -> adapters.length do
+{
+	diffs <-- adapters[ i ] - adapters[ i - 1 ]
+}
+
+diffs <-- 3
+
+var factors = []
+
+var n = 0
+
+const combos_lookup = [2, 4, 7]
+
+for d in diffs do
+{
+	if d == 1 then
+	{
+		++n
+	}
+	else
+	{
+		if n > 1 then
+		{
+			factors <-- combos_lookup[ n - 2 ]
+		}
+		
+		n = 0
+	}
+}
+
+const x = factors per Math.product
+
+print x
