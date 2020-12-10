@@ -8,14 +8,7 @@ const data = (load input_path).lines() map int
 
 const adapters = Iter.sorted data
 
-var diffs = [1]
-
-for i in 1 -> adapters.length do
-{
-	diffs <-- adapters[ i ] - adapters[ i - 1 ]
-}
-
-diffs <-- 3
+const diffs = [1, *(adapters gap {b - a}), 3]
 
 def count (x) { (diffs ver {v == x}).length }
 
