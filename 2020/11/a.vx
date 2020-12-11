@@ -1,0 +1,89 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const n = data.length
+
+const lines = data.lines()
+
+const width = lines[ 0 ].length
+const stride = width + 1
+const height = lines.length
+
+const seats = 0 -> n ver { data[ v ] == 'L' }
+
+def find_neighbors (i)
+{
+	display "" i
+	
+	const x = i mod stride
+	const y = i div stride
+	
+	const xs = [x - 1, x, x + 1] ver {v in 0 -> width}
+	const ys = [y - 1, y, y + 1] ver {v in 0 -> height}
+	
+	const nearby = ys map {v * stride} map { const y = v; *(xs map {v + y}) }
+	
+	return nearby ver {v != i and data[ v ] == 'L'}
+}
+
+const neighbor_sets = 0 -> n map find_neighbors
+
+var grid = data
+
+def popcount (i)
+{
+	return (neighbor_sets[ i ] ver {grid[ v ] == '#'}).length
+}
+
+def advance (i)
+{
+	var c = grid[ i ]
+	
+	const n = popcount i
+	
+	if n == 0 then
+	{
+		c = '#'
+	}
+	else if n >= 4 then
+	{
+		c = 'L'
+	}
+	
+	return c
+}
+
+def step
+{
+	var work = grid
+	
+	for i in seats do
+	{
+		work[ i ] = advance i
+	}
+	
+	grid <-> work
+	
+	return grid != work
+}
+
+var steps = 0
+
+display "0"
+
+while step() do
+{
+	display "" (grid ver {v == '#'}).length
+}
+
+print ""
