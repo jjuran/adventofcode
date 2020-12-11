@@ -40,18 +40,15 @@ const neighbor_sets = 0 -> n map find_neighbors
 
 var grid = data
 
-def popcount (i)
-{
-	return (neighbor_sets[ i ] ver {grid[ v ] == '#'}).length
-}
-
 def step
 {
 	var work = grid
 	
 	for i in seats do
 	{
-		work[ i ] = ("#" grid[ i ] "LL")[ (popcount i + 2) div 3 ]
+		const popcount = (neighbor_sets[ i ] ver {grid[ v ] == '#'}).length
+		
+		work[ i ] = ("#" grid[ i ] "LL")[ (popcount + 2) div 3 ]
 	}
 	
 	grid <-> work
