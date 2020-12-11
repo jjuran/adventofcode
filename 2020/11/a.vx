@@ -45,21 +45,13 @@ def popcount (i)
 	return (neighbor_sets[ i ] ver {grid[ v ] == '#'}).length
 }
 
-def advance (i)
-{
-	const c = grid[ i ]
-	const n = popcount i
-	
-	return ("#" c "LL")[ (n + 2) div 3 ]  # 0 / 1 .. 3 / 4 .. 8
-}
-
 def step
 {
 	var work = grid
 	
 	for i in seats do
 	{
-		work[ i ] = advance i
+		work[ i ] = ("#" grid[ i ] "LL")[ (popcount i + 2) div 3 ]
 	}
 	
 	grid <-> work
