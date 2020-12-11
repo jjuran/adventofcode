@@ -70,20 +70,10 @@ def popcount (i)
 
 def advance (i)
 {
-	var c = grid[ i ]
-	
+	const c = grid[ i ]
 	const n = popcount i
 	
-	if n == 0 then
-	{
-		c = '#'
-	}
-	else if n >= 5 then
-	{
-		c = 'L'
-	}
-	
-	return c
+	return ("#" c "L")[ (n + 3) div 4 ]  # 0 / 1 .. 4 / 5 .. 8
 }
 
 def step
