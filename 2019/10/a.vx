@@ -59,14 +59,30 @@ def count_asteroids( grid, index )
 	const x = index mod width
 	const y = index div width
 	
-	for i in 0 -> width do
+	mark_obstructed_along_ray( &grid, x, y,  1,  0 )
+	mark_obstructed_along_ray( &grid, x, y, -1,  0 )
+	
+	mark_obstructed_along_ray( &grid, x, y,  0,  1 )
+	mark_obstructed_along_ray( &grid, x, y,  0, -1 )
+	
+	mark_obstructed_along_ray( &grid, x, y,  1,  1 )
+	mark_obstructed_along_ray( &grid, x, y,  1, -1 )
+	mark_obstructed_along_ray( &grid, x, y, -1,  1 )
+	mark_obstructed_along_ray( &grid, x, y, -1, -1 )
+	
+	for i in 1 -> width do
 	{
-		for j in +(i == 0) -> height do
+		for j in i + 1 -> height do
 		{
 			mark_obstructed_along_ray( &grid, x, y,  i,  j )
 			mark_obstructed_along_ray( &grid, x, y,  i, -j )
 			mark_obstructed_along_ray( &grid, x, y, -i,  j )
 			mark_obstructed_along_ray( &grid, x, y, -i, -j )
+			
+			mark_obstructed_along_ray( &grid, x, y,  j,  i )
+			mark_obstructed_along_ray( &grid, x, y,  j, -i )
+			mark_obstructed_along_ray( &grid, x, y, -j,  i )
+			mark_obstructed_along_ray( &grid, x, y, -j, -i )
 		}
 	}
 	
