@@ -1,6 +1,11 @@
 #!/usr/bin/env vx
 
 const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const modular = import "modular"
 
 const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
@@ -42,28 +47,9 @@ def scale (x)
 
 var matrix = id_matrix
 
-def modpower (b, e, m)
-{
-	var result = 1
-	
-	while e > 0 do
-	{
-		if e % 2 then
-		{
-			result = result * b mod m
-		}
-		
-		b = b * b mod m
-		
-		e = e div 2
-	}
-	
-	return result
-}
-
 def radix (inc)
 {
-	const inverse = modpower( inc, (N - 2), N )
+	const inverse = modular.power( inc, (N - 2), N )
 	
 	matrix = matrix_mul( matrix, scale inverse )
 	

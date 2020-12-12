@@ -1,0 +1,21 @@
+module modular
+
+export
+def power (base, exponent, m)
+{
+	var result = 1
+	
+	while exponent > 0 do
+	{
+		if exponent % 2 then
+		{
+			result = result * base mod m
+		}
+		
+		base = base * base mod m
+		
+		exponent /:= 2
+	}
+	
+	return result
+}

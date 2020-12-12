@@ -1,6 +1,11 @@
 #!/usr/bin/env vx
 
 const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const modular = import "modular"
 
 const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
@@ -41,32 +46,13 @@ def diagonalize (row, col)
 	return i
 }
 
-def modpower (b, e, m)
-{
-	var result = 1
-	
-	while e > 0 do
-	{
-		if e % 2 then
-		{
-			result = result * b mod m
-		}
-		
-		b = b * b mod m
-		
-		e = e div 2
-	}
-	
-	return result
-}
-
 const seed    = 20151125
 const factor  = 252533
 const modulus = 33554393
 
 def generate_nth_code (index)
 {
-	return seed * modpower( factor, index, modulus ) % modulus
+	return seed * modular.power( factor, index, modulus ) % modulus
 }
 
 print generate_nth_code diagonalize (row, col)
