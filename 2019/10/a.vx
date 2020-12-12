@@ -74,6 +74,11 @@ def count_asteroids( grid, index )
 	{
 		for j in i + 1 -> height do
 		{
+			if i != 1 and j mod i == 0 then
+			{
+				continue
+			}
+			
 			mark_obstructed_along_ray( &grid, x, y,  i,  j )
 			mark_obstructed_along_ray( &grid, x, y,  i, -j )
 			mark_obstructed_along_ray( &grid, x, y, -i,  j )
