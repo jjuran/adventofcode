@@ -31,13 +31,6 @@ def mark_obstructed_along_ray( gridref, x, y, dx, dy )
 	{
 		const index = x + y * width
 		
-		if (*gridref)[ index ] == 'X' then
-		{
-			# This spot was already marked, presumably by an earlier dx/dy pass
-			# that's a factor of this one.
-			break
-		}
-		
 		if obstructed then
 		{
 			(*gridref)[ index ] = 'X'
@@ -74,7 +67,7 @@ def count_asteroids( grid, index )
 	{
 		for j in i + 1 -> height do
 		{
-			if i != 1 and j mod i == 0 then
+			if i != 1 and str (j/i) != j "/" i then
 			{
 				continue
 			}
