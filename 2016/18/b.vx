@@ -13,8 +13,6 @@ const N = 400000
 
 var data = (load input_path).lines()[ 0 ]  # e.g. ".^^.^.^^^^"
 
-var total = (data ver { v == '.' }).length
-
 translate( &data, ".^", "\x00\xFF" )
 
 var odds = packed mince data             # e.g. ".^^^^"  i.e. "01111"
@@ -24,17 +22,21 @@ assert even.size == odds.size
 
 const n = even.size
 
+var total = (data ver ...).length
+
 for i in 1 -> N do
 {
-	if i mod 2^8 == 0 then
+	if i mod 2^9 == 0 then
 	{
 		display "" i
 	}
 	
 	odds, even = x"00" even[ 0 -> n - 1 ] ~ even, odds ~ odds[ 1 -> n ] x"00"
 	
-	total += (odds even ver {v == '\0'}).length
+	total += (odds even ver ...).length
 }
+
+total = (2 * n * N - total)
 
 display ""
 
