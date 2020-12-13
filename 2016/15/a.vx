@@ -1,6 +1,11 @@
 #!/usr/bin/env vx
 
 const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const modular = import "modular"
 
 const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
@@ -30,14 +35,9 @@ for disc in initial_discs do
 {
 	const dt, const m, const k = *disc
 	
-	var delay = -(k + T + dt) mod m
+	const delay = -(k + T + dt) mod m
 	
-	while delay mod M != 0 do
-	{
-		delay += m
-	}
-	
-	T += delay
+	T += modular.alignment (delay, m, M)
 	M *= m
 }
 
