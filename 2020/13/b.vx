@@ -1,0 +1,39 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()[ 1 ]
+
+const buses = [translated (data, "x", "0") / ','] map int
+
+const schedule = 0 -> buses.length map { buses[ v ] => v } ver .key
+
+def mod_align (base, m, M)
+{
+	var increment = -base
+	
+	while increment mod m != 0 do
+	{
+		increment += M
+	}
+	
+	return base + increment
+}
+
+var T = 0
+var M = 1  # super modulus
+
+for departure in schedule do
+{
+	const m  = departure.key
+	const dt = departure.value
+	
+	const delay = -(T + dt) mod m
+	
+	T += mod_align (delay, m, M)
+	M *= m
+}
+
+print T
