@@ -22,7 +22,7 @@ assert even.size == odds.size
 
 const n = even.size
 
-var total = (data ver ...).length
+var total = Iter.popcount data
 
 for i in 1 -> N do
 {
@@ -33,7 +33,7 @@ for i in 1 -> N do
 	
 	odds, even = x"00" even[ 0 -> n - 1 ] ~ even, odds ~ odds[ 1 -> n ] x"00"
 	
-	total += (odds even ver ...).length
+	total += Iter.popcount odds + Iter.popcount even
 }
 
 total = (2 * n * N - total)
