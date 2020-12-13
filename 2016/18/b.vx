@@ -11,41 +11,51 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 const N = 400000
 
-var data = " " load input_path  # e.g. " .^^.^.^^^^\n"
-
-data[ data.length - 1 ] = ' '
+var data = (load input_path).lines()[ 0 ]  # e.g. ".^^.^.^^^^"
 
 var total = (data ver { v == '.' }).length
 
-def next (row)
-{
-	var result = row
-	
-	for i in 1 -> row.length - 1 do
-	{
-		const left  = row[ i - 1 ] == '^'
-		const right = row[ i + 1 ] == '^'
-		
-		const is_safe = +(left == right)
-		
-		result[ i ] = "^."[ is_safe ]
-		
-		total += is_safe
-	}
-	
-	return result
-}
+translate( &data, ".^", "\x00\xFF" )
+
+var odds = packed mince data             # e.g. ".^^^^"  i.e. "01111"
+var even = packed mince substr(data, 1)  # e.g. "^..^^"  i.e. "10011"
+
+assert even.size == odds.size
+
+const n = even.size
 
 for i in 1 -> N do
 {
-	if i mod 2^7 == 0 then
+	if i mod 2^8 == 0 then
 	{
-		display data i
+		display "" i
 	}
 	
-	data = next data
+	odds, even = x"00" even[ 0 -> n - 1 ] ~ even, odds ~ odds[ 1 -> n ] x"00"
+	
+	total += (odds even ver {v == '\0'}).length
 }
 
 display ""
 
 print total
+
+end.
+
+def generate_odd_from_even (code)
+{
+	# E.g. "01001" ~ "10011" --> "11010"
+	#        ^^^^     ^^^^^       vvvvv
+	#        2468     24680       13579
+	
+	return x"00" code[ 0 -> n - 1 ] ~ code
+}
+
+def generate_even_from_odd (code)
+{
+	# E.g. "01111" ~ "11110" --> "10001"
+	#       ^^^^^     ^^^^        vvvvv
+	#       13579     3579        24680
+	
+	return code ~ code[ 1 -> n ] x"00"
+}
