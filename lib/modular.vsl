@@ -19,3 +19,16 @@ def power (base, exponent, m)
 	
 	return result
 }
+
+export
+def alignment (base, m, M)
+{
+	var increment = -base
+	
+	while increment mod m != 0 do
+	{
+		increment += M
+	}
+	
+	return base + increment
+}
