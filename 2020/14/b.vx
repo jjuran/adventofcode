@@ -1,0 +1,113 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+var onesmask
+var floaters
+
+var memory = int^[]
+
+def X_bits (mask)
+{
+	mask = translated (-mask, "01X", "\x00\x00\x01")
+	
+	return 0 -> 36 map { v (*) u8 mask[ v ] } map byte per packed
+}
+
+def set_mask (mask)
+{
+	onesmask = unbin translated (mask, "X", "0")
+	floaters = X_bits mask
+}
+
+def make_mask (bit)
+{
+	const x = unhex hex 2^bit;
+	
+	return (x"00" * (5 - x.size)) x
+}
+
+const masks = vector[ vector[byte, 5] ] packed (0 -> 36 map make_mask)
+
+def store_all (addr, floaters, data)
+{
+	if not floaters then
+	{
+		# We expect about 80,000 stored addresses from real input,
+		# which is excessive for our current array implementation.
+		# Unfortunately, things quickly bog down if we just write
+		#
+		#     memory[ addr ] = data
+		#
+		# Instead, use a segmented memory strategy to prevent the
+		# top-level array from getting too big and causing issues.
+		
+		const hi = addr[ 0 -> 2 ]
+		const lo = addr[ 2 -> 5 ]
+		
+		if not hi in memory then
+		{
+			memory[ hi ] = int^[]
+		}
+		
+		memory[ hi ][ lo ] = data
+		
+		return ()
+	}
+	
+	const alt = addr ~ packed masks[ u8 floaters[ 0 ] ]
+	
+	floaters = floaters[ 1 -> floaters.size ]
+	
+	store_all (addr, floaters, data)
+	store_all (alt,  floaters, data)
+}
+
+def store (addr, data)
+{
+	addr = (x"00" * (5 - addr.size)) addr
+	
+	addr = addr | onesmask
+	
+	store_all (addr, floaters, data)
+}
+
+var i = 0
+const n = data.length
+
+for line in data do
+{
+	display "" ++i "/" n
+	
+	const dst, const eq, const src = line / ' '
+	
+	if dst == "mask" then
+	{
+		set_mask src
+	}
+	else
+	{
+		const p = (begin dst + 4)
+		
+		const q = p.find ']'
+		
+		const addr = unhex hex int (q - p)
+		const data = int src
+		
+		store (addr, data)
+	}
+}
+
+display ""
+
+const sum = memory.values map { v.values per Math.sum } per Math.sum
+print sum

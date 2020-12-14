@@ -1,0 +1,51 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+var maskdata
+var metamask
+
+var memory = int^[]
+
+def set_mask (mask)
+{
+	maskdata =   unbin translated (mask, "X",  "0")
+	metamask = ~(unbin translated (mask, "X0", "01"))
+}
+
+def store (addr, data)
+{
+	const bytes = (x"00" * (5 - data.size)) data  # left-pad with NUL bytes
+	
+	data = unhex "0x" hex (bytes & metamask | maskdata)
+	
+	memory[ addr ] = data
+}
+
+for line in data do
+{
+	const dst, const eq, const src = line / ' '
+	
+	if dst == "mask" then
+	{
+		set_mask src
+	}
+	else
+	{
+		const p = (begin dst + 4)
+		
+		const q = p.find ']'
+		
+		const addr = int (q - p)
+		const data = unhex hex int src
+		
+		store (addr, data)
+	}
+}
+
+const sum = memory.values per Math.sum
+print sum
