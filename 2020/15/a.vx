@@ -1,0 +1,32 @@
+#!/usr/bin/env vx
+
+const data = if argc > 1 then {argv[ 1 ]} else {"10,16,6,0,1,17"}
+
+const starting = [data / ','] map int
+
+const N = 2020
+
+var seen = int^[]
+
+const n = starting.length
+
+for T0 in 1 -> n do
+{
+	seen[ starting[ T0 - 1 ] ] = T0
+}
+
+var next = starting[ n - 1 ]
+
+for T in n -> N do
+{
+	const x = 
+		if next in seen
+			then { T - seen[ next ] }
+			else { 0 }
+	
+	seen[ next ] = T
+	
+	next = x
+}
+
+print next

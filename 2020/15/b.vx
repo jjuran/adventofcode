@@ -1,0 +1,52 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const data = if argc > 1 then {argv[ 1 ]} else {"10,16,6,0,1,17"}
+
+const starting = [data / ','] map int
+
+def native (T)
+{
+	const fields = size:   T.size,
+	               encode: T.encode-native,
+	               decode: T.decode-native
+	
+	return record fields
+}
+
+const N = 30 * 10^6
+
+var seen = vector[native u32] N
+
+const n = starting.length
+
+for T0 in 1 -> n do
+{
+	seen[ starting[ T0 - 1 ] ] = T0
+}
+
+var next = starting[ n - 1 ]
+
+for T in n -> N do
+{
+	if T mod 2^13 == 0 then
+	{
+		display (T div 2^13) "/" (N div 2^13)
+	}
+	
+	const t = seen[ next ] or T
+	
+	seen[ next ] = T
+	
+	next = T - t
+}
+
+display ""
+
+print next
