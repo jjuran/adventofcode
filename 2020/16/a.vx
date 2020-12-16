@@ -1,0 +1,52 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const digit = '0' .. '9'
+const value = digit+ => int
+const range = [value, '-', value] => {head _ .. tail _}
+const choice = [range, " or ", range] => {[_]}
+
+const p = (begin data).find "\n\n" + 1
+
+def parse_rule (line)
+{
+	var p = (begin line).find ": "
+	
+	const field = p.past
+	
+	p += 2
+	
+	return field => (p += choice)
+}
+
+const biranges = p.past.lines() map .value * parse_rule
+
+const q = p.find "\n\n" + 2
+
+const tickets = (q.find('\n') + 1).rest.lines() map { [v / ','] map int }
+
+def totally_invalid (value)
+{
+	for r in biranges do
+	{
+		if value in r[0] or value in r[1] then
+		{
+			return false
+		}
+	}
+	
+	return true
+}
+
+const n_errors = tickets map { *v } ver totally_invalid per Math.sum
+print n_errors

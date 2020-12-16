@@ -1,0 +1,158 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const digit = '0' .. '9'
+const value = digit+ => int
+const range = [value, '-', value] => {head _ .. tail _}
+const choice = [range, " or ", range] => {[_]}
+
+const p = (begin data).find "\n\n" + 1
+
+def parse_rule (line)
+{
+	var p = (begin line).find ": "
+	
+	const field = p.past
+	
+	p += 2
+	
+	return field => (p += choice)
+}
+
+const rules = p.past.lines() map parse_rule
+
+const biranges = rules map .value
+
+const n_fields = rules.length
+
+const q = p.find "\n\n"
+
+const my_ticket = [(q - (p.find(':') + 2)) / ','] map int
+
+const tickets = ((q + 2).find('\n') + 1).rest.lines() map { [v / ','] map int }
+
+def totally_invalid (value)
+{
+	for r in biranges do
+	{
+		if value in r[0] or value in r[1] then
+		{
+			return false
+		}
+	}
+	
+	return true
+}
+
+const valid_tickets = tickets ver { not (v ver totally_invalid) }
+
+var validity_matrix = x"ff" * n_fields^2
+
+var field_names = ["" (*) n_fields]
+var field_state =  " " * n_fields
+
+var n_named = 0
+
+def check_field (f)
+{
+	const i0 = f * n_fields
+	
+	const subvector = validity_matrix[ i0 -> i0 + n_fields ]
+	
+	if Iter.popcount subvector == 1 then
+	{
+		const index = ((begin subvector).find '\xff').past.size
+		
+		const name = rules[ index ].key
+		
+		field_names[ f ] = name
+		field_state[ f ] = '*'
+		
+		++n_named
+		
+		for i in 0 -> n_fields do
+		{
+			if field_state[ i ] == ' ' and i != f then
+			{
+				validity_matrix[ i * n_fields + index ] = '\0'
+				
+				check_field i
+			}
+		}
+		
+		return true
+	}
+	
+	return false
+}
+
+def examine (f, r)
+{
+	const i = f * n_fields + r
+	
+	const birange = rules[ r ].value
+	
+	for t in valid_tickets do
+	{
+		const v = t[ f ]
+		
+		if not (v in birange[0] or v in birange[1]) then
+		{
+			validity_matrix[ i ] = '\0'
+			
+			if check_field f then
+			{
+				return true
+			}
+		}
+	}
+	
+	return false
+}
+
+while n_named < n_fields do
+{
+	for f in 0 -> n_fields do
+	{
+		if field_state[ f ] == ' ' then
+		{
+			var state = field_state
+			
+			state[ f ] = '.'
+			
+			display "    [" state "]    "
+			
+			for r in 0 -> n_fields do
+			{
+				if field_state[ f ] == '*' or examine (f, r) then
+				{
+					break
+				}
+			}
+		}
+	}
+}
+
+def relevant (name)
+{
+	const prefix = "departure"
+	
+	return substr (name, 0, prefix.length) == prefix
+}
+
+const relevant_field_ids = 0 -> n_fields ver { relevant field_names[ v ] }
+
+display ""
+
+const composite = my_ticket[ relevant_field_ids ] per Math.product
+print composite
