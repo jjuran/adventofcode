@@ -55,14 +55,14 @@ translate (&grid, ". \n", "\0" * 3)
 const gridlen = stride * height
 const cubelen = gridlen * depth
 
+const xs    = [-1, 0, 1]
+const xys   = xs   map { v - stride,  v, v + stride  }
+const xyzs  = xys  map { v - gridlen, v, v + gridlen }
+const xyzws = xyzs map { v - cubelen, v, v + cubelen } ver ...
+
 def neighbors (i)
 {
-	const xs    = [-1, 0, 1]
-	const xys   = xs   map { v - stride,  v, v + stride  }
-	const xyzs  = xys  map { v - gridlen, v, v + gridlen }
-	const xyzws = xyzs map { v - cubelen, v, v + cubelen }
-	
-	return xyzws ver ... map { grid[ i + v ] }
+	return xyzws map { grid[ i + v ] }
 }
 
 # 2 -> no change

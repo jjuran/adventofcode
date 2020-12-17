@@ -50,13 +50,13 @@ const gridlen = stride * height
 
 translate (&grid, ". ", "\0" * 2)
 
+const xs   = [-1, 0, 1]
+const xys  = xs  map { v - stride,  v, v + stride  }
+const xyzs = xys map { v - gridlen, v, v + gridlen } ver ...
+
 def neighbors (i)
 {
-	const xs   = [-1, 0, 1]
-	const xys  = xs  map { v - stride,  v, v + stride  }
-	const xyzs = xys map { v - gridlen, v, v + gridlen }
-	
-	return xyzs ver ... map { grid[ i + v ] }
+	return xyzs map { grid[ i + v ] }
 }
 
 # 2 -> no change
