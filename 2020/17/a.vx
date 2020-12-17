@@ -1,0 +1,113 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const N = 6
+
+const lines = data.lines()
+
+var depth = 1
+var width = lines[ 0 ].length
+var height = lines.length
+var stride
+
+def expand (grid)
+{
+	const n = N + 1
+	
+	depth  += n * 2
+	width  += n * 2
+	height += n * 2
+	
+	stride = width
+	
+	const blank_row = (" " * width)
+	const blank_grid = blank_row * height
+	
+	const x_margin = " " * n
+	const y_margin = blank_row * n
+	const z_margin = blank_grid * n
+	
+	const lines = str (grid.lines() map { x_margin v x_margin })
+	
+	grid = y_margin lines y_margin
+	
+	return z_margin grid z_margin
+}
+
+var grid = expand data
+
+const gridlen = stride * height
+
+translate (&grid, ". ", "\0" * 2)
+
+def neighbors (i)
+{
+	const xs   = [-1, 0, 1]
+	const xys  = xs  map { v - stride,  v, v + stride  }
+	const xyzs = xys map { v - gridlen, v, v + gridlen }
+	
+	return xyzs ver ... map { grid[ i + v ] }
+}
+
+# 2 -> no change
+# 3 -> active
+# * -> inactive
+
+var next_state = "\0" * 26
+
+next_state[ 3 ] = '#'
+
+const half_depth = depth div 2
+
+def iterate (i)
+{
+	display "" i
+	
+	var work = grid
+	
+	const skip = N - i
+	
+	for z in skip .. half_depth do
+	{
+		const plane = z * gridlen
+		
+		for y in skip -> height - skip do
+		{
+			const row = plane + y * stride
+			
+			for x in skip -> width - skip do
+			{
+				const i = row + x
+				
+				const n = Iter.popcount neighbors i
+				
+				next_state[ 2 ] = grid[ i ]
+				
+				work[ i ] = next_state[ n ]
+			}
+		}
+	}
+	
+	const planes = [work / -gridlen]
+	
+	grid = str (planes[ 0 .. half_depth ], -planes[ 0 -> half_depth ])
+}
+
+for i in 0 -> N do
+{
+	iterate i
+}
+
+display ""
+
+print Iter.popcount grid

@@ -1,0 +1,130 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const N = 6
+
+const lines = data.lines()
+
+var depth = 1
+var width = lines[ 0 ].length
+var stride = width + 1
+var height = lines.length
+
+def expand (grid)
+{
+	const n = N + 1
+	
+	depth  += n * 2
+	width  += n * 2
+	height += n * 2
+	
+	stride = width + 1
+	
+	const blank_row = (" " * width) "\n"
+	const blank_grid = blank_row * height
+	const blank_cube = blank_grid * depth
+	
+	const x_margin = " " * n
+	const y_margin = blank_row * n
+	const z_margin = blank_grid * n
+	const w_margin = blank_cube * n
+	
+	const lines = str (grid.lines() map { x_margin v x_margin "\n" })
+	
+	grid = y_margin lines y_margin
+	
+	const cube = z_margin grid z_margin
+	
+	return w_margin cube w_margin
+}
+
+var grid = expand data
+
+translate (&grid, ". \n", "\0" * 3)
+
+const gridlen = stride * height
+const cubelen = gridlen * depth
+
+def neighbors (i)
+{
+	const xs    = [-1, 0, 1]
+	const xys   = xs   map { v - stride,  v, v + stride  }
+	const xyzs  = xys  map { v - gridlen, v, v + gridlen }
+	const xyzws = xyzs map { v - cubelen, v, v + cubelen }
+	
+	return xyzws ver ... map { grid[ i + v ] }
+}
+
+# 2 -> no change
+# 3 -> active
+# * -> inactive
+
+var next_state = "\0" * 80
+
+next_state[ 3 ] = '#'
+
+const half_depth = depth div 2
+
+def reflect (sequence, midpoint)
+{
+	return sequence[ 0 .. midpoint ], -sequence[ 0 -> midpoint ]
+}
+
+def iterate (i)
+{
+	var work = grid
+	
+	const skip = N - i
+	
+	for w in skip .. half_depth do
+	{
+		display "" i ": " w
+		
+		const cube = w * cubelen
+		
+		for z in skip .. half_depth do
+		{
+			const plane = cube + z * gridlen
+			
+			for y in skip -> height - skip do
+			{
+				const row = plane + y * stride
+				
+				for x in skip -> width - skip do
+				{
+					const i = row + x
+					
+					const n = Iter.popcount neighbors i
+					
+					next_state[ 2 ] = grid[ i ]
+					
+					work[ i ] = next_state[ n ]
+				}
+			}
+		}
+	}
+	
+	const cubes = [work / -cubelen][ 0 .. half_depth ]
+	const cubuc = cubes map { str reflect ([v / -gridlen], half_depth) }
+	
+	grid = str reflect (cubuc, half_depth)
+}
+
+for i in 0 -> N do
+{
+	iterate i
+}
+
+display ""
+
+print Iter.popcount grid
