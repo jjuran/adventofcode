@@ -1,0 +1,61 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const digit = ('0' .. '9') => int
+
+const ops = byte^['*': Math.product, '+': Math.sum]
+
+var p;
+
+def calc
+{
+	def term
+	{
+		const x
+		
+		if *p == '(' then
+		{
+			++p
+			x = calc()
+			p += ')'
+		}
+		else
+		{
+			x = p += digit
+		}
+		
+		return x
+	}
+	
+	var x = term()
+	
+	while p and *p != ')' do
+	{
+		p += ' '
+		
+		const op = *p++
+		
+		p += ' '
+		
+		const y = term()
+		
+		x = ops[ op ](x, y)
+	}
+	
+	return x
+}
+
+def calculate (expr)
+{
+	p = begin expr
+	
+	return calc p
+}
+
+const sum = data map calculate per Math.sum
+print sum
