@@ -1,0 +1,96 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const digit = '0' .. '9'
+const lower = 'a' .. 'z'
+const letter = lower => str
+const number = digit+ => int
+const quote = ['"', letter, '"']
+const seq = [number, [' ', number]*] => {[_]}
+const alt = [seq, " | ", seq]
+const chain = (alt | seq) => {[_]}
+const recipe = quote | chain
+const rule = [number, ": ", recipe] => {head _ => tail _}
+
+def parse (line)
+{
+	var p = begin line
+	
+	return p += rule
+}
+
+var p = (begin data).find "\n\n"
+
+++p
+
+const parsed = p.past.lines() map parse
+
+++p
+
+const messages = p.rest.lines()
+
+var rules = int^parsed
+
+rules[  8 ] = [[42], [42, 8]]
+rules[ 11 ] = [[42, 31], [42, 11, 31]]
+
+def conforms (p, r)
+{
+	const recipe = rules[ r ]
+	
+	if recipe isa str then
+	{
+		return if p += recipe then {p}
+	}
+	
+	var matches = []
+	
+	for alternative in recipe do
+	{
+		var submatches = [p]
+		
+		for step in alternative do
+		{
+			submatches = submatches map { conforms (v, step) }
+			
+			if not submatches then
+			{
+				break
+			}
+		}
+		
+		matches <-- *submatches
+	}
+	
+	return *matches
+}
+
+def conforming_message (msg)
+{
+	const matches = [conforms (begin msg ".", 0)]
+	
+	return bool (matches ver { *v == '.' })
+}
+
+var n_conforming = 0
+
+for msg in messages do
+{
+	display "" n_conforming "  " msg
+	
+	n_conforming += int conforming_message msg
+}
+
+display ""
+
+print n_conforming
