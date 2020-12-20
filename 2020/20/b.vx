@@ -1,0 +1,518 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const edge = 10
+
+const digit = '0' .. '9'
+const number = digit+ => int
+const heading = ["Tile ", number, ":\n"]
+const cell = '.' | '#'
+const row = [cell+, '\n']
+const grid = [row+ => str]
+const tile = [heading, grid, '\n'] => {head _ => tail _}
+const grammar = tile+ => {[_]}
+
+def parse
+{
+	var p = begin data
+	
+	return p += grammar
+}
+
+var tileset = int^parse()
+
+def canon (edge)
+{
+	return Math.min (edge, -edge)
+}
+
+def top_edge (grid)
+{
+	return grid[ 0 -> edge ]
+}
+
+def bottom_edge (grid)
+{
+	return (-grid)[ 1 .. edge ]
+}
+
+def left_edge (grid)
+{
+	return -mince( grid, edge + 1 )
+}
+
+def right_edge (grid)
+{
+	return -mince( substr (-grid, 1), edge + 1 )
+}
+
+const each_edge = top_edge, left_edge, bottom_edge, right_edge
+
+def map_edges
+{
+	var edges = []
+	
+	for t in tileset do
+	{
+		edges <-- *([each_edge t.value] map { canon v => t.key })
+	}
+	
+	var edge_map = str^[]
+	
+	for e1 in edges do
+	{
+		edge_map[ e1.key ] = []
+	}
+	
+	for e2 in edges do
+	{
+		edge_map[ e2.key ] <-- e2.value
+	}
+	
+	return edge_map
+}
+
+const adjacency = map_edges()
+
+const shared_adjacency = adjacency ver { v.value.length > 1 }  # not map edges
+
+def score_tiles_by_unique_edges
+{
+	var scores = int^[]
+	
+	for adj in adjacency do
+	{
+		if adj.value.length == 1 then
+		{
+			const tile_id = *adj.value
+			
+			if tile_id in scores then
+			{
+				++scores[ tile_id ]
+			}
+			else
+			{
+				scores[ tile_id ] = 1
+			}
+		}
+	}
+	
+	return [*scores]
+}
+
+const scores = score_tiles_by_unique_edges()
+
+const surveys = int^(tileset map { v.key => [each_edge v.value] })
+
+def find_edge_in_edges (edge, edges)
+{
+	const edge_indices = 0 .. 3 map { const e = edges[ v ]; e => v, -e => v }
+	
+	return (str^edge_indices)[ edge ]
+}
+
+const tiles_per_edge = (scores ver { v.value == 1 }).length / 4 + 2
+const tiles_per_grid = tiles_per_edge^2
+
+var tile_grid = [null (*) tiles_per_grid]
+
+def vflip (grid)
+{
+	return "\n".join (*-grid.lines(), "")
+}
+
+def hflip (grid)
+{
+	return "\n".join (*(grid.lines() map {-v}), "")
+}
+
+def flip2 (grid)
+{
+	return "\n".join (*(-grid.lines() map {-v}), "")
+}
+
+def transpose (grid)
+{
+	const lines = grid.lines()
+	
+	const n = lines[ 0 ].length + 1
+	
+	return 0 -> n map { mince( substr( grid, v ), n ) "\n" } per str
+}
+
+const grid_transforms =
+[
+	...,    # no-op
+	vflip,  # vflip only
+	hflip,  # hflip only
+	flip2,  # half-circle rotation
+	transpose,          # transposed
+	transpose * hflip,  # transposed vflip
+	transpose * vflip,  # transposed hflip
+	transpose * flip2,  # transposed half-circle rotation
+]
+
+const index_transforms =
+[
+	[0, 1, 2, 3],  # no-op
+	[2, 1, 0, 3],  # vflip only
+	[0, 3, 2, 1],  # hflip only
+	[2, 3, 0, 1],  # half-circle rotation
+	[1, 0, 3, 2],  # transposed
+	[3, 0, 1, 2],  # transposed vflip
+	[1, 2, 3, 0],  # transposed hflip
+	[3, 2, 1, 0],  # transposed half-circle rotation
+]
+
+def transformed_edge_index (index, transform)
+{
+	return index_transforms[ transform ][ index ]
+}
+
+def find_other_tile_with_shared_edge (edge)
+{
+	const previous = tile_grid ver ... map { v.key }
+	const adjacent = adjacency[ canon edge ] ver { not v in previous }
+	
+	return *adjacent
+}
+
+var n_tiles_solved = 1
+
+def solve_first_corner
+{
+	const Top    = 0
+	const Left   = 1
+	const Bottom = 2
+	const Right  = 3
+	
+	const corner_tile_id = (scores ver { v.value == 2 })[ 0 ].key
+	
+	const unique_edges = adjacency ver { v.value == [corner_tile_id] }
+	                               map .key
+	
+	const edges = surveys[ corner_tile_id ]
+	const found = unique_edges map { find_edge_in_edges (v, edges) }
+	
+	const vflipped = Bottom in found
+	const hflipped = Right  in found
+	
+	const transform = +vflipped + 2 * +hflipped
+	
+	tile_grid[ 0 ] = corner_tile_id => transform
+}
+
+def solve_edge (start, inc)
+{
+	const Top    = 0
+	const Left   = 1
+	const Bottom = 2
+	const Right  = 3
+	
+	const Near
+	const Far
+	const Adjacent
+	
+	if inc == 1 then
+	{
+		Near = Left
+		Far = Right
+		Adjacent = [Top, Bottom]
+	}
+	else
+	{
+		Near = Top
+		Far = Bottom
+		Adjacent = [Left, Right]
+	}
+	
+	var x = start
+	
+	const src = tile_grid[ x ]
+	
+	var next_tile = src.key
+	var transform = src.value
+	
+	var previous_edges = surveys[ next_tile ]
+	
+	for i in 1 -> tiles_per_edge - 1 do
+	{
+		const far_edge = previous_edges[ transformed_edge_index (Far, transform) ]
+		
+		next_tile = find_other_tile_with_shared_edge far_edge
+		
+		var next_edges = surveys[ next_tile ]
+		
+		const unique_edge = *(adjacency ver { v.value == [next_tile] } map .key)
+		
+		assert (+) unique_edge == 1
+		
+		var shared_edge_index = find_edge_in_edges (far_edge,    next_edges)
+		var unique_edge_index = find_edge_in_edges (unique_edge, next_edges)
+		
+		var vflipped = (unique_edge_index > 1) == (start == 0)
+		var hflipped = shared_edge_index > 1
+		
+		if inc != 1 then
+		{
+			vflipped <-> hflipped
+		}
+		
+		const transposed = shared_edge_index in Adjacent
+		
+		transform = +vflipped + 2 * +hflipped + 4 * +transposed
+		
+		tile_grid[ x += inc ] = next_tile => transform
+		
+		previous_edges <- next_edges
+		
+		display "" ++n_tiles_solved
+	}
+}
+
+def solve_corner (end, inc, last=false)
+{
+	const Top    = 0
+	const Left   = 1
+	const Bottom = 2
+	const Right  = 3
+	
+	const Near
+	const Far
+	const Adjacent
+	
+	if inc == 1 then
+	{
+		Near = Left
+		Far = Right
+		Adjacent = [Top, Bottom]
+	}
+	else
+	{
+		Near = Top
+		Far = Bottom
+		Adjacent = [Left, Right]
+	}
+	
+	const dst = end - inc
+	const src = dst - inc
+	
+	const placing = tile_grid[ src ]
+	
+	var tile_id   = placing.key
+	var transform = placing.value
+	
+	const previous_edges = surveys[ tile_id ]
+	
+	const far_edge = previous_edges[ transformed_edge_index (Far, transform) ]
+	
+	const next = find_other_tile_with_shared_edge far_edge
+	
+	const next_edges = surveys[ next ]
+	
+	const nearby_edges = shared_adjacency ver { next in v.value } map .key
+	
+	const nearby_edge = *(nearby_edges ver { v != canon far_edge })
+	
+	assert (+) nearby_edge == 1
+	
+	var shared_edge_index = find_edge_in_edges (far_edge,    next_edges)
+	var nearby_edge_index = find_edge_in_edges (nearby_edge, next_edges)
+	
+	var vflipped = (nearby_edge_index < 2) != last
+	var hflipped =  shared_edge_index > 1
+	
+	if inc != 1 then
+	{
+		vflipped <-> hflipped
+	}
+	
+	const transposed = shared_edge_index in Adjacent
+	
+	transform = +vflipped + 2 * +hflipped + 4 * +transposed
+	
+	tile_grid[ dst ] = next => transform
+	
+	display "" ++n_tiles_solved
+}
+
+def solve_center (index)
+{
+	const Top    = 0
+	const Left   = 1
+	const Bottom = 2
+	const Right  = 3
+	
+	const above = tile_grid[ index - tiles_per_edge ]
+	const aside = tile_grid[ index - 1 ]
+	
+	const above_edges = surveys[ above.key ]
+	const aside_edges = surveys[ aside.key ]
+	
+	const above_edge = above_edges[ transformed_edge_index (Bottom, above.value) ]
+	const aside_edge = aside_edges[ transformed_edge_index (Right,  aside.value) ]
+	
+	const next = find_other_tile_with_shared_edge above_edge
+	
+	const next_edges = surveys[ next ]
+	
+	const nearby_edges = adjacency ver { next in v.value } map .key
+	
+	const top_edge  = *(nearby_edges ver { v == canon above_edge })
+	const left_edge = *(nearby_edges ver { v == canon aside_edge })
+	
+	assert (+) top_edge == 1
+	assert (+) left_edge == 1
+	
+	var top_edge_index  = find_edge_in_edges (top_edge,  next_edges)
+	var left_edge_index = find_edge_in_edges (left_edge, next_edges)
+	
+	var vflipped = top_edge_index  > 1
+	var hflipped = left_edge_index > 1
+	
+	const transposed = top_edge_index in [Left, Right]
+	
+	const transform = +vflipped + 2 * +hflipped + 4 * +transposed
+	
+	tile_grid[ index ] = next => transform
+	
+	display "" ++n_tiles_solved
+}
+
+solve_first_corner()
+
+solve_edge (0, 1)  # solve top edge
+
+solve_edge (0, tiles_per_edge)  # solve left edge
+
+solve_corner (tiles_per_edge, 1)  # solve top right corner
+solve_corner (tiles_per_edge^2, tiles_per_edge)  # bottom left corner
+
+solve_edge (tiles_per_edge - 1, tiles_per_edge)  # solve right edge
+solve_edge (tiles_per_edge * (tiles_per_edge - 1), 1)  # solve right edge
+
+solve_corner (tiles_per_edge^2, 1, true)  # bottom right corner
+
+for y in 1 -> tiles_per_edge - 1 do
+{
+	for x in 1 -> tiles_per_edge - 1 do
+	{
+		solve_center (y * tiles_per_edge + x)
+	}
+}
+
+def across (grids)
+{
+	const line_arrays = grids map { v.lines() }
+	
+	const edge = line_arrays[ 0 ][ 0 ].length
+	
+	def make_row (i)
+	{
+		return (line_arrays map { v[ i ] } per str)
+	}
+	
+	return 0 -> edge map make_row map { v "\n" } per string
+}
+
+def trim_transformed (grid, transform)
+{
+	const transformed_grid = grid_transforms[ transform ] grid
+	
+	const lines = transformed_grid.lines()
+	
+	const trimmed = 1 -> edge - 1
+	
+	return "\n".join( *(lines[ trimmed ] map { v[ trimmed ] }), "")
+}
+
+display ""
+
+const trimmed = tile_grid map { trim_transformed (tileset[ v.key ], v.value) }
+
+var final_grid = ""
+
+for Y in 0 -> tiles_per_edge do
+{
+	const i = Y * tiles_per_edge
+	const j = i + tiles_per_edge
+	
+	final_grid .= across (trimmed[i -> j])
+}
+
+const grid_lines = final_grid.lines()
+
+const grid_height = grid_lines.length
+const grid_width  = grid_lines[ 0 ].length
+const grid_stride = grid_width + 1
+
+const sea_monster = DATA.lines()
+
+const sm_height = sea_monster.length
+const sm_width  = sea_monster[ 0 ].length
+
+const gutter = "\0" * (grid_stride - sm_width)
+
+# We H-flip the sea monster
+const sm_mask = packed gutter.join *(sea_monster map {-v})
+
+var count = 0
+
+def search_grid (grid)
+{
+	var p = begin grid
+	
+	while p = p.find "###" do
+	{
+		var i = p.past.length
+		
+		const x = i mod grid_stride
+		const y = i div grid_stride
+		
+		if y in 1 -> grid_height - 1 and x + sm_width <= grid_width then
+		{
+			i -= grid_stride
+			
+			const substring = packed grid[ i -> i + sm_mask.size ]
+			
+			if substring | sm_mask == substring then
+			{
+				++count
+			}
+		}
+		
+		++p
+	}
+}
+
+for x in grid_transforms do
+{
+	search_grid x final_grid
+}
+
+def count_hash (s)
+{
+	return Iter.popcount translated (s, " .\n", "\0" * 3)
+}
+
+const roughness = count_hash final_grid
+                - count_hash DATA * count
+
+display ""
+
+print roughness
+
+end.
+                  # 
+#    ##    ##    ###
+ #  #  #  #  #  #   
