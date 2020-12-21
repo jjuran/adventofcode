@@ -1,0 +1,147 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const lower = 'a' .. 'z'
+const word  = lower+ => str
+const words = [word, [' ', word]*] => {[_]}
+const wlist = [word, [", ", word]*] => {[_]}
+const note  = ["(contains ", wlist, ")"]
+const food  = [words, ' ', note] => {[_]}
+
+def parse (line)
+{
+	var p = begin line
+	
+	return p += food
+}
+
+const foods = data map parse
+
+def list_items (i)
+{
+	var result = str^[]
+	
+	for food in foods do
+	{
+		const items = food[ i ]
+		
+		for it in items do
+		{
+			result[ it ] = null
+		}
+	}
+	
+	return result.keys
+}
+
+const ingredients = list_items 0
+const allergens   = list_items 1
+
+def map_allergens_to_listings
+{
+	var result = str^[]
+	
+	for food in foods do
+	{
+		const ingredients = Iter.sorted food[ 0 ]
+		
+		const allergens = food[ 1 ]
+		
+		for a in allergens do
+		{
+			if a in result then
+			{
+				result[ a ] <-- ingredients
+			}
+			else
+			{
+				result[ a ] = [ingredients]
+			}
+		}
+	}
+	
+	return result
+}
+
+def intersection (lists)
+{
+	var result = []
+	
+	const first = lists[ 0 ]
+	
+	const other = [tail *lists]
+	
+	for x in first do
+	{
+		var present = true
+		
+		for y in other do
+		{
+			if not x in y then
+			{
+				present = false
+				break
+			}
+		}
+		
+		if present then
+		{
+			result <-- x
+		}
+	}
+	
+	return result
+}
+
+def difference (list, removed)
+{
+	var result = []
+	
+	for x in list do
+	{
+		if not x in removed then
+		{
+			result <-- x
+		}
+	}
+	
+	return result
+}
+
+const ingredient_lists_by_allergen = map_allergens_to_listings()
+
+var known_mappings = str^[]
+
+def solving
+{
+	var solved = 0
+	
+	for a_i in ingredient_lists_by_allergen do
+	{
+		const inter = intersection a_i.value
+		
+		const remaining = difference (inter, known_mappings.values)
+		
+		if remaining.length == 1 then
+		{
+			known_mappings[ a_i.key ] = *remaining
+			
+			++solved
+		}
+	}
+	
+	return solved
+}
+
+while solving() do
+{
+}
+
+const dangerous = Iter.sorted [*known_mappings] via .key map .value
+const canonical = ",".join *dangerous
+print canonical
