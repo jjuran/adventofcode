@@ -1,0 +1,106 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+const digit = '0' .. '9'
+const card = digit+ => int
+const deck = [card, '\n']+ => {[_]}
+const hand = ["Player ", digit, ":\n", deck, '\n'?]
+const grammar = [hand (*) 2] => {[_]}
+
+def parse
+{
+	var p = begin data
+	
+	return p += grammar
+}
+
+const decks = parse data
+
+var one, var two = *decks
+
+var depth = 0
+
+var nth = 0
+
+def play_game (one, two)
+{
+	++nth
+	
+	var seen = str^[]
+	
+	const play_round =
+	{
+		const hash = rep (one, two)
+		
+		if hash in seen then
+		{
+			return [[]], []
+		}
+		
+		seen[ hash ] = 1
+		
+		const a = one[ 0 ]
+		const b = two[ 0 ]
+		
+		one = [tail *one]
+		two = [tail *two]
+		
+		var one_wins = a > b
+		
+		if a <= one.length and b <= two.length then
+		{
+			++depth
+			
+			const space = " " * depth
+			
+			display "" ++nth space rep (a, b)
+			
+			one_wins, const two_wins = play_game (one[ 0 -> a ], two[ 0 -> b ])
+			
+			--depth
+		}
+		
+		if one_wins then
+		{
+			one <-- a, b
+		}
+		else
+		{
+			two <-- b, a
+		}
+	}
+	
+	while one and two do
+	{
+		play_round()
+	}
+	
+	return one, two
+}
+
+one, two = play_game (one, two)
+
+def score (deck)
+{
+	const n = deck.length
+	
+	deck <-- 0
+	deck = -deck
+	
+	return 0 .. n map { deck[ v ] * v } per Math.sum
+}
+
+display ""
+
+const winning_score = score one + score two
+print winning_score
