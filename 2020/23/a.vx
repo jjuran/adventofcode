@@ -1,0 +1,43 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = if argc > 1 then {argv[ 1 ]} else {"925176834"}
+
+var cups = data
+
+def move
+{
+	const trio = cups[ 1 .. 3 ]
+	
+	cups = cups[[ 0 ]] cups[ 4 -> cups.length ]
+	
+	var dst = u8 cups[ 0 ] - 1
+	
+	while not byte dst in cups do
+	{
+		if byte --dst == '0' then
+		{
+			dst = u8 '9'
+		}
+	}
+	
+	const i = (begin cups).find(byte dst).past.length + 1
+	
+	cups = cups[ 0 -> i ] trio cups[ i -> cups.length ]
+	cups = cups[ 1 -> cups.length] cups[[ 0 ]]
+}
+
+for i in 1 .. 100 do
+{
+	move()
+}
+
+const j = (begin cups).find('1').past.length
+
+cups = cups[ j -> cups.length ] cups[ 0 -> j ]
+cups = cups[ 1 -> cups.length]
+
+print cups
