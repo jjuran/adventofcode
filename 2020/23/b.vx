@@ -1,0 +1,91 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const data = if argc > 1 then {argv[ 1 ]} else {"925176834"}
+
+def native (T)
+{
+	const fields = size:   T.size,
+	               encode: T.encode-native,
+	               decode: T.decode-native
+	
+	return record fields
+}
+
+const N = 10^6
+const M = 10^7
+
+var indices = vector[ native u32 ] (N + 1)
+var current = int data[[ 0 ]]
+
+def init
+{
+	var x = 0
+	
+	for c in data do
+	{
+		indices[ x ] = int str c
+		
+		x = int str c
+	}
+	
+	for j in data.length + 1 .. N do
+	{
+		indices[ x ] = j
+		
+		x = j
+	}
+	
+	indices[ x ] = current
+}
+
+display "Setting up..."
+
+init()
+
+def move
+{
+	const x1 = indices[ current ]
+	const x2 = indices[ x1 ]
+	const x3 = indices[ x2 ]
+	
+	indices[ current ] = indices[ x3 ]
+	
+	var dst = current
+	
+	do
+	{
+		dst = (dst - 2) mod N + 1
+	}
+	while dst in [x1, x2, x3]
+	
+	const following_dst = indices[ dst ]
+	
+	indices[ dst ] = x1
+	indices[ x3 ] = following_dst
+	
+	current = indices[ current ]
+}
+
+for i in 0 -> M do
+{
+	if i mod (M div 1000) == 0 then
+	{
+		display "" (i div (M div 1000))
+	}
+	
+	move()
+}
+
+display ""
+
+const a = indices[ 1 ]
+const b = indices[ a ]
+
+print (a * b)
