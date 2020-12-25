@@ -83,11 +83,7 @@ def adjacent_to_one (outer-grid-inner, i)
 
 def new_cell (old_cell, n_adjacent)
 {
-	var has_bug = old_cell == '#'
-	
-	has_bug = n_adjacent in 1 .. 2 - +has_bug
-	
-	return ".#"[ +has_bug ]
+	return ".#"[ +(n_adjacent in 1 .. 2 - +(old_cell == '#')) ]
 }
 
 def advance (outer-grid-inner)
