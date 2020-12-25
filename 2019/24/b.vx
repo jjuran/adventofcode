@@ -90,9 +90,16 @@ def advance (outer-grid-inner)
 {
 	const grid = outer-grid-inner[ 1 ]
 	
+	var work = grid
+	
 	const adjacent_to = adjacent_to_one % outer-grid-inner
 	
-	return str (0 -> N map { new_cell (grid[ v ], adjacent_to v) })
+	for i in 0 -> N do
+	{
+		work[ i ] = new_cell (grid[ i ], adjacent_to i)
+	}
+	
+	return work
 }
 
 def step
