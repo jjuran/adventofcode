@@ -85,7 +85,7 @@ def new_cell (old_cell, n_adjacent)
 {
 	var has_bug = old_cell == '#'
 	
-	has_bug = if has_bug then {n_adjacent == 1} else { n_adjacent in 1 .. 2 }
+	has_bug = n_adjacent in 1 .. 2 - +has_bug
 	
 	return ".#"[ +has_bug ]
 }
