@@ -99,19 +99,14 @@ def advance (outer-grid-inner)
 	return str (0 -> N map { new_cell (grid[ v ], adjacent_to v) })
 }
 
-def empty (grid)
-{
-	return grid == empty_grid
-}
-
 def step
 {
-	if not empty gridspace[ gridspace.length - 2 ] then
+	if gridspace[ gridspace.length - 2 ] != empty_grid then
 	{
 		gridspace <-- empty_grid
 	}
 	
-	if not empty gridspace[ 1 ] then
+	if gridspace[ 1 ] != empty_grid then
 	{
 		gridspace = [empty_grid, *gridspace]
 	}
