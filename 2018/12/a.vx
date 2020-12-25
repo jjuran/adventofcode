@@ -1,0 +1,63 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const N = 20
+
+const initial_state = substr (data[ 0 ], "initial state: ".length)
+
+var state = "..." initial_state "..."
+var origin = 3
+
+const rules_dictionary = data[ 2 -> data.length ] map { v[ 0 -> 5 ] => v[ 9 ] }
+
+def make_rules (dictionary)
+{
+	var rules = "." * 32
+	
+	for entry in dictionary do
+	{
+		const i = unbin "0b" translated (entry.key, ".#", "01")
+		
+		rules[ i ] = entry.value
+	}
+	
+	return rules
+}
+
+const rules = make_rules rules_dictionary
+
+def iterate
+{
+	var next_state = state
+	
+	for i in 2 -> state.length - 2 do
+	{
+		const subseq = state[ i - 2 .. i + 2 ]
+		
+		const key = unbin "0b" translated (subseq, ".#", "01")
+		
+		next_state[ i ] = rules[ key ]
+	}
+	
+	const pad_left  = next_state[ 2 ] == '#'
+	const pad_right = next_state[ state.length - 3 ] == '#'
+	
+	state = ("." * pad_left) next_state ("." * pad_right)
+	
+	origin += +pad_left
+}
+
+for i in 0 -> N do
+{
+	iterate()
+}
+
+const indices = 0 -> state.length
+
+const sum = indices ver { state[ v ] == '#' } map { v - origin } per Math.sum
+print sum
