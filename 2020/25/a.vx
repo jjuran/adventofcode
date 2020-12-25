@@ -1,0 +1,51 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+const modular = import "modular"
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines() map int
+
+const modulus = 20201227
+
+def transform (loop_size, subject_number)
+{
+	return modular.power( subject_number, loop_size, modulus )
+}
+
+def recover_exponent (key)
+{
+	const subject_number = 7
+	
+	var x = 1
+	
+	var next = subject_number
+	
+	do
+	{
+		if x mod 2^14 == 0 then
+		{
+			display "" x ": " next
+		}
+		
+		++x
+		
+		next *= subject_number
+		next %= modulus
+	}
+	while next != key
+	
+	display ""
+	
+	return x
+}
+
+const secret = recover_exponent data[ 0 ]
+const shared = transform (secret, data[ 1 ])
+print shared
