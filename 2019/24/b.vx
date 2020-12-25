@@ -62,11 +62,6 @@ const adjacency =
 
 var gridspace = [empty_grid, grid, empty_grid]
 
-def levels_of (gs)
-{
-	return gs.length
-}
-
 def adjacent_to_one (outer-grid-inner, i)
 {
 	const adj = adjacency[ i ]
