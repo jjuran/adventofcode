@@ -81,11 +81,6 @@ def adjacent_to_one (outer-grid-inner, i)
 	return total
 }
 
-def new_cell (old_cell, n_adjacent)
-{
-	return ".#"[ +(n_adjacent in 1 .. 2 - +(old_cell == '#')) ]
-}
-
 def advance (outer-grid-inner)
 {
 	const grid = outer-grid-inner[ 1 ]
@@ -96,7 +91,7 @@ def advance (outer-grid-inner)
 	
 	for i in 0 -> N do
 	{
-		work[ i ] = new_cell (grid[ i ], adjacent_to i)
+		work[ i ] = ".#"[ +(adjacent_to i in 1 .. 2 - +(grid[ i ] == '#')) ]
 	}
 	
 	return work
