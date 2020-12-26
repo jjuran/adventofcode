@@ -1,0 +1,118 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+var grid = load input_path
+
+const grid_len = grid.length
+
+const width = (begin grid).find('\n').past.length
+const stride = width + 1
+const height = grid_len / stride
+
+const E = 0
+const S = 1
+const W = 2
+const N = 3
+const X = 4
+
+const deltas =
+[
+	1,
+	stride,
+	-1,
+	-stride,
+]
+
+const arrows = ">v<^X"
+
+var carts = []
+
+carts <-- *(0 -> grid_len ver { grid[ v ] == '^' } map { v => N => 1 })
+carts <-- *(0 -> grid_len ver { grid[ v ] == 'v' } map { v => S => 1 })
+carts <-- *(0 -> grid_len ver { grid[ v ] == '<' } map { v => W => 1 })
+carts <-- *(0 -> grid_len ver { grid[ v ] == '>' } map { v => E => 1 })
+
+const background = translated (grid, "^v<>", "||--")
+
+def move_cart (cart)
+{
+	var address = cart.key
+	var heading = cart.value.key
+	var chooser = cart.value.value
+	
+	grid[ address ] = background[ address ]
+	
+	address += deltas[ heading ]
+	
+	const c = grid[ address ]
+	
+	if c in "^v<>" then
+	{
+		grid[ address ] = background[ address ]
+		
+		return address => X => 0
+	}
+	else if c == '/' then
+	{
+		# N (3) <-> E (0)
+		# S (1) <-> W (2)
+		heading = 3 - heading
+	}
+	else if c == '\\' then
+	{
+		# N (3) <-> W (2)
+		# S (1) <-> E (0)
+		heading = heading + 1 - heading % 2 * 2
+	}
+	else if c == '+' then
+	{
+		heading = (heading - chooser) mod 4
+		
+		chooser = chooser mod 3 - 1
+	}
+	
+	grid[ address ] = arrows[ heading ]
+	
+	return address => heading => chooser
+}
+
+def move_carts
+{
+	carts = Iter.sorted carts via .key
+	
+	for i in 0 -> carts.length do
+	{
+		if carts[ i ] then
+		{
+			carts[ i ] = move_cart carts[ i ]
+			
+			if carts[ i ].value.key == X then
+			{
+				const crash_address = carts[ i ].key
+				
+				for j in 0 -> carts.length do
+				{
+					if carts[ j ].key == crash_address then
+					{
+						carts[ j ] = null
+					}
+				}
+			}
+		}
+	}
+	
+	carts = carts ver ...
+}
+
+while carts.length > 1 do
+{
+	move_carts()
+}
+
+const address = carts[ 0 ].key
+const coords  = address mod stride, address div stride
+
+print ",".join coords
