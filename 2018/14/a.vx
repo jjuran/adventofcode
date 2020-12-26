@@ -1,0 +1,25 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = if argc > 1 then {argv[ 1 ]} else {"147061"}
+
+const N = int data
+
+var scoreboard = "37"
+
+var i = 0
+var j = 1
+
+while scoreboard.length < N + 10 do
+{
+	const one = int scoreboard[[ i ]]
+	const two = int scoreboard[[ j ]]
+	
+	scoreboard .= str (one + two)
+	
+	i = (i + 1 + one) mod scoreboard.length
+	j = (j + 1 + two) mod scoreboard.length
+}
+
+print scoreboard[ N -> N + 10 ]
