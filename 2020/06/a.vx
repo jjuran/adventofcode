@@ -17,7 +17,7 @@ def count (s)
 	
 	seen[ u8 '\n' ] = '\0'
 	
-	return (seen ver ...).length
+	return Iter.popcount seen
 }
 
 var sum = 0
