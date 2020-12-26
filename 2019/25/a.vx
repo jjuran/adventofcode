@@ -58,7 +58,7 @@ def run_command (s)
 		{
 			OUT <== byte output
 			
-			output_queue = output_queue byte output
+			output_queue .= str byte output
 		}
 	}
 	
