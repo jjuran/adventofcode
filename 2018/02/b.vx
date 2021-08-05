@@ -16,10 +16,10 @@ def run
 		{
 			const x = packed a ~ packed b
 			
-			const d = x ver ...
-			
-			if d.length == 1 then
+			if Iter.popcount x == 1 then
 			{
+				const d = x ver ...
+				
 				const i = (begin x).find(*d).past.size
 				
 				const result = a[ 0 -> i ] a[ i + 1 -> a.length ]
