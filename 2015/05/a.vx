@@ -6,26 +6,12 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 const data = (load input_path).lines()
 
-def nice
+def nice (s)
 {
-	const s = _
-	
-	if "ab" in s or "cd" in s or "pq" in s or "xy" in s then
-	{
-		return false
-	}
-	
-	if (s ver {_ in "aeiou"}).length < 3 then
-	{
-		return false
-	}
-	
-	if '\0' in packed s "\0" ~ packed "\0" s then
-	{
-		return true
-	}
-	
-	return false
+	return
+		'\0' in packed s "\0" ~ packed "\0" s                   and
+		not ("ab" in s or "cd" in s or "pq" in s or "xy" in s)  and
+		(s ver {v in "aeiou"}).length >= 3
 }
 
 const total = (data ver nice).length
