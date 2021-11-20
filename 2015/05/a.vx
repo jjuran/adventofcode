@@ -20,12 +20,9 @@ def nice
 		return false
 	}
 	
-	for i in 1 -> s.length do
+	if '\0' in packed s "\0" ~ packed "\0" s then
 	{
-		if s[ i - 1 ] == s[ i ] then
-		{
-			return true
-		}
+		return true
 	}
 	
 	return false

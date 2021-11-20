@@ -10,18 +10,12 @@ def nice
 {
 	const s = _
 	
-	var found = false
+	const pad = "\0" * 2
 	
-	for i in 2 -> s.length do
+	if not '\0' in packed s pad ~ packed pad s then
 	{
-		if s[ i - 2 ] == s[ i ] then
-		{
-			found = true
-			break
-		}
+		return false
 	}
-	
-	if not found then {return false}
 	
 	for j in 0 -> s.length - 3 do
 	{
