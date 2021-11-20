@@ -108,12 +108,7 @@ var total = 0
 
 for i in 0 -> 1000 do
 {
-	const row = light-grid[ i ]
-	
-	for j in row do
-	{
-		total += int bool j
-	}
+	total += Iter.popcount light-grid[ i ]
 }
 
 print total
