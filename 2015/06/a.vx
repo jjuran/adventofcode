@@ -15,47 +15,35 @@ const grid-row = record( size: 1000, encode: ..., decode: ... )
 
 var light-grid = vector[ grid-row ] 1000
 
-def point
+def point (x_comma_y)
 {
-	const x_comma_y = _
-	
 	return [x_comma_y / ','] map int
 }
 
-def get-coords
+def get-coords (xy_through_xy)
 {
-	const xy_through_xy = _
-	
 	const parts = [xy_through_xy / ' '][[0, 2]]
 	
 	return parts map point
 }
 
-def make-mask
+def make-mask (x0, x1)
 {
-	const x0, const x1 = _
-	
 	return (x"00" * x0) (x"FF" * (x1 - x0)) (x"00" * (1000 - x1))
 }
 
-def turn-on
+def turn-on (a, b)
 {
-	const a, const b = _
-	
 	return a | b
 }
 
-def turn-off
+def turn-off (a, b)
 {
-	const a, const b = _
-	
 	return a & ~b
 }
 
-def toggle
+def toggle (a, b)
 {
-	const a, const b = _
-	
 	return a ~ b
 }
 
