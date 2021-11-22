@@ -21,8 +21,6 @@ while ' ' in password do
 	{
 		const output = hex md5 data suffix
 		
-		display password "  " output "  " data suffix
-		
 		const o6 = output[ 5 ]
 		
 		if o6 <= '7' then
@@ -34,6 +32,8 @@ while ' ' in password do
 				password[ pos ] = output[ 6 ]
 			}
 		}
+		
+		display password "  " output "  " data suffix
 	}
 }
 

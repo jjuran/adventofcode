@@ -21,9 +21,9 @@ while password.length < 8 do
 	{
 		const output = hex md5 data suffix
 		
-		display password "  " output "  " data suffix
-		
 		password = password output[ 5 ]
+		
+		display password "  " output "  " data suffix
 	}
 }
 
