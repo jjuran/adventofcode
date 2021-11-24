@@ -1,0 +1,97 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display   = (import "status") { OUT <== _ }
+const knot-hash = import "knot-hash"
+
+const data = "uugsqrei"
+
+def bitstrings { _ map { v "\0", v "x" } }
+
+const binary-strings = bitstrings^8 [ "" ]
+
+def binarize (data)
+{
+	const bits = data map { binary-strings[ int v ] }
+	
+	return str bits
+}
+
+const NUL = "\0"
+
+const N = 128
+
+const stride = N + 1
+
+var grid = str \
+(
+	NUL * N,
+	0 -> N map { NUL binarize knot-hash data "-" v },
+	NUL * stride,
+)
+
+const dirs =
+[
+	-stride,  # N
+	 stride,  # S
+	     -1,  # W
+	      1,  # E
+]
+
+def find_used_from (i)
+{
+	var p = (begin grid) + i
+	
+	p = p.find 'x'
+	
+	return p and p.past.length
+}
+
+var n_regions = 0
+
+var i = stride
+
+while i = find_used_from i do
+{
+	var frontier = [i]
+	
+	var region_size = 0
+	
+	while frontier do
+	{
+		var new_frontier = []
+		
+		for f in frontier do
+		{
+			if not grid[ f ] then
+			{
+				continue
+			}
+			
+			++region_size
+			
+			grid[ f ] = '\0'
+			
+			for d in dirs do
+			{
+				const offset = f + d
+				
+				new_frontier <-- offset
+			}
+		}
+		
+		frontier = new_frontier
+	}
+	
+	++n_regions
+	
+	display "" n_regions ": " region_size
+}
+
+display ""
+
+print n_regions
