@@ -1,54 +1,14 @@
 #!/usr/bin/env vx
 
 const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const knot-hash = import "knot-hash"
 
 const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 const data = (load input_path).lines()[ 0 ]
 
-const lens = [ *(data map u8), 17, 31, 73, 47, 23 ]
-
-const N = 256
-
-var list = packed (0 -> N map byte)
-
-var pos = 0
-var skip = 0
-
-
-def rewind
-{
-	const mid = -pos mod N
-	
-	return list[ mid -> N ] list[ 0 -> mid ]
-}
-
-for i in 0 -> 64 do
-{
-	for len in lens do
-	{
-		# reverse
-		list = -list[ 0 -> len ] list[ len -> N ]
-		
-		# advance
-		const delta = (len + skip) % N
-		
-		list = list[ delta -> N ] list[ 0 -> delta ]
-		
-		pos = (pos + delta) % N
-		
-		# augment
-		++skip
-	}
-}
-
-def densify
-{
-	return _ map packed per {a ~ b}
-}
-
-list = rewind()
-
-const dense = [list / 16] map densify per packed
-
-print dense
+print knot-hash data
