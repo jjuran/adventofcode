@@ -42,14 +42,9 @@ for i in 0 -> 64 do
 	}
 }
 
-def xor
-{
-	return head _ ~ tail _
-}
-
 def densify
 {
-	return _ map packed per xor
+	return _ map packed per {a ~ b}
 }
 
 list = rewind()
