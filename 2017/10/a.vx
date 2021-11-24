@@ -23,15 +23,8 @@ def rewind
 	return list[ mid -> N ] list[ 0 -> mid ]
 }
 
-def state
-{
-	return pos => (rewind() map int)
-}
-
 for len in lens do
 {
-	#warn rep state()
-	
 	# reverse
 	list = -list[ 0 -> len ] list[ len -> N ]
 	
@@ -45,7 +38,5 @@ for len in lens do
 	# augment
 	++skip
 }
-
-#warn rep state()
 
 print rep (rewind()[ 0 .. 1 ] map int per Math.product)

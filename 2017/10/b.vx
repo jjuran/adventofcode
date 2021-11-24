@@ -23,17 +23,10 @@ def rewind
 	return list[ mid -> N ] list[ 0 -> mid ]
 }
 
-def state
-{
-	return pos => (rewind() map int)
-}
-
 for i in 0 -> 64 do
 {
 	for len in lens do
 	{
-		#warn rep state()
-		
 		# reverse
 		list = -list[ 0 -> len ] list[ len -> N ]
 		
@@ -63,6 +56,4 @@ list = rewind()
 
 const dense = [list / 16] map densify per packed
 
-#warn rep state()
-
-warn rep dense
+print dense
