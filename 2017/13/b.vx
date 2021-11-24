@@ -1,0 +1,76 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const modular = import "modular"
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = eval "[" str((load input_path).lines() map { v "," }) "]"
+
+const max_range = (Iter.max data via .value).value
+
+var T = 0
+var M = 1  # supermodulus
+
+def get_missing (n, set)
+{
+	var x = "x" * n
+	
+	for e in set do
+	{
+		x[ e ] = '\0'
+	}
+	
+	return (begin x).find('x').past.length
+}
+
+for range in 2 .. max_range do
+{
+	const prime = range - 1
+	
+	const set = data ver { v.value == range }
+	
+	if set.length == prime - 1 then
+	{
+		const wrap = set map { v.key mod (prime * 2) / 2 }
+		
+		const m  = prime
+		const dt = get_missing (prime, wrap)
+		
+		const delay = -(T + dt) mod m
+		
+		T += modular.alignment (delay, m, M)
+		M *= m
+	}
+}
+
+def caught (delay)
+{
+	for kv in data do
+	{
+		const depth = kv.key
+		const range = kv.value
+		
+		const modulus = (range - 1) * 2
+		
+		if (delay + depth) % modulus == 0 then
+		{
+			return true
+		}
+	}
+	
+	return false
+}
+
+var delay = T * 2
+
+while caught delay do
+{
+	delay += M
+}
+
+print delay
