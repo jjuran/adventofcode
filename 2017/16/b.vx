@@ -1,0 +1,79 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = [ (load input_path).lines()[0] / ',' ]
+
+const n = 16
+const N = 10^9
+
+const lineup = 0 -> n map { byte (u8 'a' + v) } per str
+
+var dancers = lineup
+
+def swap (i, j)
+{
+	const a = dancers[ i ]
+	const b = dancers[ j ]
+	
+	dancers[ i ] = b
+	dancers[ j ] = a
+}
+
+def dance
+{
+	for move in data do
+	{
+		const code = move[ 0 ]
+		const data = substr (move, 1)
+		
+		if code == 's' then
+		{
+			const shift = n - int data
+			
+			dancers = dancers[ shift -> n ] dancers[ 0 -> shift ]
+		}
+		else if code == 'x' then
+		{
+			swap *([data / '/'] map int)
+		}
+		else if code == 'p' then
+		{
+			const a, const b = data / '/'
+			
+			swap ((begin dancers).find(a).past.length,
+			      (begin dancers).find(b).past.length)
+		}
+	}
+}
+
+var log = []
+
+display "0: " dancers
+
+var m = 0
+
+do
+{
+	log <-- dancers
+	
+	dance()
+	
+	++m
+	
+	display m ": " dancers
+}
+while dancers != lineup
+
+const i = N mod m
+
+display ""
+
+print log[ i ]

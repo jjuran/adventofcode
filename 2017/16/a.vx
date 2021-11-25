@@ -1,0 +1,46 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = [ (load input_path).lines()[0] / ',' ]
+
+const n = 16
+
+var dancers = 0 -> n map { byte (u8 'a' + v) } per str
+
+def swap (i, j)
+{
+	const a = dancers[ i ]
+	const b = dancers[ j ]
+	
+	dancers[ i ] = b
+	dancers[ j ] = a
+}
+
+for move in data do
+{
+	const code = move[ 0 ]
+	const data = substr (move, 1)
+	
+	if code == 's' then
+	{
+		const shift = n - int data
+		
+		dancers = dancers[ shift -> n ] dancers[ 0 -> shift ]
+	}
+	else if code == 'x' then
+	{
+		swap *([data / '/'] map int)
+	}
+	else if code == 'p' then
+	{
+		const a, const b = data / '/'
+		
+		swap ((begin dancers).find(a).past.length,
+		      (begin dancers).find(b).past.length)
+	}
+}
+
+print dancers
