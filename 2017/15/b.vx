@@ -1,0 +1,36 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const offset = "Generator X starts with ".length
+
+const data = (load input_path).lines() map { int substr (v, offset) }
+
+const A, const B = *data
+var   a, var   b = A, B
+
+var matches = 0
+
+for n in 1 .. 5000000 do
+{
+	do { a = a * 16807 % 2147483647 } while a % 4;
+	do { b = b * 48271 % 2147483647 } while b % 8
+	
+	if u16 a == u16 b then
+	{
+		++matches
+		
+		display "" n ": " matches
+	}
+}
+
+display ""
+
+print matches
