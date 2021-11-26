@@ -8,7 +8,7 @@ const data = [ (load input_path).lines()[0] / ',' ]
 
 const n = 16
 
-var dancers = 0 -> n map { byte (u8 'a' + v) } per str
+var dancers = string ('a' .. byte (u8 'a' + n - 1))
 
 def swap (i, j)
 {

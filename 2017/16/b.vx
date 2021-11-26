@@ -14,7 +14,7 @@ const data = [ (load input_path).lines()[0] / ',' ]
 const n = 16
 const N = 10^9
 
-const lineup = 0 -> n map { byte (u8 'a' + v) } per str
+const lineup = string ('a' .. byte (u8 'a' + n - 1))
 
 var dancers = lineup
 
