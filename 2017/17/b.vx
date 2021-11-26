@@ -1,0 +1,32 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const data = 354
+const step = data + 1
+
+const N = 50 * 10^6
+
+var current_offset = 0
+var zero_successor = 0
+
+var n = 0
+
+while ++n <= N do
+{
+	current_offset = (current_offset + step) mod n
+	
+	if current_offset == 0 then
+	{
+		zero_successor = n
+	}
+	
+	if const quotient = (n - current_offset) div step then
+	{
+		n += quotient
+		
+		current_offset += step * quotient
+	}
+}
+
+print zero_successor
