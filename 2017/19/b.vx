@@ -1,0 +1,47 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const grid = load input_path
+const lines = grid.lines()
+const first = lines[ 0 ]
+const width = first.length
+const stride = width + 1
+
+const movements =
+[
+	 stride,  # S
+	      1,  # E
+	-stride,  # N
+	     -1,  # W
+]
+
+const dirs = 0 -> movements.length map { v => movements[ v ] }
+
+var log = 0
+var dir = 0
+var pos = (begin first).find('|').past.length
+
+while true do
+{
+	++log
+	
+	pos += movements[ dir ]
+	
+	const c = grid[ pos ]
+	
+	if c == '+' then
+	{
+		const d = dirs ver { (v.key - dir) % 2 and grid[ pos + v.value ] > ' ' }
+		
+		dir = d[ 0 ].key
+	}
+	else if c == ' ' then
+	{
+		break
+	}
+}
+
+print log
