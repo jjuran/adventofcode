@@ -1,0 +1,150 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+var N = data.length
+
+def get_vector (line, c)
+{
+	const p = (begin line).find(c "=<") + 3
+	const q = p.find '>'
+	
+	return [(q - p) / ','] map int
+}
+
+var accelera = data map { get_vector (v, "a") }
+var velocity = data map { get_vector (v, "v") }
+var position = data map { get_vector (v, "p") }
+
+var T = 0
+
+def tick
+{
+	++T
+	
+	for i in 0 -> N do
+	{
+		velocity[ i ][ 0 ] += accelera[ i ][ 0 ]
+		velocity[ i ][ 1 ] += accelera[ i ][ 1 ]
+		velocity[ i ][ 2 ] += accelera[ i ][ 2 ]
+		
+		position[ i ][ 0 ] += velocity[ i ][ 0 ]
+		position[ i ][ 1 ] += velocity[ i ][ 1 ]
+		position[ i ][ 2 ] += velocity[ i ][ 2 ]
+	}
+}
+
+def detect_collisions
+{
+	const min_x = (Iter.min position via { v[ 0 ] })[ 0 ]
+	const max_x = (Iter.max position via { v[ 0 ] })[ 0 ]
+	const min_y = (Iter.min position via { v[ 1 ] })[ 1 ]
+	const max_y = (Iter.max position via { v[ 1 ] })[ 1 ]
+	const min_z = (Iter.min position via { v[ 2 ] })[ 2 ]
+	const max_z = (Iter.max position via { v[ 2 ] })[ 2 ]
+	
+	const n_x = max_x - min_x + 1
+	const n_y = max_y - min_y + 1
+	const n_z = max_z - min_z + 1
+	
+	var x_coords = "\0" * n_x
+	var y_coords = "\0" * n_y
+	var z_coords = "\0" * n_z
+	
+	for i in 0 -> N do
+	{
+		const pos = position[ i ]
+		
+		const x = pos[ 0 ] - min_x
+		const y = pos[ 1 ] - min_y
+		const z = pos[ 2 ] - min_z
+		
+		x_coords[ x ] = x_coords[ x ] and 'X' or '.'
+		y_coords[ y ] = y_coords[ y ] and 'X' or '.'
+		z_coords[ z ] = z_coords[ z ] and 'X' or '.'
+	}
+	
+	if [x_coords, y_coords, z_coords] map { 'X' in v } per {a and b} then
+	{
+		var sites = str^[]
+		
+		var collisions_occurred = false
+		
+		for i in 0 -> N do
+		{
+			const pos = position[ i ]
+			
+			const x = pos[ 0 ] - min_x
+			const y = pos[ 1 ] - min_y
+			const z = pos[ 2 ] - min_z
+			
+			if x_coords[ x ] == 'X' and y_coords[ y ] == 'X' and z_coords[ z ] == 'X' then
+			{
+				const key = ",".join *pos
+				
+				if key in sites then
+				{
+					sites[ key ] <-- i
+					
+					collisions_occurred = true
+				}
+				else
+				{
+					sites[ key ] = [i]
+				}
+			}
+		}
+		
+		if collisions_occurred then
+		{
+			const destroyed = sites.values ver { v.length > 1 } map { *v }
+			
+			for target in destroyed do
+			{
+				--N
+				
+				for data in [&accelera, &velocity, &position] do
+				{
+					(*data)[ target ] = (*data)[ N ]
+				}
+			}
+			
+			accelera = accelera[ 0 -> N ]
+			velocity = velocity[ 0 -> N ]
+			position = position[ 0 -> N ]
+		}
+	}
+}
+
+var old_distances = position map { v map abs per Math.sum }
+
+while true do
+{
+	display T ": " N
+	
+	tick()
+	
+	detect_collisions()
+	
+	var new_distances = position map { v map abs per Math.sum }
+	
+	if 0 -> N map { new_distances[ v ] > old_distances[ v ] } per {a and b} then
+	{
+		break
+	}
+	
+	old_distances = new_distances
+}
+
+display ""
+
+print N

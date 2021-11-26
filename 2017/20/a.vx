@@ -1,0 +1,74 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+def get_accel_index (line)
+{
+	const p = (begin line).find("a=<") + 3
+	const q = p.find '>'
+	
+	return [(q - p) / ','] map int map abs per Math.sum
+}
+
+var accelera = 0 -> data.length map { v => get_accel_index data[ v ] }
+
+const min_accel = (Iter.min accelera via .value).value
+
+const candidates = accelera ver { v.value == min_accel } map .key
+
+const N = candidates.length
+
+const lines = candidates map { data[ v ] }
+
+def get_vector (line, c)
+{
+	const p = (begin line).find(c "=<") + 3
+	const q = p.find '>'
+	
+	return [(q - p) / ','] map int
+}
+
+accelera = lines map { get_vector (v, "a") }
+
+var velocity = lines map { get_vector (v, "v") }
+var position = lines map { get_vector (v, "p") }
+
+def tick
+{
+	for i in 0 -> N do
+	{
+		velocity[ i ][ 0 ] += accelera[ i ][ 0 ]
+		velocity[ i ][ 1 ] += accelera[ i ][ 1 ]
+		velocity[ i ][ 2 ] += accelera[ i ][ 2 ]
+		
+		position[ i ][ 0 ] += velocity[ i ][ 0 ]
+		position[ i ][ 1 ] += velocity[ i ][ 1 ]
+		position[ i ][ 2 ] += velocity[ i ][ 2 ]
+	}
+}
+
+var old_distances = position map { v map abs per Math.sum }
+
+while true do
+{
+	tick()
+	
+	var new_distances = position map { v map abs per Math.sum }
+	
+	if 0 -> N map { new_distances[ v ] > old_distances[ v ] } per {a and b} then
+	{
+		break
+	}
+	
+	old_distances = new_distances
+}
+
+const distances = 0 -> N map { v => old_distances[ v ] }
+
+const min = Iter.min distances via .value
+
+print candidates[ min.key ]
