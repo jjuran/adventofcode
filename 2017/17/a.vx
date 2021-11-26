@@ -1,0 +1,25 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const data = 354
+
+var buffer = [ 0 ]
+
+for n in 1 .. 2017 do
+{
+	display "" n
+	
+	const shift = data mod n
+	
+	buffer = [*buffer[ shift -> n ], *buffer[ 0 -> shift ], n]
+}
+
+display ""
+
+print buffer[ 0 ]
