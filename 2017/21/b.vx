@@ -88,6 +88,7 @@ def extract (grid, stride, dx, dy, x, y)
 		
 		grid[ i -> j ],
 	}
+	per {a "/" b}
 }
 
 def fragment (grid, stride, dx, dy, nx, ny)
@@ -100,16 +101,9 @@ def fragment (grid, stride, dx, dy, nx, ny)
 	return 0 -> ny map fragment_row
 }
 
-def enhance (ruleset, square)
-{
-	const key = "/".join *square
-	
-	return [ruleset[ key ] / '/']
-}
-
 def enhance_row (ruleset, squares)
 {
-	return squares map enhance % ruleset
+	return squares map { [ruleset[ v ] / '/'] }
 }
 
 def combine_row (squares)
@@ -124,11 +118,33 @@ def combine_row (squares)
 	return 0 -> dx map scanline map { v "\n" } per string
 }
 
-var pattern = DATA
-var patsize = 3
+var memo = [ str^[] (*) N + 1 ]
 
-for T in 0 -> N do
+def eventual_popcount (n_iterations, patsize, pattern)
 {
+	if n_iterations == 0 then
+	{
+		return Iter.popcount translated (pattern, "./\n", "\0" * 3)
+	}
+	
+	if patsize == 2 then
+	{
+		const rule = x2_to_3[ pattern ]
+		
+		if rule in memo[ n_iterations ] then
+		{
+			return memo[ n_iterations ][ rule ]
+		}
+		else
+		{
+			const count = eventual_popcount (n_iterations - 1, 3, rule)
+			
+			memo[ n_iterations ][ rule ] = count
+			
+			return count
+		}
+	}
+	
 	const ruleset
 	const divisor
 	const factor
@@ -143,7 +159,8 @@ for T in 0 -> N do
 	}
 	else
 	{
-		# 2x2 -> 3x3
+		# 4x4 -> 6x6
+		# 6x6 -> 9x9
 		
 		ruleset = x2_to_3
 		divisor = 2
@@ -156,14 +173,23 @@ for T in 0 -> N do
 	
 	const squares = fragment (pattern, stride, divisor, divisor, x, x)
 	
+	if patsize == 6 then
+	{
+		return squares map { *v }
+		               map eventual_popcount % (n_iterations, 2)
+		               per Math.sum
+	}
+	
 	const enhanced = squares map enhance_row % ruleset
 	const combined = enhanced map combine_row
 	
 	pattern = "".join *combined
 	patsize = patsize * factor / divisor
+	
+	return eventual_popcount (n_iterations - 1, patsize, pattern)
 }
 
-print Iter.popcount translated (pattern, ".\n", "\0" * 2)
+print eventual_popcount (N, 3, "/".join *DATA.lines())
 
 end.
 .#.
