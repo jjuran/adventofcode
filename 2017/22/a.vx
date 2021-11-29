@@ -1,0 +1,96 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+var grid = load input_path
+
+const lines = grid.lines()
+
+var width  = lines[ 0 ].length
+var height = lines.length
+var stride = width + 1
+
+var x = width  div 2
+var y = height div 2
+
+const moves =
+[
+	[  0, -1 ],  # up
+	[ -1,  0 ],  # left
+	[  0,  1 ],  # down
+	[  1,  0 ],  # right
+]
+
+var dir = 0
+
+var n_infections_caused = 0
+
+def work
+{
+	const i = x + y * stride
+	
+	const yaw
+	const now
+	
+	if grid[ i ] == '#' then
+	{
+		yaw = -1
+		now = '.'
+	}
+	else
+	{
+		yaw = 1
+		now = '#'
+		
+		++n_infections_caused
+	}
+	
+	grid[ i ] = now
+	
+	dir = (dir + yaw) mod 4
+	
+	const move = moves[ dir ]
+	
+	x += move[ 0 ]
+	y += move[ 1 ]
+	
+	if y < 0 then
+	{
+		grid = ("." * width) "\n" grid
+		
+		++y
+		++height
+	}
+	else if y >= height then
+	{
+		grid .= ("." * width) "\n"
+		
+		++height
+	}
+	else if x < 0 then
+	{
+		grid = grid.lines() map { "." v "\n" } per str
+		
+		++x
+		++width
+		++stride
+	}
+	else if x >= width then
+	{
+		grid = grid.lines() map { v ".\n" } per str
+		
+		++width
+		++stride
+	}
+}
+
+const N = 10000
+
+for burst in 0 -> N do
+{
+	work()
+}
+
+print n_infections_caused

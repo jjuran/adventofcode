@@ -1,0 +1,88 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+var grid = translated (load input_path, ".#", x"0103")
+
+const lines = grid.lines()
+
+var width  = lines[ 0 ].length
+var height = lines.length
+var stride = width + 1
+
+var x = width  div 2
+var y = height div 2
+
+const moves =
+[
+	[  0, -1 ],  # up
+	[ -1,  0 ],  # left
+	[  0,  1 ],  # down
+	[  1,  0 ],  # right
+]
+
+var dir = 0
+
+var n_infections_caused = 0
+
+def work
+{
+	const i = x + y * stride
+	
+	const state = u8 grid[ i ]
+	
+	if not state then
+	{
+		++n_infections_caused
+	}
+	
+	grid[ i ] = byte ((state - 1) mod 4)
+	
+	dir = (dir + state) mod 4
+	
+	const move = moves[ dir ]
+	
+	x += move[ 0 ]
+	y += move[ 1 ]
+	
+	if not y in 0 -> height then
+	{
+		grid = (("\x01" * width) "\n").join ("", "", grid, "", "")
+		
+		y += 2
+		
+		height += 4
+	}
+	else if not x in 0 -> width then
+	{
+		grid = grid.lines() map { "\x01\x01" v "\x01\x01\n" } per str
+		
+		x += 2
+		
+		width  += 4
+		stride += 4
+	}
+}
+
+const N = 10000000
+
+for burst in 0 -> N do
+{
+	if (burst % 1000) == 0 then
+	{
+		display "" burst
+	}
+	
+	work()
+}
+
+display ""
+
+print n_infections_caused
