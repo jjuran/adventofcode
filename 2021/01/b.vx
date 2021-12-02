@@ -6,6 +6,4 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 const data = (load input_path).lines() map int
 
-const sums = 0 -> data.length - 2 map { data[ v -> v + 3 ] per Math.sum }
-
-print Iter.popcount (sums gap { b > a })
+print Iter.popcount (0 -> data.length - 3 map { data[ v ] < data[ v + 3 ] })
