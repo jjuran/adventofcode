@@ -1,0 +1,43 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const len = data[ 0 ].length
+
+def median (set)
+{
+	return (Iter.sorted set)[ set.length div 2 ]
+}
+
+def NOT (bit)
+{
+	return *(packed bit ~ x"01")
+}
+
+def rating (criterion)
+{
+	var valid = data
+	
+	var i = 0
+	
+	while valid.length > 1 do
+	{
+		const b = criterion (valid map { v[ i ] })
+		
+		valid = valid ver { v[ i ] == b }
+		
+		++i
+	}
+	
+	return unbin "0b" *valid
+}
+
+const oxy_rating = rating % median
+const co2_rating = rating % (NOT * median)
+
+const life_support = oxy_rating() * co2_rating()
+print life_support
