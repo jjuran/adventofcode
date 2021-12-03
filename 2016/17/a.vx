@@ -1,0 +1,65 @@
+#!/usr/bin/env vx
+
+const data = "vkjiggvb"
+
+def successors (path)
+{
+	const up   = Iter.popcount translated (path, "DLR", "\0" * 3)
+	const down = Iter.popcount translated (path, "ULR", "\0" * 3)
+	
+	const left  = Iter.popcount translated (path, "UDR", "\0" * 3)
+	const right = Iter.popcount translated (path, "UDL", "\0" * 3)
+	
+	const dx = down - up
+	const dy = right - left
+	
+	const hash = hex md5 data path
+	
+	const steps =
+	[
+		"U" (*) (dx > 0 and hash[ 0 ] > 'a'),
+		"D" (*) (dx < 3 and hash[ 1 ] > 'a'),
+		"L" (*) (dy > 0 and hash[ 2 ] > 'a'),
+		"R" (*) (dy < 3 and hash[ 3 ] > 'a'),
+	]
+	
+	if dx + dy == 6 then
+	{
+		return ()  # We're at the exit
+	}
+	
+	return steps map { path v }
+}
+
+def shortest_path
+{
+	var frontier = [ "" ]
+	
+	while frontier do
+	{
+		var new_frontier = []
+		
+		for path in frontier do
+		{
+			const paths = successors path
+			
+			if paths then
+			{
+				for path in paths do
+				{
+					new_frontier <-- path
+				}
+			}
+			else if paths isa () then
+			{
+				return path
+			}
+		}
+		
+		frontier <- new_frontier
+	}
+	
+	return ()
+}
+
+print shortest_path()
