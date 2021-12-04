@@ -1,0 +1,80 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const number_drawings = [ eval data[ 0 ] ]
+
+const n_cards = data.length div 6
+
+def get_card (i)
+{
+	const text = "\n" "\n".join *data[ 2 + i * 6 -> 5 + 2 + i * 6 ]
+	
+	return [ text / 25 ] map eval
+}
+
+const cards = 0 -> n_cards map get_card
+
+var occurrences = [ [] (*) 100 ]
+
+for c in 0 -> n_cards do
+{
+	const card = cards[ c ]
+	
+	for i in 0 -> 5 do
+	{
+		for j in 0 -> 5 do
+		{
+			occurrences[ card[ i * 5 + j ] ] <-- [ c, i, j ]
+		}
+	}
+}
+
+var markings = [ "\0" * 5^2 (*) n_cards ]
+
+def bingo (c, i, j)
+{
+	const x5 = "x" * 5
+	
+	const rows = [markings[ c ] / 5]
+	
+	return rows[ i ] == x5 or rows map { v[ j ] } per str == x5
+}
+
+def unmarked_sum (c)
+{
+	const card = cards[ c ]
+	
+	const marks = markings[ c ]
+	
+	return 0 -> 25 ver { not marks[ v ] } map { card[ v ] } per {a + b}
+}
+
+var last_number_drawn = 0
+
+def first_card_to_win
+{
+	for number in number_drawings do
+	{
+		last_number_drawn = number
+		
+		for o in occurrences[ number ] do
+		{
+			const c, const i, const j = *o
+			
+			markings[ c ][ i * 5 + j ] = 'x'
+			
+			if bingo *o then
+			{
+				return c
+			}
+		}
+	}
+}
+
+const score = unmarked_sum first_card_to_win() * last_number_drawn
+print score
