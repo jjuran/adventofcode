@@ -1,0 +1,142 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const grid = load input_path
+const lines = grid.lines()
+const width = lines[ 0 ].length
+const height = lines.length
+const stride = width + 1
+
+def native (T)
+{
+	const fields = size:   T.size,
+	               encode: T.encode-native,
+	               decode: T.decode-native
+	
+	return record fields
+}
+
+def neighbors (index)
+{
+	return
+	[
+		index - 1, index - stride,
+		index + 1, index + stride,
+	]
+}
+
+const null_wall_maze = translated (grid, "#", "\0")
+
+def dijkstra_map (start)
+{
+	var dmap = vector[ native u16 ] (height * stride)
+	
+	var distance = 0
+	
+	var frontier = [ start ]
+	
+	while frontier do
+	{
+		++distance  # This introduces a +1 bias so we can test for zero
+		
+		var new_frontier = []
+		
+		for index in frontier do
+		{
+			if not dmap[ index ] then
+			{
+				dmap[ index ] = distance
+				
+				for cell in neighbors index do
+				{
+					if null_wall_maze[ cell ] then
+					{
+						new_frontier <-- cell  # not a wall
+					}
+				}
+			}
+		}
+		
+		frontier <- new_frontier
+	}
+	
+	return dmap
+}
+
+const n_waypoints = Iter.popcount translated (grid, ".#\n", "\0" * 3)
+
+const waypoints = 0 -> n_waypoints map { (begin grid).find(str v).past.length }
+
+def make_distances
+{
+	var distances = vector[ native u16 ] n_waypoints^2
+	
+	var dist_base = 0
+	
+	for i in 0 -> n_waypoints do
+	{
+		display "Mapping " i " of " n_waypoints
+		
+		const dmap = dijkstra_map waypoints[ i ]
+		
+		for j in 0 -> n_waypoints do
+		{
+			distances[ dist_base + j ] = dmap[ waypoints[ j ] ]
+			
+			if true or i < j then
+			{
+				const dist = distances[ dist_base + j ] - 1
+			}
+		}
+		
+		dist_base += n_waypoints
+	}
+	
+	return distances
+}
+
+const distances = make_distances()
+
+const targets = 1 -> n_waypoints map byte per packed
+
+def traveling_salesman (loc=0, remaining=targets)
+{
+	if remaining.size == n_waypoints - 2 then
+	{
+		display "Travelling via " loc " of " (n_waypoints - 1)
+	}
+	
+	const dist_base = loc * n_waypoints
+	
+	def travel (dest_byte)
+	{
+		const dest = u8 dest_byte
+		
+		const distance = distances[ dist_base + dest ]
+		
+		const targets = remaining ver { v != dest_byte }
+		
+		if not targets then
+		{
+			return distance
+		}
+		
+		return distance + traveling_salesman (dest, packed targets)
+	}
+	
+	return remaining map travel per Math.min
+}
+
+const fewest_steps = traveling_salesman() - (n_waypoints - 1)
+
+display ""
+
+print fewest_steps
