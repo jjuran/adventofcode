@@ -1,0 +1,67 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = ((begin load input_path).find("Use%\n") + "Use%\n").rest.lines()
+
+const digit = '0' .. '9'
+const number = digit+ => int
+const space = ' '+
+
+const TB = space, number, "T"
+
+const node-grammar = ["/dev/grid/node-x", number, "-y", number, TB (*) 3]
+
+const X = 0
+const Y = 1
+
+const Size  = 2
+const Used  = 3
+const Avail = 4
+
+def parse (line)
+{
+	var p = (begin line)
+	
+	return [p += node-grammar]
+}
+
+const df_nodes = data map parse
+
+const used_nodes = df_nodes ver { v[ Used ] }
+
+const nodes_by_usage = Iter.sorted (used_nodes map { v[ Used  ] })
+const nodes_by_avail = Iter.sorted (df_nodes   map { v[ Avail ] })
+
+const n_used  = nodes_by_usage.length
+const n_avail = nodes_by_avail.length
+
+var p_used  = begin nodes_by_usage
+var p_avail = begin nodes_by_avail
+
+var i_avail = 0
+
+var n_viable = 0
+
+while p_used and p_avail do
+{
+	if *p_used <= *p_avail then
+	{
+		n_viable += n_avail - i_avail
+		
+		++p_used
+	}
+	else
+	{
+		++p_avail
+		++i_avail
+	}
+}
+
+const n_false_positives = (used_nodes ver { v[ Used ] <= v[ Avail ] }).length
+
+n_viable -= n_false_positives
+
+print n_viable
