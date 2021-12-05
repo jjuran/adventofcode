@@ -1,0 +1,94 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+def parse (line)
+{
+	const words = [line / ' ']
+	
+	const a = [words[ 0 ] / ','] map int
+	const b = [words[ 2 ] / ','] map int
+	
+	return [a, b]
+}
+
+const lines = data map parse
+
+const points = lines map { *v }
+
+const max_x = Iter.max (points map { v[ 0 ] })
+const max_y = Iter.max (points map { v[ 1 ] })
+
+const width  = max_x + 1
+const height = max_y + 1
+const stride = width + 1
+
+var grid = ("0" * width) "\n" * height
+
+for line in lines do
+{
+	const a, const b = *line
+	
+	var a0 = a[ 0 ]
+	var b0 = b[ 0 ]
+	
+	var a1 = a[ 1 ]
+	var b1 = b[ 1 ]
+	
+	if const x_swapped = a0 > b0 then
+	{
+		a0 <-> b0
+	}
+	
+	if const y_swapped = a1 > b1 then
+	{
+		a1 <-> b1
+	}
+	
+	if a0 == b0 then
+	{
+		for i in a1 .. b1 do
+		{
+			const k = i * stride + a0
+			
+			grid[ k ] = byte (u8 grid[ k ] + 1)
+		}
+	}
+	else if a1 == b1 then
+	{
+		for j in a0 .. b0 do
+		{
+			const k = a1 * stride + j
+			
+			grid[ k ] = byte (u8 grid[ k ] + 1)
+		}
+	}
+	else if x_swapped == y_swapped then
+	{
+		var k = a1 * stride + a0
+		
+		for x in a0 .. b0 do
+		{
+			grid[ k ] = byte (u8 grid[ k ] + 1)
+			
+			k += stride + 1
+		}
+	}
+	else
+	{
+		var k = a1 * stride + b0
+		
+		for x in a0 .. b0 do
+		{
+			grid[ k ] = byte (u8 grid[ k ] + 1)
+			
+			k += stride - 1
+		}
+	}
+}
+
+print Iter.popcount translated (grid, "01\n", "\0" * 3)
