@@ -1,0 +1,28 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = [(load input_path).lines()[ 0 ] / ','] map int
+
+const N = 256
+
+var counts = [ 0 (*) 9 ]
+
+for x in data do
+{
+	++counts[ x ]
+}
+
+for day in 1 .. N do
+{
+	const zeros = counts[ 0 ]
+	
+	counts = [tail *counts, zeros]
+	
+	counts[ 6 ] += zeros
+}
+
+const population = counts per {a + b}
+print population
