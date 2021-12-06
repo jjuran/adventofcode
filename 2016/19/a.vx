@@ -1,0 +1,21 @@
+#!/usr/bin/env vx
+
+const data = 3014603
+
+var N = data
+var S = 1
+var K = 1
+
+while N > 1 do
+{
+	K *= 2
+	
+	if N % 2 then
+	{
+		S += K
+	}
+	
+	N /:= 2
+}
+
+print S
