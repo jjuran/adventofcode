@@ -1,0 +1,40 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = [(load input_path).lines()[ 0 ] / ','] map int
+
+const n = data.length
+
+const sorted = Iter.sorted data
+
+def burn (dist)
+{
+	return dist * (dist + 1) div 2
+}
+
+def cost (median)
+{
+	return data map { v - median } map abs map burn per Math.sum
+}
+
+const min_x = sorted[ 0 ]
+const max_x = sorted[ n - 1 ]
+
+var minimum = cost min_x
+
+for i in min_x + 1 .. max_x do
+{
+	const fuel = cost i
+	
+	if fuel > minimum then
+	{
+		break
+	}
+	
+	minimum = fuel
+}
+
+print minimum
