@@ -1,0 +1,117 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+def syntax
+{
+	const digit = '0' .. '9'
+	
+	const opcode   = digit+ => int
+	const register = digit  => int
+	
+	const image = ["[", register, (", ", register) (*) 3, "]"] => { [_] }
+	const instruction = [opcode,  (" ",  register) (*) 3     ] => { [_] }
+	
+	const sample =
+	[
+		"Before: ", image, "\n",
+		instruction, "\n",
+		"After:  ", image, "\n",
+		"\n"?
+	] => { [_] }
+	
+	return sample+ => { [_] }
+}
+
+display "Parsing..."
+
+var p = begin data
+
+const samples = p += syntax()
+
+const n_samples = samples.length
+
+def AND (a, b)
+{
+	return u8 *(packed byte a & packed byte b)
+}
+
+def OR (a, b)
+{
+	return u8 *(packed byte a | packed byte b)
+}
+
+def GT (a, b)
+{
+	return u8 (a > b)
+}
+
+def EQ (a, b)
+{
+	return u8 (a == b)
+}
+
+var n_processed = 0
+
+const imm = ...
+
+def filter (before, instruction, after)
+{
+	display ++n_processed "/" n_samples
+	
+	var n_matches = 0
+	
+	def reg (i) { before[ i ] }
+	
+	const opcode, const a, const b, const c = *instruction
+	
+	const instruction_set =
+	[
+		[ reg, reg, Math.sum ],
+		[ reg, imm, Math.sum ],
+		[ reg, reg, Math.product ],
+		[ reg, imm, Math.product ],
+		[ reg, reg, AND ],
+		[ reg, imm, AND ],
+		[ reg, reg, OR ],
+		[ reg, imm, OR ],
+		[ reg, ..., head ],
+		[ imm, ..., head ],
+		[ reg, reg, GT ],
+		[ reg, imm, GT ],
+		[ imm, reg, GT ],
+		[ reg, reg, EQ ],
+		[ reg, imm, EQ ],
+		[ imm, reg, EQ ],
+	]
+	
+	for behavior in instruction_set do
+	{
+		const mode1, const mode2, const f = *behavior
+		
+		if f (mode1 a, mode2 b) == after[ c ] then
+		{
+			if ++n_matches >= 3 then
+			{
+				return true
+			}
+		}
+	}
+	
+	return false
+}
+
+const triambiguous = samples ver { filter *v }
+
+display ""
+
+print Iter.popcount triambiguous

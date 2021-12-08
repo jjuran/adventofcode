@@ -1,0 +1,191 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = load input_path
+
+def syntax
+{
+	const digit = '0' .. '9'
+	
+	const opcode   = digit+ => int
+	const register = digit  => int
+	
+	const image = ["[", register, (", ", register) (*) 3, "]"] => { [_] }
+	const instruction = [opcode,  (" ",  register) (*) 3     ] => { [_] }
+	
+	const sample =
+	[
+		"Before: ", image, "\n",
+		instruction, "\n",
+		"After:  ", image, "\n",
+		"\n"?
+	] => { [_] }
+	
+	return sample+ => { [_] }
+}
+
+display "Parsing..."
+
+var p = begin data
+
+const samples = p += syntax()
+
+const n_samples = samples.length
+
+p += "\n"*
+
+const program = p.rest.lines() map { [v / ' '] map int }
+
+def AND (a, b)
+{
+	return u8 *(packed byte a & packed byte b)
+}
+
+def OR (a, b)
+{
+	return u8 *(packed byte a | packed byte b)
+}
+
+def GT (a, b)
+{
+	return u8 (a > b)
+}
+
+def EQ (a, b)
+{
+	return u8 (a == b)
+}
+
+var opcode_matrix = [ "?" * 16 (*) 16 ]
+
+var known = "\0" * 16
+
+const imm = ...
+
+var n_processed = 0
+
+def examine (before, instruction, after)
+{
+	display ++n_processed "/" n_samples
+	
+	var result = []
+	
+	def reg (i) { before[ i ] }
+	
+	const opcode, const a, const b, const c = *instruction
+	
+	if known[ opcode ] then
+	{
+		return ()
+	}
+	
+	const instruction_set =
+	[
+		[ reg, reg, Math.sum ],
+		[ reg, imm, Math.sum ],
+		[ reg, reg, Math.product ],
+		[ reg, imm, Math.product ],
+		[ reg, reg, AND ],
+		[ reg, imm, AND ],
+		[ reg, reg, OR ],
+		[ reg, imm, OR ],
+		[ reg, ..., head ],
+		[ imm, ..., head ],
+		[ reg, reg, GT ],
+		[ reg, imm, GT ],
+		[ imm, reg, GT ],
+		[ reg, reg, EQ ],
+		[ reg, imm, EQ ],
+		[ imm, reg, EQ ],
+	]
+	
+	for i in 0 -> 16 do
+	{
+		const mode1, const mode2, const f = *instruction_set[ i ]
+		
+		if f (mode1 a, mode2 b) == after[ c ] then
+		{
+			result <-- i
+		}
+	}
+	
+	const n = result.length
+	
+	var index = -1
+	
+	const others = 0 -> 16 ver { not v in result }
+	
+	for j in others do
+	{
+		opcode_matrix[ opcode ][ j ] = '\0'
+	}
+	
+	if Iter.popcount opcode_matrix[ opcode ] == 1 then
+	{
+		index = (begin opcode_matrix[ opcode ]).find('?').past.length
+		
+		opcode_matrix[ opcode ][ index ] = '*'
+		
+		known[ opcode ] = byte (u8 'a' + index)
+		
+		for op in 0 -> 16 do
+		{
+			if op != opcode then
+			{
+				opcode_matrix[ op ][ index ] = '\0'
+			}
+		}
+	}
+}
+
+for s in samples do
+{
+	examine *s
+}
+
+var registers = [ 0 (*) 4 ]
+
+def reg (i) { registers[ i ] }
+
+const instruction_set =
+[
+	[ reg, reg, Math.sum ],
+	[ reg, imm, Math.sum ],
+	[ reg, reg, Math.product ],
+	[ reg, imm, Math.product ],
+	[ reg, reg, AND ],
+	[ reg, imm, AND ],
+	[ reg, reg, OR ],
+	[ reg, imm, OR ],
+	[ reg, ..., head ],
+	[ imm, ..., head ],
+	[ reg, reg, GT ],
+	[ reg, imm, GT ],
+	[ imm, reg, GT ],
+	[ reg, reg, EQ ],
+	[ reg, imm, EQ ],
+	[ imm, reg, EQ ],
+]
+
+display ""
+
+for instruction in program do
+{
+	const opcode, const a, const b, const c = *instruction
+	
+	const index = u8 known[ opcode ] - u8 'a'
+	
+	const mode1, const mode2, const f = *instruction_set[ index ]
+	
+	registers[ c ] = f (mode1 a, mode2 b)
+}
+
+print registers[ 0 ]
