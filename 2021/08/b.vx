@@ -1,0 +1,115 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+def parse (line)
+{
+	const left, const right = line / '|'
+	
+	const signals = [left / ' '] ver ...
+	const output = [right / ' '] ver ...
+	
+	return signals => output
+}
+
+const patterns =
+[
+	"",
+	"",
+	"  -  - ",  # 1
+	"- -  - ",  # 7
+	" --- - ",  # 4
+	"-??-??-",  # 2, 3, or 5
+	"--???--",  # 0, 6, or 9
+	"-------",  # 8
+]
+map { translated (packed v, "?- ", x"00f0ff") }
+
+def remap_signals (signals)
+{
+	var remap = [x"00" * 7 (*) 7]
+	
+	for s in signals do
+	{
+		const len = s.length
+		
+		const pattern = patterns[ len ]
+		
+		const antipattern = translated (pattern, x"f0ff", x"fff0")
+		
+		for c in 'a' .. 'g' do
+		{
+			const wire = u8 c - u8 'a'
+			
+			remap[ wire ] |= [antipattern, pattern][ +(c in s) ]
+		}
+	}
+	
+	var known = x"00" * 7
+	var sigmap = "\0" * 7
+	
+	for wire in 0 -> 7 do
+	{
+		if Iter.popcount ~remap[ wire ] == 1 then
+		{
+			const segment = (begin remap[ wire ]).find('\xf0').past.size
+			
+			known[ segment ] = '\xff'
+			
+			sigmap[ wire ] = byte (u8 'a' + segment)
+		}
+	}
+	
+	for wire2 in 0 -> 7 do
+	{
+		if not sigmap[ wire2 ] then
+		{
+			remap[ wire2 ] |= known
+			
+			const index = (begin remap[ wire2 ]).find('\xf0').past.size
+			
+			sigmap[ wire2 ] = byte (u8 'a' + index)
+		}
+	}
+	
+	return sigmap
+}
+
+const digit_segments =
+[
+	"abcefg",
+	"cf",
+	"acdeg",
+	"acdfg",
+	"bcdf",
+	"abdfg",
+	"abdefg",
+	"acf",
+	"abcdefg",
+	"abcdfg",
+]
+
+const digit_lookup = str^[ *(0 .. 9 map { digit_segments[ v ] => str v }) ]
+
+def decode_entry (entry)
+{
+	const sigmap = remap_signals entry.key
+	
+	def decode (signal)
+	{
+		const remapped = translated (signal, "abcdefg", sigmap)
+		
+		return digit_lookup[ str Iter.sorted [*remapped] ]
+	}
+	
+	const digits = entry.value map decode
+	
+	return int str digits
+}
+
+const total = data map parse map decode_entry per Math.sum
+print total
