@@ -1,0 +1,137 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+def rangify (s)
+{
+	const v = s / ".."
+	
+	return [v (*) 3 - (+) v] map int
+}
+
+def coordinate (s)
+{
+	const symbol, const data = s / '='
+	
+	return *symbol => rangify data
+}
+
+def parse (line)
+{
+	const coordinates = [line / ", "] map coordinate
+	
+	return Iter.sorted coordinates via .key map .value
+}
+
+const coordinates = data map parse
+
+const x_coords = coordinates map { v[ 0 ] }
+const y_coords = coordinates map { v[ 1 ] }
+
+const min_x = (x_coords map { v[ 0 ] } per Math.min) - 1
+const max_x = (x_coords map { v[ 1 ] } per Math.max) + 1
+const min_y = (y_coords map { v[ 0 ] } per Math.min)
+const max_y = (y_coords map { v[ 1 ] } per Math.max)
+
+const width  = max_x + 1 - min_x
+const height = max_y + 1
+const stride = width + 1
+
+var grid = (("." * width) "\n" * height) ("_" * width) "\n"
+
+const spring = 500 - min_x
+
+grid[ spring ] = '+'
+
+for vein in coordinates do
+{
+	const xs, const ys = *vein
+	
+	const x0, const x1 = *xs
+	const y0, const y1 = *ys
+	
+	for y in y0 .. y1 do
+	{
+		for x in x0 - min_x .. x1 - min_x do
+		{
+			grid[ x + y * stride ] = '#'
+		}
+	}
+}
+
+def bounded (i)
+{
+	var j = i
+	
+	while grid[ --i ] == '|' and grid[ i + stride ] in "~#" do {};
+	while grid[ ++j ] == '|' and grid[ j + stride ] in "~#" do {}
+	
+	if grid[ i ] == '#' and grid[ j ] == '#' then
+	{
+		return [i + 1, j - 1]
+	}
+	
+	return []
+}
+
+def spread (source)
+{
+	const below = source + stride
+	
+	if grid[ below ] == '.' then
+	{
+		grid[ below ] = '|'
+		
+		return [below]
+	}
+	
+	if grid[ below ] in "~#" then
+	{
+		const adjacent = [1, -1] map { source + v } ver { grid[ v ] == '.' }
+		
+		for i in adjacent do
+		{
+			grid[ i ] = '|'
+		}
+		
+		if const bounds = bounded source then
+		{
+			const left, const right = *bounds
+			
+			for i in left .. right do
+			{
+				grid[ i ] = '~'
+			}
+			
+			return left .. right map { v - stride } ver { grid[ v ] == '|' }
+		}
+		
+		return adjacent
+	}
+	
+	return []
+}
+
+var T = 0
+var next = [spring]
+
+do
+{
+	display "T = " ++T
+}
+while next = next map spread map { *v }
+
+display ""
+
+const proper_grid = substr (grid, min_y * stride)
+
+print Iter.popcount translated (proper_grid, ".#|_+\n", "\0" * 6)
