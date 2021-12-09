@@ -1,0 +1,66 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path)
+
+const lines = data.lines()
+const width = lines[ 0 ].length
+const stride = width + 1
+
+const blank = "~" * stride
+const grid = str (blank, lines map { v "~" }, blank)
+
+const digit = '0' .. '9'
+
+def neighbors (index)
+{
+	return
+	[
+		index - 1, index - stride,
+		index + 1, index + stride,
+	]
+}
+
+def is_low (i)
+{
+	const height = grid[ i ]
+	
+	return height in digit and not (neighbors i ver { grid[ v ] <= height })
+}
+
+def basin_size (i)
+{
+	var floodmap = grid
+	
+	var frontier = [ i ]
+	
+	var size = 0
+	
+	while frontier do
+	{
+		const i = frontier[ 0 ]
+		
+		frontier = [tail *frontier]
+		
+		if floodmap[ i ] != '.' then
+		{
+			floodmap[ i ] = '.'
+			
+			++size
+			
+			frontier <-- *(neighbors i ver { grid[ v ] < '9' })
+		}
+	}
+	
+	return size
+}
+
+const basin_sizes = stride -> grid.length - stride ver is_low map basin_size
+
+const sizes_descending = -(Iter.sorted basin_sizes)
+
+const product = sizes_descending[ 0 -> 3 ] per Math.product
+print product
