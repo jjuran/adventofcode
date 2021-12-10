@@ -1,0 +1,44 @@
+#!/usr/bin/env minivx
+
+if argc <= 1 then
+{
+	warn "usage: intcode-ascii <program.int>"
+	exit 1
+}
+
+const input_path = argv[ 1 ]
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+const intcode = import "intcode"
+
+const data = (load input_path).lines()[0]
+const core = [data / ','] map int
+
+const machine = intcode.machine core
+
+def input
+{
+	display ">>> "
+	
+	const c = IN.read 1
+	
+	display ""
+	
+	return int *c
+}
+
+machine.connect-input input
+
+display "Starting ASCII server..."
+
+for output in receiver machine.run do
+{
+	display ""
+	
+	OUT <== byte output
+}
