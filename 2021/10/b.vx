@@ -1,0 +1,58 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const pairs = byte^
+[
+	'(': ')',
+	'[': ']',
+	'{': '}',
+	'<': '>',
+]
+
+const score = byte^
+[
+	')': 1,
+	']': 2,
+	'}': 3,
+	'>': 4,
+]
+
+def completion_score (line)
+{
+	var stack = ""
+	
+	var p = begin line
+	
+	while p do
+	{
+		const c = *p++
+		
+		if c in pairs then
+		{
+			stack .= str pairs[ c ]
+		}
+		else if stack and c == stack[ stack.length - 1 ] then
+		{
+			stack = stack[ 0 -> stack.length - 1 ]
+		}
+		else
+		{
+			return ()
+		}
+	}
+	
+	return -stack map { score[ v ] } per 0>-{ L * 5 + v }
+}
+
+def median (set)
+{
+	return (Iter.sorted set)[ set.length div 2 ]
+}
+
+const scores = data map completion_score
+print median scores

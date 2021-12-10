@@ -1,0 +1,53 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const pairs = byte^
+[
+	'(': ')',
+	'[': ']',
+	'{': '}',
+	'<': '>',
+]
+
+const score = byte^
+[
+	')': 3,
+	']': 57,
+	'}': 1197,
+	'>': 25137,
+]
+
+def syntax_error_score (line)
+{
+	var stack = ""
+	
+	var p = begin line
+	
+	while p do
+	{
+		const c = *p++
+		
+		if c in pairs then
+		{
+			stack .= str pairs[ c ]
+		}
+		else if stack and c == stack[ stack.length - 1 ] then
+		{
+			stack = stack[ 0 -> stack.length - 1 ]
+		}
+		else
+		{
+			return score[ c ]
+		}
+	}
+	
+	return 0
+}
+
+const score_total = data map syntax_error_score per Math.sum
+print score_total
