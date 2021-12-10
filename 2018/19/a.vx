@@ -1,0 +1,94 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const n_lines = data.length
+
+const IP_reg = int substr (data[ 0 ], "#ip ".length)
+
+const program = data[ 1 -> n_lines ]
+
+const n_instructions = n_lines - 1
+
+def AND (a, b)
+{
+	return u8 *(packed byte a & packed byte b)
+}
+
+def OR (a, b)
+{
+	return u8 *(packed byte a | packed byte b)
+}
+
+def GT (a, b)
+{
+	return u8 (a > b)
+}
+
+def EQ (a, b)
+{
+	return u8 (a == b)
+}
+
+const imm = ...
+
+var registers = [ 0 (*) 6 ]
+
+def reg (i) { registers[ i ] }
+
+const instruction_set = str^
+[
+	addr: [ reg, reg, Math.sum ],
+	addi: [ reg, imm, Math.sum ],
+	mulr: [ reg, reg, Math.product ],
+	muli: [ reg, imm, Math.product ],
+	banr: [ reg, reg, AND ],
+	bani: [ reg, imm, AND ],
+	borr: [ reg, reg, OR ],
+	bori: [ reg, imm, OR ],
+	setr: [ reg, ..., head ],
+	seti: [ imm, ..., head ],
+	gtrr: [ reg, reg, GT ],
+	gtri: [ reg, imm, GT ],
+	gtir: [ imm, reg, GT ],
+	eqrr: [ reg, reg, EQ ],
+	eqri: [ reg, imm, EQ ],
+	eqir: [ imm, reg, EQ ],
+]
+
+var IP = 0
+var n = 0
+
+while ++n <= n_instructions and IP < n_instructions do
+{
+	registers[ IP_reg ] = IP
+	
+	const line = program[ IP ]
+	
+	const mnemonic = line[ 0 -> 4 ]
+	const operands = [substr (line, 5) / ' '] map int
+	
+	const mode1, const mode2, const f = *instruction_set[ mnemonic ]
+	
+	const a, const b, const c = *operands
+	
+	registers[ c ] = f (mode1 a, mode2 b)
+	
+	IP = registers[ IP_reg ] + 1
+}
+
+if IP >= n_instructions then
+{
+	print registers[ 0 ]
+	
+	exit 0
+}
+
+const x = Iter.max registers
+
+const factor_sum = 1 .. x ver { x % v == 0 } per Math.sum
+print factor_sum
