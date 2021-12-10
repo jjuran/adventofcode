@@ -1,0 +1,90 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+var grid = load input_path
+
+const N = 10
+
+const width = (begin grid).find('\n').past.length
+const stride = width + 1
+
+const blank = (" " * width) "\n"
+
+grid = " " blank grid blank
+
+const indices = 1 + stride -> grid.length - stride - 1
+
+def open (neighbors)
+{
+	const n_trees = Iter.popcount (neighbors ver { v == '|' })
+	
+	return ".|"[ +(n_trees >= 3) ]
+}
+
+def wood (neighbors)
+{
+	const n_yards = Iter.popcount (neighbors ver { v == '#' })
+	
+	return "|#"[ +(n_yards >= 3) ]
+}
+
+def yard (neighbors)
+{
+	const has_yard = Iter.popcount (neighbors ver { v == '#' })
+	const has_tree = Iter.popcount (neighbors ver { v == '|' })
+	
+	return ".#"[ has_yard and has_tree and 1 or 0 ]
+}
+
+const states = byte^
+[
+	'.': open,
+	'|': wood,
+	'#': yard,
+	' ': {' '},
+	'\n': {'\n'},
+]
+
+def smear (x)
+{
+	return *(-1 .. 1 map {x + v})
+}
+
+const offsets = -1 .. 1 map { v * stride } map smear ver ...
+
+def change
+{
+	var temp = " " * grid.length
+	
+	for i in indices do
+	{
+		temp[ i ] = states[ grid[ i ] ] (offsets map { grid[ i + v ] } per str)
+	}
+	
+	grid <- temp
+}
+
+for T in 1 .. N do
+{
+	display T "/" N
+	
+	change()
+}
+
+def count (c)
+{
+	return grid.length - Iter.popcount translated (grid, "" c, "\0")
+}
+
+display ""
+
+const value = "|#" map count per Math.product
+print value
