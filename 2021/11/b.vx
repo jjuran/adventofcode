@@ -1,0 +1,86 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+var grid = load input_path
+
+const width = (begin grid).find('\n').past.length
+const stride = width + 1
+
+const blank = (" " * width) "\n"
+
+grid = " " blank grid blank
+
+const indices = 1 + stride -> grid.length - stride - 1
+
+def smear (x)
+{
+	return *(-1 .. 1 map {x + v})
+}
+
+const neighbor_offsets = -1 .. 1 map { v * stride } map smear
+
+def step
+{
+	var flashed = []
+	
+	for i in indices do
+	{
+		if grid[ i ] in '0' .. '8' then
+		{
+			grid[ i ] = byte (u8 grid[ i ] + 1)
+		}
+		else if grid[ i ] == '9' then
+		{
+			grid[ i ] = '0'
+			
+			flashed <-- i
+		}
+	}
+	
+	while flashed do
+	{
+		var incoming = []
+		
+		for i in flashed do
+		{
+			for j in (neighbor_offsets map { i + v }) do
+			{
+				if grid[ j ] in '1' .. '8' then
+				{
+					grid[ j ] = byte (u8 grid[ j ] + 1)
+				}
+				else if grid[ j ] == '9' then
+				{
+					grid[ j ] = '0'
+					
+					incoming <-- j
+				}
+			}
+		}
+		
+		flashed <- incoming
+	}
+}
+
+const synchronized_flash = translated (grid, "123456789", "0" * 9)
+
+var T = 0
+
+while grid != synchronized_flash do
+{
+	display "" ++T
+	
+	step()
+}
+
+display ""
+
+print T
