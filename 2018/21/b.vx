@@ -1,0 +1,70 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const program = data[ 1 -> data.length ]
+
+const init
+const factor
+
+for line in program do
+{
+	const mnemonic = line[ 0 -> 4 ]
+	const operands = [substr (line, 5) / ' '] map int
+	
+	const a, const b, ... = *operands
+	
+	if mnemonic == "muli" and b > 2^16 then
+	{
+		factor = b
+	}
+	
+	if mnemonic == "seti" and a > 2^16 then
+	{
+		init = a
+	}
+}
+
+def successor (seed)
+{
+	if seed div 2^16 mod 2 == 0 then
+	{
+		seed += 2^16
+	}
+	
+	var base = init
+	
+	for i in 1 .. 3 do
+	{
+		base += seed mod 256
+		base *= factor
+		
+		seed = seed div 256
+		base = base mod 2^24
+	}
+	
+	return base
+}
+
+var seen = vector[byte] 2^24
+var seed = 0
+
+while true do
+{
+	var next = successor seed
+	
+	if seen[ next ] then
+	{
+		break
+	}
+	
+	seen[ next ] = 'x'
+	
+	seed = next
+}
+
+print seed
