@@ -1,0 +1,64 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const depth = int (begin data[ 0 ] + "depth: ").rest
+
+const X, const Y = eval (begin data[ 1 ] + "target: ").rest
+
+const width  = X + 1
+const height = Y + 1
+
+def native (T)
+{
+	const fields = size:   T.size,
+	               encode: T.encode-native,
+	               decode: T.decode-native
+	
+	return record fields
+}
+
+var el_memo = vector[ native u16 ] (width * height)
+
+def memoized_erosion_level (x, y)
+{
+	const i = x + y * width
+	
+	const geologic_index
+	
+	if x == 0 then
+	{
+		geologic_index = y * 48271
+	}
+	else if y == 0 then
+	{
+		geologic_index = x * 16807
+	}
+	else
+	{
+		geologic_index = el_memo[ i - 1 ] * el_memo[ i - width ]
+	}
+	
+	return el_memo[ i ] = (geologic_index + depth) mod 20183
+}
+
+var grid = " " * width * height
+
+for y in 0 -> height do
+{
+	for x in 0 -> width do
+	{
+		const region_type = memoized_erosion_level (x, y) mod 3
+		
+		grid[ x + y * width ] = byte region_type
+	}
+}
+
+grid[ X + Y * width ] = byte (depth mod 20183 mod 3)
+
+const risk_level = grid map u8 per Math.sum
+print risk_level
