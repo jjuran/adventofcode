@@ -1,0 +1,175 @@
+#!/usr/bin/env vx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = *(load input_path).lines()
+
+var grid = "\n".join ("#+#", "+X+", "#+#", "")
+
+var width = 3
+var height = 3
+var stride = width + 1
+
+var X = 1
+var Y = 1
+
+const dirs = byte^
+[
+	'N': [0, -1],
+	'S': [0,  1],
+	'W': [-1, 0],
+	'E': [ 1, 0],
+]
+
+def route (p, dx=0, dy=0)
+{
+	display (100 * p.past.length div (p.past.length + p.rest.length)) "%"
+	
+	var x = X + dx
+	var y = Y + dy
+	
+	var c
+	
+	while not (c = *p++) in "|)$" do
+	{
+		if c in dirs then
+		{
+			const dir_x, const dir_y = *dirs[ c ]
+			
+			x += dir_x
+			y += dir_y
+			
+			grid[ x + y * stride ] = "-|"[ y % 2 ]
+			
+			x += dir_x
+			y += dir_y
+			
+			if not y in 0 -> height then
+			{
+				const width2 = width div 2
+				
+				const walls = ("#+" * width2) "#\n"
+				const floor = ("+." * width2) "+\n"
+				
+				if y < 0 then
+				{
+					grid = walls floor grid
+					
+					Y += 2
+					y += 2
+				}
+				else
+				{
+					grid .= floor walls
+				}
+				
+				height += 2
+			}
+			else if not x in 0 -> width then
+			{
+				const lines = grid.lines()
+				
+				const expand =
+				if x < 0 then
+				{
+					X += 2
+					x += 2
+					
+					def expand (v) { ["#+", "+."][ v % 2 ] lines[ v ] '\n' },
+				}
+				else
+				{
+					def expand (v) { lines[ v ] ["+#", ".+"][ v % 2 ] '\n' },
+				}
+				
+				grid = 0 -> lines.length map expand per str
+				
+				width  += 2
+				stride += 2
+			}
+		}
+		else if c == '(' then
+		{
+			do
+			{
+				dx = x - X
+				dy = y - Y
+				
+				p = route (p, dx, dy)
+				
+				x = X + dx
+				y = Y + dy
+				
+				c = *p++
+			}
+			while c == '|'
+		}
+	}
+	
+	return --p
+}
+
+route (begin data + '^')
+
+translate (&grid, "+", "\0")
+
+def native (T)
+{
+	const fields = size:   T.size,
+	               encode: T.encode-native,
+	               decode: T.decode-native
+	
+	return record fields
+}
+
+const offsets =
+[
+	-1, -stride,
+	 1,  stride,
+]
+
+def furthest_distance (start)
+{
+	var max_distance = 0
+	
+	var distance = 0
+	
+	var dmap = vector[ native u16 ] (height * stride)
+	
+	var frontier = [ start ]
+	
+	while frontier do
+	{
+		var new_frontier = []
+		
+		for i in frontier do
+		{
+			if not dmap[ i ] then
+			{
+				dmap[ i ] = max_distance = distance
+				
+				for cell in (offsets ver { grid[ i + v ] } map { i + v * 2 }) do
+				{
+					new_frontier <-- cell
+				}
+			}
+		}
+		
+		++distance
+		
+		frontier <- new_frontier
+	}
+	
+	return max_distance
+}
+
+display ""
+
+print furthest_distance (X + Y * stride)
