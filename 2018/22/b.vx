@@ -1,0 +1,212 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const data = (load input_path).lines()
+
+const depth = int (begin data[ 0 ] + "depth: ").rest
+
+const X, const Y = eval (begin data[ 1 ] + "target: ").rest
+
+# It takes one minute to move between regions, and seven minutes to reequip.
+# In the worst case, we can reequip on every move, so the upper bound for
+# time is the Manhattan distance (X + Y) multiplied by eight minutes.
+
+# While the map extends arbitrarily far down and to the right, we can compute
+# the upper bounds for what's relevant.  Considering width, in the worst case
+# we traverse some distance to the right and back (as well as down just enough
+# to reach the target) without ever having to reequip.  Since the shortest
+# path can't exceed the upper time bound from above, the furthest we need to
+# travel right (or down) beyond the target is (UB(T) - (X + Y)) / 2.  If we
+# call this the margin, then upper bound for required map dimensions is
+# (X + margin x Y + margin).
+
+const K = 7  # reequip delay
+
+var upper_bound = (X + Y) * (K + 1)
+
+const margin = (upper_bound - (X + Y)) div 2
+
+const width  = X + margin
+const height = Y + margin
+
+const plane_size = width * height
+
+def native (T)
+{
+	const fields = size:   T.size,
+	               encode: T.encode-native,
+	               decode: T.decode-native
+	
+	return record fields
+}
+
+var el_memo = vector[ native u16 ] plane_size
+
+def memoized_erosion_level (x, y)
+{
+	const i = x + y * width
+	
+	const geologic_index
+	
+	if x == 0 then
+	{
+		geologic_index = y * 48271
+	}
+	else if y == 0 then
+	{
+		geologic_index = x * 16807
+	}
+	else
+	{
+		geologic_index = el_memo[ i - 1 ] * el_memo[ i - width ]
+	}
+	
+	return el_memo[ i ] = (geologic_index + depth) mod 20183
+}
+
+var grid = "\0" * plane_size
+
+var el_max_x = -1
+var el_max_y = -1
+
+def erosion_level (X, Y)
+{
+	if X > el_max_x then
+	{
+		for y in 0 .. el_max_y do
+		{
+			for x in el_max_x + 1 .. X do
+			{
+				const region_type = memoized_erosion_level (x, y) mod 3
+				
+				grid[ x + y * width ] = byte region_type
+			}
+		}
+		
+		el_max_x = X
+	}
+	
+	if Y > el_max_y then
+	{
+		for y in el_max_y + 1 .. Y do
+		{
+			for x in 0 .. el_max_x do
+			{
+				const region_type = memoized_erosion_level (x, y) mod 3
+				
+				grid[ x + y * width ] = byte region_type
+			}
+		}
+		
+		el_max_y = Y
+	}
+	
+	return grid[ X + Y * width ]
+}
+
+erosion_level (X, Y)  # Force values up and left of the target to be computed
+
+el_memo[ X + Y * width ] = depth % 20183
+
+grid[ X + Y * width ] = byte (depth % 20183 % 3)  # Override target region
+
+def neighbors (index)
+{
+	const x = index mod width
+	const y = index div width mod height
+	
+	erosion_level (x + 1, y + 1)
+	
+	const plane_index = index div plane_size
+	
+	return
+	[
+		index - 1     (*) (x > 0),
+		index + 1     (*) (x < width - 1),
+		index - width (*) (y > 0),
+		index + width (*) (y < height - 1),
+	]
+	ver { u8 grid[ v mod plane_size ] != plane_index }
+}
+
+def shortest_time (start, target)
+{
+	var dmap = vector[ native u16 ] (plane_size * 3)
+	
+	var T = 0
+	
+	var frontier = [ start ]
+	var reequips = [ [] (*) K ]
+	
+	while true do
+	{
+		display "T = " T " (cap: " upper_bound ")"
+		
+		++T  # This introduces a +1 bias so we can test for zero
+		
+		var new_frontier = []
+		
+		for index in frontier do
+		{
+			if not dmap[ index ] then
+			{
+				if index == target then
+				{
+					display ""
+					
+					return T - 1
+				}
+				
+				dmap[ index ] = T
+				
+				const x = index mod width
+				const y = index div width mod height
+				
+				const distance = abs (X - x) + abs (Y - y)
+				
+				upper_bound = Math.min (upper_bound, T + distance * (K + 1))
+				
+				if T + distance > upper_bound then
+				{
+					continue
+				}
+				
+				const plane_index = index div plane_size
+				const region_type = u8 grid[ index mod plane_size ]
+				
+				const switch_tool = 3 - region_type - plane_index
+				
+				const vertical = index mod plane_size + switch_tool * plane_size
+				
+				reequips[ 0 ] <-- vertical
+				
+				for region in neighbors index do
+				{
+					new_frontier <-- region
+				}
+			}
+		}
+		
+		new_frontier <-- *reequips[ K - 1 ]
+		
+		reequips = [[], *reequips[ 0 -> K - 1 ]]
+		
+		frontier <- new_frontier
+	}
+}
+
+# Start at 0,0 with the torch (plane 1).
+# End at the target with the torch.
+
+const start  = plane_size
+const target = plane_size + X + Y * width
+
+print shortest_time (start, target)
