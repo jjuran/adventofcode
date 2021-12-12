@@ -1,0 +1,53 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const links = (load input_path).lines() map { [v / '-'] }
+
+var graph = str^[]
+
+for cave in (links map { *v }) do
+{
+	graph[ cave ] = []  # sequence has duplicates, but this is idempotent
+}
+
+for link in links do
+{
+	const a, const b = *link
+	
+	graph[ a ] <-- b
+	graph[ b ] <-- a
+}
+
+for adjacent in graph[ "start" ] do
+{
+	graph[ adjacent ] = graph[ adjacent ] ver { v != "start" }
+}
+
+def paths_from (path)
+{
+	if path[ 0 ] == "end" then
+	{
+		return 1
+	}
+	
+	var n = 0
+	
+	for dst in graph[ path[ 0 ] ] do
+	{
+		if not (dst[ 0 ] in 'a' .. 'z' and dst in path) then
+		{
+			n += paths_from [dst, *path]
+		}
+		else if not "" in path then
+		{
+			n += paths_from [dst, "", *path]
+		}
+	}
+	
+	return n
+}
+
+print paths_from ["start"]
