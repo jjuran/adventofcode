@@ -1,0 +1,99 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+def parse
+{
+	const polymer, const rules_chunk = load input_path / "\n\n"
+	
+	def parse_rule (line)
+	{
+		const a, const b = line / " -> "
+		
+		return a => b
+	}
+	
+	return polymer, str^(rules_chunk.lines() map parse_rule)
+}
+
+const polymer, const rules = parse()
+
+def make_elements
+{
+	var elements = str^[]
+	
+	for rule in rules do
+	{
+		elements[ rule.value ] = null
+	}
+	
+	return str elements.keys
+}
+
+const elements = make_elements()
+
+def step (polymer)
+{
+	var p = begin polymer
+	
+	var s = "" *p
+	
+	while p.rest.length > 1 do
+	{
+		const key = p.rest[ 0 -> 2 ]
+		
+		++p
+		
+		s .= rules[ key ] *p
+	}
+	
+	return s
+}
+
+const N = 40
+
+const result = step^3 polymer
+
+def count_in (container, e)
+{
+	return container.length - Iter.popcount translated( container, e, "\0" )
+}
+
+def augmented_counts (element, old_counts)
+{
+	var new_counts = []
+	
+	for a in elements do
+	{
+		for b in elements do
+		{
+			const x = rules[ a b "" ]
+			
+			const count = old_counts[ a x ]
+			            + old_counts[ x b ]
+			            + +(x == element)
+			
+			new_counts <-- a b "" => count
+		}
+	}
+	
+	return str^new_counts
+}
+
+const counts = elements map str map { v => count_in (result, v) }
+
+def full_count (extreme)
+{
+	const x = (extreme counts via .value).key
+	
+	const count1 = str^(rules map { v.key => +(v.value == x) })
+	
+	const countN = (augmented_counts % x)^(N - 1) count1
+	
+	return count_in (polymer, x) + (polymer gap {countN[ str _ ]} per Math.sum)
+}
+
+const delta = [Iter.max, Iter.min] map full_count per {a - b}
+print delta

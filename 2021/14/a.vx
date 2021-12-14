@@ -1,0 +1,67 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+def parse
+{
+	const polymer, const rules_chunk = load input_path / "\n\n"
+	
+	def parse_rule (line)
+	{
+		const a, const b = line / " -> "
+		
+		return a => b
+	}
+	
+	return polymer, str^(rules_chunk.lines() map parse_rule)
+}
+
+const polymer, const rules = parse()
+
+def make_elements
+{
+	var elements = str^[]
+	
+	for rule in rules do
+	{
+		elements[ rule.value ] = null
+	}
+	
+	return str elements.keys
+}
+
+const elements = make_elements()
+
+def step (polymer)
+{
+	var p = begin polymer
+	
+	var s = "" *p
+	
+	while p.rest.length > 1 do
+	{
+		const key = p.rest[ 0 -> 2 ]
+		
+		++p
+		
+		s .= rules[ key ] *p
+	}
+	
+	return s
+}
+
+const N = 10
+
+const result = step^N polymer
+
+def count (e)
+{
+	return result.length - Iter.popcount translated( result, e "", "\0" )
+}
+
+const counts = elements map count
+
+const delta = Iter.max counts - Iter.min counts
+print delta
