@@ -1,0 +1,62 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+const grid = load input_path
+
+const grid_len = grid.length
+
+const width = (begin grid).find('\n').past.length
+const stride = width + 1
+
+def neighbors (index)
+{
+	return
+	[
+		index - 1, index - stride,
+		index + 1, index + stride,
+	]
+	ver { v in 0 -> grid_len and grid[ v ] in '0' .. '9' }
+}
+
+def lowest_risk
+{
+	var visited = "\0" * grid_len
+	
+	var risk = 0
+	
+	var frontier = [ 0 ]
+	
+	var risk_buckets = [ [] (*) 9 ]
+	
+	while true do
+	{
+		for index in frontier do
+		{
+			if not visited[ index ] then
+			{
+				if index == grid_len - 2 then
+				{
+					return risk
+				}
+				
+				visited[ index ] = 'x'
+				
+				for i in neighbors index do
+				{
+					risk_buckets[ u8 grid[ i ] - u8 '1' ] <-- i
+				}
+			}
+		}
+		
+		++risk
+		
+		frontier = risk_buckets[ 0 ]
+		
+		risk_buckets = [*risk_buckets[ 1 -> 9 ], []]
+	}
+}
+
+print lowest_risk()

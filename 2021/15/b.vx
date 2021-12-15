@@ -1,0 +1,104 @@
+#!/usr/bin/env minivx
+
+const bindir = dirname realpath argv[ 0 ]
+const libdir = bindir "/../../lib/"
+
+const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+
+const display = (import "status") { OUT <== _ }
+
+const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+def generate_full_map
+{
+	var grid = load input_path
+	
+	var subgrids = [ grid.lines() ]
+	
+	for x in 1 -> 9 do
+	{
+		translate (&grid, "123456789", "234567891")
+		
+		subgrids <-- grid.lines()
+	}
+	
+	const height = subgrids[ 0 ].length
+	
+	var s = ""
+	
+	for yy in 0 -> 5 do
+	{
+		for y in 0 -> height do
+		{
+			for xx in 0 -> 5 do
+			{
+				s .= subgrids[ xx + yy ][ y ]
+			}
+			
+			s .= "\n"
+		}
+	}
+	
+	return s
+}
+
+const grid = generate_full_map()
+
+const grid_len = grid.length
+
+const width = (begin grid).find('\n').past.length
+const stride = width + 1
+
+def neighbors (index)
+{
+	return
+	[
+		index - 1, index - stride,
+		index + 1, index + stride,
+	]
+	ver { v in 0 -> grid_len and grid[ v ] in '0' .. '9' }
+}
+
+def lowest_risk
+{
+	var visited = "\0" * grid_len
+	
+	var risk = 0
+	
+	var frontier = [ 0 ]
+	
+	var risk_buckets = [ [] (*) 9 ]
+	
+	while true do
+	{
+		display "Total risk: " risk
+		
+		for index in frontier do
+		{
+			if not visited[ index ] then
+			{
+				if index == grid_len - 2 then
+				{
+					display ""
+					
+					return risk
+				}
+				
+				visited[ index ] = 'x'
+				
+				for i in neighbors index do
+				{
+					risk_buckets[ u8 grid[ i ] - u8 '1' ] <-- i
+				}
+			}
+		}
+		
+		++risk
+		
+		frontier = risk_buckets[ 0 ]
+		
+		risk_buckets = [*risk_buckets[ 1 -> 9 ], []]
+	}
+}
+
+print lowest_risk()
