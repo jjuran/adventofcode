@@ -13,8 +13,8 @@ const offset = "Generator X starts with ".length
 
 const data = (load input_path).lines() map { int substr (v, offset) }
 
-const A, const B = *data
-var   a, var   b = A, B
+let (A, B) = *data
+var (a, b) = A, B
 
 var matches = 0
 
