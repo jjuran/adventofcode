@@ -39,17 +39,11 @@ const abc = str *('a' .. 'z')
 
 const abc_2 = abc * 2
 
-def decrypt
+def decrypt (name, n)
 {
-	var name, var n = _
+	const dst = substr( abc_2, n % 26, 26 )
 	
-	n %= 26
-	
-	const dst = substr( abc_2, n, 26 )
-	
-	translate( &name, abc, dst )
-	
-	return name
+	return translated( name, abc, dst )
 }
 
 for room in data do
