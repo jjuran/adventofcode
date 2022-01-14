@@ -6,15 +6,6 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 const data = (load input_path).lines()
 
-def find
-{
-	const haystack, const needle = _
-	
-	const parts = [haystack / needle]
-	
-	return parts[ 0 ].size
-}
-
 def checksum
 {
 	const letters = _
@@ -34,7 +25,7 @@ def checksum
 	{
 		const max = histogram per Math.max
 		
-		const j = find( histogram, max )
+		const j = (begin histogram).find(max).past.size
 		
 		histogram[ j ] = '\0'
 		
