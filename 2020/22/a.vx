@@ -21,7 +21,7 @@ def parse
 
 var decks = parse data
 
-var one, var two = *decks
+var (one, two) = *decks
 
 def play_game (one, two)
 {
