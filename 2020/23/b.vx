@@ -1,4 +1,4 @@
-#!/usr/bin/env vx
+#!/usr/bin/env minivx
 
 const bindir = dirname realpath argv[ 0 ]
 const libdir = bindir "/../../lib/"
@@ -9,19 +9,10 @@ const display = (import "status") { OUT <== _ }
 
 const data = if argc > 1 then {argv[ 1 ]} else {"925176834"}
 
-def native (T)
-{
-	const fields = size:   T.size,
-	               encode: T.encode-native,
-	               decode: T.decode-native
-	
-	return record fields
-}
-
 const N = 10^6
 const M = 10^7
 
-var indices = vector[ native u32 ] (N + 1)
+var indices = vector[ u32 ] (N + 1)
 var current = int data[[ 0 ]]
 
 def init

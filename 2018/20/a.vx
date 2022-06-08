@@ -1,4 +1,4 @@
-#!/usr/bin/env vx
+#!/usr/bin/env minivx
 
 const bindir = dirname realpath argv[ 0 ]
 const libdir = bindir "/../../lib/"
@@ -120,15 +120,6 @@ route (begin data + '^')
 
 translate (&grid, "+", "\0")
 
-def native (T)
-{
-	const fields = size:   T.size,
-	               encode: T.encode-native,
-	               decode: T.decode-native
-	
-	return record fields
-}
-
 const offsets =
 [
 	-1, -stride,
@@ -141,7 +132,7 @@ def furthest_distance (start)
 	
 	var distance = 0
 	
-	var dmap = vector[ native u16 ] (height * stride)
+	var dmap = vector[ u16 ] (height * stride)
 	
 	var frontier = [ start ]
 	

@@ -15,15 +15,6 @@ const width = lines[ 0 ].length
 const height = lines.length
 const stride = width + 1
 
-def native (T)
-{
-	const fields = size:   T.size,
-	               encode: T.encode-native,
-	               decode: T.decode-native
-	
-	return record fields
-}
-
 def neighbors (index)
 {
 	return
@@ -37,7 +28,7 @@ const null_wall_maze = translated (grid, "#", "\0")
 
 def dijkstra_map (start)
 {
-	var dmap = vector[ native u16 ] (height * stride)
+	var dmap = vector[ u16 ] (height * stride)
 	
 	var distance = 0
 	
@@ -77,7 +68,7 @@ const waypoints = 0 -> n_waypoints map { (begin grid).find(str v).past.length }
 
 def make_distances
 {
-	var distances = vector[ native u16 ] n_waypoints^2
+	var distances = vector[ u16 ] n_waypoints^2
 	
 	var dist_base = 0
 	

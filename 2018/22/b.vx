@@ -39,16 +39,7 @@ const height = Y + margin
 
 const plane_size = width * height
 
-def native (T)
-{
-	const fields = size:   T.size,
-	               encode: T.encode-native,
-	               decode: T.decode-native
-	
-	return record fields
-}
-
-var el_memo = vector[ native u16 ] plane_size
+var el_memo = vector[ u16 ] plane_size
 
 def memoized_erosion_level (x, y)
 {
@@ -139,7 +130,7 @@ def neighbors (index)
 
 def shortest_time (start, target)
 {
-	var dmap = vector[ native u16 ] (plane_size * 3)
+	var dmap = vector[ u16 ] (plane_size * 3)
 	
 	var T = 0
 	

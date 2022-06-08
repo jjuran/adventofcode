@@ -13,16 +13,7 @@ const X, const Y = eval (begin data[ 1 ] + "target: ").rest
 const width  = X + 1
 const height = Y + 1
 
-def native (T)
-{
-	const fields = size:   T.size,
-	               encode: T.encode-native,
-	               decode: T.decode-native
-	
-	return record fields
-}
-
-var el_memo = vector[ native u16 ] (width * height)
+var el_memo = vector[ u16 ] (width * height)
 
 def memoized_erosion_level (x, y)
 {

@@ -1,4 +1,4 @@
-#!/usr/bin/env vx
+#!/usr/bin/env minivx
 
 const bindir = dirname realpath argv[ 0 ]
 const libdir = bindir "/../../lib/"
@@ -9,18 +9,9 @@ const display = (import "status") { OUT <== _ }
 
 const data = 354
 
-def native (T)
-{
-	const fields = size:   T.size,
-	               encode: T.encode-native,
-	               decode: T.decode-native
-	
-	return record fields
-}
-
 const N = 2017
 
-var indices = vector[ native u32 ] (N + 1)
+var indices = vector[ u32 ] (N + 1)
 var n_items = 1
 var current = 0
 
