@@ -1,0 +1,36 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let digit = '0' .. '9'
+let whole = digit+ => int
+let coord = ['-'?, digit+] => int
+let triad = ['<', coord, ',', coord, ',', coord, '>'] => { [_] }
+let locus = ["pos=", triad]
+let range = ["r=", whole]
+let datum = [locus, ", ", range] => { [_] }
+let input = [datum, "\n"]+ => { [_] }
+
+def parse (text)
+{
+	var p = begin text
+	
+	return p += input
+}
+
+def distance (a, b)
+{
+	return 0 .. 2 map { abs (a[v] - b[v]) } per Math.sum
+}
+
+let data = parse load input_path
+
+let max_ranged     = Iter.max data via { v[ 1 ] }
+let max_ranged_pos = max_ranged[ 0 ]
+let max_range      = max_ranged[ 1 ]
+
+let count = (data ver { distance (v[0], max_ranged_pos) <= max_range }).length
+
+print count
