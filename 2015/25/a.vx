@@ -18,32 +18,20 @@ p = p.find "row"
 
 const row, const col = p += ["row ", number, ", column ", number]
 
+def summation (max)
+{
+	let mid = max div 2
+	let odd = max mod 2
+	
+	return (1 + odd + max) * mid + odd
+}
+
 def diagonalize (row, col)
 {
 	--row
 	--col
 	
-	var i = 0
-	
-	while row or col do
-	{
-		if col then
-		{
-			i += col
-			
-			row += col
-			col  = 0
-		}
-		else
-		{
-			++i
-			
-			col = row - 1
-			row = 0
-		}
-	}
-	
-	return i
+	return col + summation (row + col)
 }
 
 const seed    = 20151125
