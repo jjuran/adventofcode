@@ -71,17 +71,36 @@ def look-and-say
 	return *(memo[ s ] = split result)
 }
 
-var x = [data]
+var x = [data => 1]
 var n
 
 for i in 1 .. 50 do
 {
-	x = x map look-and-say
+	var freq = str^[]
+	
+	for element in x do
+	{
+		let results = look-and-say element.key
+		
+		for r in [results] do
+		{
+			if not r in freq then
+			{
+				freq[ r ] = 0
+			}
+			
+			freq[ r ] += element.value
+		}
+	}
+	
+	x <- freq
 	
 	n = (str x).length
 	
 	display (i ": " n)
 }
+
+n = x map { v.key.length * v.value } per Math.sum
 
 display ""
 
