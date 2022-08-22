@@ -1,12 +1,5 @@
 #!/usr/bin/env vx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
-
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
-
-const display = (import "status") { OUT <== _ }
-
 const data = "1113122113"
 
 var memo = str^[]
@@ -21,15 +14,13 @@ def split
 	
 	var q = p
 	
-	while '2' in p.rest do
+	while p = p.find '2' do
 	{
-		while *p++ != '2' do {}
+		++p
 		
 		const rest = p.rest
 		
-		if substr( rest, 0, 2 ) == "31"
-		or substr( rest, 0, 3 ) in ["131", "132"]
-		or substr( rest, 0, 4 ) == "1113" then
+		if substr( rest, 0, 2 ) == "31" then
 		{
 			result <-- p - q
 			
@@ -60,19 +51,15 @@ def look-and-say
 		const q = p
 		const c = *p++
 		
-		while p and *p == c do
-		{
-			++p
-		}
+		p += c*
 		
-		result = str( result, (p - q).length, c )
+		result .= (p - q).length c ""
 	}
 	
 	return *(memo[ s ] = split result)
 }
 
 var x = [data => 1]
-var n
 
 for i in 1 .. 40 do
 {
@@ -94,14 +81,8 @@ for i in 1 .. 40 do
 	}
 	
 	x <- freq
-	
-	n = (str x).length
-	
-	display (i ": " n)
 }
 
-n = x map { v.key.length * v.value } per Math.sum
-
-display ""
+let n = x map { v.key.length * v.value } per Math.sum
 
 print n
