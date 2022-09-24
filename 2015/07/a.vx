@@ -22,20 +22,20 @@ for instruction in data do
 	circuit[ wire ] = input
 }
 
-def NOT { u16 unhex "0x" ~(unhex hex (2^16 + _)) }
+def NOT { u16.decode ~(u16.encode _) }
 
 def AND
 {
 	const a, const b = _
 	
-	return u16 unhex "0x" (unhex hex (2^16 + a) & unhex hex (2^16 + b))
+	return u16.decode (u16.encode a & u16.encode b)
 }
 
 def OR
 {
 	const a, const b = _
 	
-	return u16 unhex "0x" (unhex hex (2^16 + a) | unhex hex (2^16 + b))
+	return u16.decode (u16.encode a | u16.encode b)
 }
 
 def LSHIFT
