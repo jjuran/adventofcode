@@ -14,19 +14,14 @@ const program = data[ 1 -> n_lines ]
 
 const n_instructions = n_lines - 1
 
-def binarize (x)
-{
-	return unhex hex (2^32 + x)
-}
-
 def AND (a, b)
 {
-	return u32 unhex "0x" hex (binarize a & binarize b)
+	return u32.decode (u32.encode u32 a & u32.encode u32 b)
 }
 
 def OR (a, b)
 {
-	return u32 unhex "0x" hex (binarize a | binarize b)
+	return u32.decode (u32.encode u32 a | u32.encode u32 b)
 }
 
 def GT (a, b)
