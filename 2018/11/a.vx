@@ -70,7 +70,7 @@ for iii in 0 -> edge2 do
 
 const mappings = 0 -> all_sums.size map { v => all_sums[ v ] }
 
-const max = Iter.max mappings via { v.value }
+const max = Iter.max mappings via .value
 
 const index = max.key
 
