@@ -1,0 +1,109 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
+
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
+
+let display = (import "status") { OUT <== _ }
+
+let serial_number = int (getenv "INPUT" or 9005)
+
+let edge = 300
+
+var grid = x"00" * edge^2
+
+var src = 0
+var dst = 0
+
+for i in 1 .. edge do
+{
+	for j in 1 .. edge do
+	{
+		let rack_id = j + 10
+		
+		let power = (rack_id * i + serial_number) * rack_id
+		
+		grid[ dst ] = byte (power mod 1000 div 100 - 5)
+		
+		++dst
+	}
+}
+
+def max_power_square_of_edge (subedge)
+{
+	let edge2 = edge - (subedge - 1)
+	
+	var row_sums = vector[ i32, edge2 * edge ]()
+	var all_sums = vector[ i32, edge2^2 ]()
+	
+	src = 0
+	dst = 0
+	
+	for ii in 0 -> edge do
+	{
+		for j in 0 -> edge2 do
+		{
+			row_sums[ dst ] = grid[ src -> src + subedge ] map i8 per Math.sum
+			
+			++src
+			++dst
+		}
+		
+		src += subedge - 1
+	}
+	
+	src = 0
+	dst = 0
+	
+	for iii in 0 -> edge2 do
+	{
+		for j in 0 -> edge2 do
+		{
+			var sum = 0
+			
+			for i in 0 -> subedge do
+			{
+				sum += row_sums[ src + edge2 * i]
+			}
+			
+			all_sums[ dst ] = sum
+			
+			++src
+			++dst
+		}
+	}
+	
+	let mappings = 0 -> edge2^2 map { v => all_sums[ v ] }
+	
+	let max = Iter.max mappings via .value
+	
+	let index = max.key
+	
+	let x = index mod edge2
+	let y = index div edge2
+	
+	return ",".join (1 + x, 1 + y, subedge) => max.value
+}
+
+var max = "" => 0
+
+for x in 1 .. 300 do
+{
+	display x ": " max.key " -> " max.value
+	
+	let submax = max_power_square_of_edge x
+	
+	if submax.value > max.value then
+	{
+		max = submax
+	}
+	else if submax.value < max.value div 2 then
+	{
+		break
+	}
+}
+
+display ""
+
+print max.key
