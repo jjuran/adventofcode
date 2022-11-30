@@ -41,7 +41,9 @@ for ii in 0 -> edge do
 {
 	for j in 0 -> edge2 do
 	{
-		row_sums[ dst ] = byte (grid[ src -> src + 3 ] map i8 per Math.sum)
+		row_sums[ dst ] = byte (i8 grid[ src ] +
+		                        i8 grid[ src + 1 ] +
+		                        i8 grid[ src + 2 ])
 		
 		++src
 		++dst
@@ -57,13 +59,9 @@ for iii in 0 -> edge2 do
 {
 	for j in 0 -> edge2 do
 	{
-		var sum = 0
-		
-		sum += i8 row_sums[ src ]
-		sum += i8 row_sums[ src + edge2 ]
-		sum += i8 row_sums[ src + edge2 * 2]
-		
-		all_sums[ dst ] = byte sum
+		all_sums[ dst ] = byte (i8 row_sums[ src ] +
+		                        i8 row_sums[ src + edge2 ] +
+		                        i8 row_sums[ src + edge2 * 2 ])
 		
 		++src
 		++dst
