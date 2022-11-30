@@ -14,18 +14,13 @@ def split
 	
 	var q = p
 	
-	while p = p.find '2' do
+	while p = p.find "231" do
 	{
 		++p
 		
-		const rest = p.rest
+		result <-- p - q
 		
-		if substr( rest, 0, 2 ) == "31" then
-		{
-			result <-- p - q
-			
-			q = p
-		}
+		q = p
 	}
 	
 	result <-- q.rest
