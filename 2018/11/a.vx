@@ -1,9 +1,9 @@
-#!/usr/bin/env vx
+#!/usr/bin/env minivx
 
-const serial_number = int (getenv "INPUT" or 9005)
+let serial_number = int (getenv "INPUT" or 9005)
 
-const edge  = 300
-const edge2 = edge - 2
+let edge  = 300
+let edge2 = edge - 2
 
 var grid     = x"00" * edge^2
 var row_sums = x"00" * edge2 * edge
@@ -60,10 +60,10 @@ for iii in 0 -> edge2 do
 	}
 }
 
-const mappings = 0 -> all_sums.size map { v => all_sums[ v ] }
+let mappings = 0 -> all_sums.size map { v => all_sums[ v ] }
 
-const max = Iter.max mappings via .value
+let max = Iter.max mappings via .value
 
-const index = max.key
+let index = max.key
 
 print (1 + index mod edge2, ",", 1 + index div edge2)
