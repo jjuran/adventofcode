@@ -1,0 +1,11 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let data = [(load input_path) "\n0" / "\n\n"] map { v "\n" }
+
+let sums = data map { v.lines() map int per Math.sum }
+
+print Iter.max sums
