@@ -9,16 +9,9 @@ def fetch
 	return translated (mince load input_path, "ABCXYZ", "123123")
 }
 
-let strategies =
-[
-	" 312",  # lose
-	" 123",  # draw
-	" 231",  # win
-]
-
 def score (a, b)
 {
-	b = int strategies[ b - 1 ][[ a ]]
+	b = (a + b) mod 3 + 1
 	
 	return ((b - a + 1) mod 3) * 3 + b
 }
