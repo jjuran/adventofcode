@@ -1,0 +1,21 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+def parse (line)
+{
+	return [translated (line, "ABCXYZ", "123123") / ' '] map int
+}
+
+def score (a, b)
+{
+	return ((b - a + 1) mod 3) * 3 + b
+}
+
+let data = (load input_path).lines() map parse
+
+let total = data map { score *v } per Math.sum
+
+print total
