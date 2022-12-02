@@ -4,9 +4,9 @@ let bindir = dirname realpath argv[ 0 ]
 
 let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-def parse (line)
+def fetch
 {
-	return [translated (line, "ABCXYZ", "123123") / ' '] map int
+	return translated (mince load input_path, "ABCXYZ", "123123")
 }
 
 def score (a, b)
@@ -14,7 +14,7 @@ def score (a, b)
 	return ((b - a + 1) mod 3) * 3 + b
 }
 
-let data = (load input_path).lines() map parse
+let data = [fetch() / -2] map { [v / 2] map int }
 
 let total = data map { score *v } per Math.sum
 
