@@ -6,19 +6,12 @@ let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 let data = (load input_path).lines()
 
+let letters = str ('a' .. 'z', 'A' .. 'Z')
+let numbers = str (1 .. 52 map byte)
+
 def priority (ascii)
 {
-	if ascii in 'a' .. 'z' then
-	{
-		return u8 ascii - u8 'a' + 1
-	}
-	
-	if ascii in 'A' .. 'Z' then
-	{
-		return u8 ascii - u8 'A' + 27
-	}
-	
-	# not reached
+	return u8 *(translated (str ascii, letters, numbers))
 }
 
 def inventory (items)
