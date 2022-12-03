@@ -4,19 +4,14 @@ let bindir = dirname realpath argv[ 0 ]
 
 let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-let data = (load input_path).lines()
-
 let letters = str ('a' .. 'z', 'A' .. 'Z')
 let numbers = str (1 .. 52 map byte)
 
-def priority (ascii)
-{
-	return u8 *(translated (str ascii, letters, numbers))
-}
+let data = (load input_path).lines() map { translated (v, letters, numbers) }
 
 def inventory (items)
 {
-	var bitset = x"00" * 128
+	var bitset = x"00" * 53
 	
 	for c in items do
 	{
@@ -37,4 +32,4 @@ def search (rucksack)
 	return byte p.past.size
 }
 
-print (data map search map priority per Math.sum)
+print (data map search map u8 per Math.sum)
