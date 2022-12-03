@@ -1,0 +1,46 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let data = (load input_path).lines()
+
+def priority (ascii)
+{
+	if ascii in 'a' .. 'z' then
+	{
+		return u8 ascii - u8 'a' + 1
+	}
+	
+	if ascii in 'A' .. 'Z' then
+	{
+		return u8 ascii - u8 'A' + 27
+	}
+	
+	# not reached
+}
+
+var groups = []
+
+for i in 0 -> data.length div 3 do
+{
+	let j = i * 3
+	
+	groups <-- data[ j -> j + 3 ]
+}
+
+def search (group)
+{
+	for c in str ('a' .. 'z', 'A' .. 'Z') do
+	{
+		if not (group ver { not c in v }) then
+		{
+			return c
+		}
+	}
+	
+	# not reached
+}
+
+print (groups map search map priority per Math.sum)
