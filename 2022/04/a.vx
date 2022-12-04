@@ -1,0 +1,17 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let data = (load input_path).lines() map { [v / ','] map { [v / '-'] map int } }
+
+def contains (a, b)
+{
+	let A = a[0] .. a[1]
+	let B = b[0] .. b[1]
+	
+	return a[0] in B and a[1] in B or b[0] in A and b[1] in A
+}
+
+print ((data ver { contains *v }).length)
