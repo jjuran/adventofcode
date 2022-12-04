@@ -10,7 +10,7 @@ const adapters = Iter.sorted data
 
 const diffs = [1, *(adapters gap {b - a}), 3]
 
-def count (x) { (diffs ver {v == x}).length }
+def count (x) { diffs pop {v == x} }
 
 const x = [1, 3] map count per Math.product
 

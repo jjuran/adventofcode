@@ -59,7 +59,7 @@ def is_known (x, y)
 
 def is_dead_end (x, y)
 {
-	return (1 .. 4 ver { sample forward v in Wall Prune "" }).length == 3
+	return 1 .. 4 pop { sample forward v in Wall Prune "" } == 3
 }
 
 def uncharted

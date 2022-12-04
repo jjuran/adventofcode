@@ -15,11 +15,11 @@ const layers = [data / -npx]
 
 def count (s, c)
 {
-	return (s ver {v == c}).length
+	return s pop {v == c}
 }
 
 # We can't use count() with `via` until purity analysis improves.
 
-const fewest0 = Iter.min layers via { (v ver {v == '0'}).length }
+const fewest0 = Iter.min layers via { v pop {v == '0'} }
 
 print (count( fewest0, '1' ) * count( fewest0, '2' ))

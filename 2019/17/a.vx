@@ -58,7 +58,7 @@ def is_intersection (i, j)
 {
 	const neighbors = moves map { [v[0] + i, v[1] + j] }
 	
-	return is_scaffold( i, j ) and (neighbors ver {is_scaffold *v}).length > 2
+	return is_scaffold( i, j ) and neighbors pop {is_scaffold *v} > 2
 }
 
 var sum = 0

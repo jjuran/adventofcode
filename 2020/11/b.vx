@@ -71,7 +71,7 @@ def step
 	{
 		const i = seat.key
 		
-		const popcount = (seat.value ver {grid[ v ] == '#'}).length
+		const popcount = seat.value pop {grid[ v ] == '#'}
 		
 		work[ i ] = ("#" grid[ i ] "L")[ (popcount + 3) div 4 ]
 	}
@@ -85,7 +85,7 @@ display "0"
 
 while step() do
 {
-	display "" (grid ver {v == '#'}).length
+	display "" (grid pop {v == '#'})
 }
 
 print ""

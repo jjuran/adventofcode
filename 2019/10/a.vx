@@ -79,7 +79,7 @@ def count_asteroids( grid, index )
 		}
 	}
 	
-	return (grid ver {v == '#'}).length - 1
+	return (grid pop {v == '#'}) - 1
 }
 
 var max_count = 0

@@ -146,7 +146,7 @@ const safe_ingredients = difference (ingredients, known_mappings.values)
 
 def ingredient_appearances (ingredient)
 {
-	return (foods ver { ingredient in v[ 0 ] }).length
+	return foods pop { ingredient in v[ 0 ] }
 }
 
 const appearances = safe_ingredients map ingredient_appearances per Math.sum

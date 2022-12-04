@@ -22,7 +22,7 @@ const neighbor_offsets = -1 .. 1 map { v - stride, v, v + stride } ver ...
 
 def count_neighbors (index)
 {
-	return (neighbor_offsets ver {grid[ index + v ] == '#'}).length
+	return neighbor_offsets pop {grid[ index + v ] == '#'}
 }
 
 const corner_indices = [1, width] map {v + stride, v + stride * width}
@@ -66,7 +66,7 @@ for i in 0 -> 100 do
 	step()
 }
 
-const count = str(grid ver {v == '#'}).length
+const count = grid pop {v == '#'}
 
 display ""
 

@@ -117,7 +117,7 @@ def step
 
 def count
 {
-	return gridspace map { str(v ver {v == '#'}).length } per Math.sum
+	return gridspace map { v pop {v == '#'} } per Math.sum
 }
 
 const n_steps = 200

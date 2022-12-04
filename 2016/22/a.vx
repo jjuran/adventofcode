@@ -60,7 +60,7 @@ while p_used and p_avail do
 	}
 }
 
-const n_false_positives = (used_nodes ver { v[ Used ] <= v[ Avail ] }).length
+const n_false_positives = used_nodes pop {v[ Used ] <= v[ Avail ]}
 
 n_viable -= n_false_positives
 

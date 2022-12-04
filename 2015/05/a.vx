@@ -11,9 +11,9 @@ def nice (s)
 	return
 		'\0' in packed s "\0" ~ packed "\0" s                   and
 		not ("ab" in s or "cd" in s or "pq" in s or "xy" in s)  and
-		(s ver {v in "aeiou"}).length >= 3
+		s pop {v in "aeiou"} >= 3
 }
 
-const total = (data ver nice).length
+const total = data pop nice
 
 print total

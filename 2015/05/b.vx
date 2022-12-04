@@ -30,6 +30,6 @@ def nice
 	return false
 }
 
-const total = (data ver nice).length
+const total = data pop nice
 
 print total

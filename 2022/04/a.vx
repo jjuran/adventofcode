@@ -14,4 +14,4 @@ def contains (a, b)
 	return a[0] in B and a[1] in B or b[0] in A and b[1] in A
 }
 
-print ((data ver { contains *v }).length)
+print (data pop { contains *v })

@@ -121,7 +121,7 @@ def find_edge_in_edges (edge, edges)
 	return (str^edge_indices)[ edge ]
 }
 
-const tiles_per_edge = (scores ver { v.value == 1 }).length / 4 + 2
+const tiles_per_edge = (scores pop { v.value == 1 }) / 4 + 2
 const tiles_per_grid = tiles_per_edge^2
 
 var tile_grid = [null (*) tiles_per_grid]

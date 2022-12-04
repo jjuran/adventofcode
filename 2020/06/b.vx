@@ -19,7 +19,7 @@ def count (s)
 	
 	const n = s.lines().length
 	
-	return (hist ver { u8 v == n }).length
+	return hist pop { u8 v == n }
 }
 
 var sum = 0

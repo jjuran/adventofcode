@@ -119,7 +119,7 @@ while 1 do
 	const bottom = bottom_row()
 	const right = right_col()
 	
-	const width  = str(bottom ver {v == '#'}).length
+	const width  = bottom pop {v == '#'}
 	
 	const maximum = width
 	
