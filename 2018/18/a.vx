@@ -24,22 +24,22 @@ const indices = 1 + stride -> grid.length - stride - 1
 
 def open (neighbors)
 {
-	const n_trees = Iter.popcount (neighbors ver { v == '|' })
+	const n_trees = neighbors pop { v == '|' }
 	
 	return ".|"[ +(n_trees >= 3) ]
 }
 
 def wood (neighbors)
 {
-	const n_yards = Iter.popcount (neighbors ver { v == '#' })
+	const n_yards = neighbors pop { v == '#' }
 	
 	return "|#"[ +(n_yards >= 3) ]
 }
 
 def yard (neighbors)
 {
-	const has_yard = Iter.popcount (neighbors ver { v == '#' })
-	const has_tree = Iter.popcount (neighbors ver { v == '|' })
+	const has_yard = neighbors pop { v == '#' }
+	const has_tree = neighbors pop { v == '|' }
 	
 	return ".#"[ has_yard and has_tree and 1 or 0 ]
 }
