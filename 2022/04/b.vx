@@ -11,7 +11,7 @@ def overlaps (a, b)
 	let A = a[0] .. a[1]
 	let B = b[0] .. b[1]
 	
-	return a[0] in B or a[1] in B or b[0] in A or b[1] in A
+	return a[0] in B or b[0] in A
 }
 
 print ((data ver { overlaps *v }).length)
