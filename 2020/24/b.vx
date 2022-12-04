@@ -107,7 +107,7 @@ def iterate (i)
 	
 	for key in affected_set.keys do
 	{
-		const n = Iter.popcount (neighbors *(eval key) map { v in grid_keys })
+		const n = neighbors *(eval key) pop { v in grid_keys }
 		
 		if n == 2 or (n == 1 and key in grid_keys) then
 		{
