@@ -1,0 +1,47 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+var p = (begin load input_path).find "\n\n" + 1
+
+let ante  = -p.past.lines()
+let moves = (++p).rest.lines()
+
+var stacks = []
+
+def setup
+{
+	let stack_lines = ante[ 1 -> ante.length ]
+	
+	var it = begin translated (ante[ 0 ], "123456789", "x" * 9)
+	
+	while it = (it + 1).find 'x' do
+	{
+		let offset = it.past.length
+		
+		stacks <-- str (stack_lines map { v[offset] } ver { v != ' ' })
+	}
+}
+
+setup()
+
+for move in moves do
+{
+	let words = [move / ' ']
+	
+	let count = int words[ 1 ]
+	let src   = int words[ 3 ] - 1
+	let dst   = int words[ 5 ] - 1
+	
+	let source = -stacks[ src ]
+	let crates = source[ 0 -> count ]
+	
+	stacks[ dst ] .= crates
+	stacks[ src ] = stacks[ src ][ 0 -> source.length - count ]
+}
+
+let top = stacks map { (-v)[0] } per str
+
+print top
