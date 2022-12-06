@@ -1,0 +1,30 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let data = (load input_path).lines()[ 0 ]
+
+let N = 4  # marker length
+
+def marker (sample)
+{
+	var seen = x"00" * 26
+	
+	for c in sample do
+	{
+		seen[ u8 c - u8 'a' ] = c
+	}
+	
+	return Iter.popcount seen == N
+}
+
+var i = 0
+
+while not marker data[ i -> i + N ] do
+{
+	++i
+}
+
+print (i + N)
