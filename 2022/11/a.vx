@@ -1,0 +1,83 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+def parse (text)
+{
+	let digit = '0' .. '9'
+	let number = digit+ => int
+	let numlist = [number, [", ", number]*] => {[_]}
+	let operator = '+' | '*' => {*_}
+	let old = "old" => {""}
+	let operand = number | old
+	
+	let heading = ["Monkey ", digit+, ":\n"]
+	
+	let items = ["  Starting items: ", numlist, '\n']
+	
+	let operation = ["  Operation: new = old ", operator, ' ', operand, '\n']
+	
+	let divisor = ["  Test: divisible by ", number, '\n']
+	
+	let ifTrue  = ["    If true: throw to monkey ", number, '\n']
+	let ifFalse = ["    If false: throw to monkey ", number, '\n']
+	
+	let branch = [ifTrue, ifFalse] => {-[_]}
+	
+	let monkey = [heading, items, operation, divisor, branch] => {[_]}
+	
+	let monkeys = [monkey, ['\n', monkey]*] => {[_]}
+	
+	var p = begin text
+	
+	return p += monkeys
+}
+
+let items = 0
+let operator = 1
+let operand = 2
+let divisor = 3
+let branch = 4
+
+var monkeys = parse load input_path
+
+let n_monkeys = monkeys.length
+
+var inspects = [ 0 (*) n_monkeys ]
+
+let N = 20
+
+for round in 1 .. N do
+{
+	for i in 0 -> n_monkeys do
+	{
+		let adding = monkeys[ i ][ operator ] == '+'
+		
+		let op = if adding then {Math.sum} else {Math.product}
+		
+		let term = monkeys[ i ][ operand ]
+		
+		let modulus = monkeys[ i ][ divisor ]
+		
+		let next = monkeys[ i ][ branch ]
+		
+		for item in monkeys[ i ][ items ] do
+		{
+			let worry = op (item, term or item) div 3
+			
+			monkeys[ next[ +(not worry mod modulus) ] ][ items ] <-- worry
+			
+			++inspects[ i ]
+		}
+		
+		monkeys[ i ][ items ] = []
+	}
+}
+
+inspects = -(Iter.sorted inspects)
+
+let monkey_business = inspects[ 0 .. 1 ] per Math.product
+
+print monkey_business
