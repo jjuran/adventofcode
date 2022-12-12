@@ -1,11 +1,6 @@
 #!/usr/bin/env minivx
 
 let bindir = dirname realpath argv[ 0 ]
-let libdir = bindir "/../../lib/"
-
-let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
-
-let display = (import "status") { OUT <== _ }
 
 let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
@@ -32,7 +27,7 @@ def neighbors (index)
 	]
 }
 
-def dijkstra_shortest (start, goal)
+def dijkstra_shortest (start)
 {
 	var seen = x"00" * (height * stride)
 	
@@ -46,18 +41,18 @@ def dijkstra_shortest (start, goal)
 		
 		for i in frontier do
 		{
-			if i == goal then
+			let c = data[ i ]
+			
+			if c == 'a' then
 			{
 				return distance
 			}
 			
 			if not seen[ i ] then
 			{
-				let c = data[ i ]
-				
 				seen[ i ] = c
 				
-				let next = 'a' .. byte (u8 c + 1)
+				let next = byte (u8 c - 1) .. 'z'
 				
 				for j in neighbors i do
 				{
@@ -77,43 +72,6 @@ def dijkstra_shortest (start, goal)
 	return ()
 }
 
-def find_starts
-{
-	var result = []
-	
-	var p = begin data
-	
-	while p = p.find 'a' do
-	{
-		let i = p.past.length
-		
-		if neighbors i ver { v in 0 -> len and data[ v ] == 'b' } then
-		{
-			result <-- i
-		}
-		
-		++p
-	}
-	
-	return result
-}
+let distance = dijkstra_shortest goal
 
-let starts = find_starts()
-
-let n = starts.length
-var i = 0
-
-var best = ()
-
-for s in starts do
-{
-	display ++i " of " n (" (best: %s)" % rep best)
-	
-	let distance = dijkstra_shortest (s, goal)
-	
-	best = Math.min (best, distance)
-}
-
-display ""
-
-print best
+print distance
