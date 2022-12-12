@@ -87,7 +87,10 @@ def find_starts
 	{
 		let i = p.past.length
 		
-		result <-- i
+		if neighbors i ver { v in 0 -> len and data[ v ] == 'b' } then
+		{
+			result <-- i
+		}
 		
 		++p
 	}
