@@ -1,0 +1,77 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+var data = load input_path
+
+let len = data.length
+let lines = data.lines()
+let height = lines.length
+let width = lines[ 0 ].length
+let stride = width + 1
+
+let start = (begin data).find('S').past.length
+let goal  = (begin data).find('E').past.length
+
+data[ start ] = 'a'
+data[ goal  ] = 'z'
+
+def neighbors (index)
+{
+	return
+	[
+		index - 1, index - stride,
+		index + 1, index + stride,
+	]
+}
+
+def dijkstra_shortest (start, goal)
+{
+	var seen = x"00" * (height * stride)
+	
+	var distance = 0
+	
+	var frontier = [ start ]
+	
+	while frontier do
+	{
+		var new_frontier = []
+		
+		for i in frontier do
+		{
+			if i == goal then
+			{
+				return distance
+			}
+			
+			if not seen[ i ] then
+			{
+				let c = data[ i ]
+				
+				seen[ i ] = c
+				
+				let next = 'a' .. byte (u8 c + 1)
+				
+				for j in neighbors i do
+				{
+					if j in 0 -> len and data[ j ] in next then
+					{
+						new_frontier <-- j
+					}
+				}
+			}
+		}
+		
+		++distance
+		
+		frontier <- new_frontier
+	}
+	
+	return ()
+}
+
+let distance = dijkstra_shortest (start, goal)
+
+print distance
