@@ -1,0 +1,50 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let data = (load input_path).lines() ver ... map eval
+
+def compare (a, b)
+{
+	if a isa int and b isa int then
+	{
+		return a <=> b
+	}
+	
+	if a isa int then { a = [a] }
+	if b isa int then { b = [b] }
+	
+	var p = begin a
+	var q = begin b
+	
+	while p and q do
+	{
+		if let cmp = compare (*p++, *q++) then
+		{
+			return cmp
+		}
+	}
+	
+	return int bool p - int bool q
+}
+
+var i2 = 1                # first index (1-based indexing)
+var i6 = data.length + 2  # last index, including dividers
+
+for packet in data do
+{
+	if compare (packet, [2]) < 0 then
+	{
+		++i2
+	}
+	else if compare (packet, [6]) > 0 then
+	{
+		--i6
+	}
+}
+
+let decoder_key = i2 * i6
+
+print decoder_key

@@ -1,0 +1,50 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let data = (load input_path).lines() ver ... map eval
+
+def compare (a, b)
+{
+	if a isa int and b isa int then
+	{
+		return a <=> b
+	}
+	
+	if a isa int then { a = [a] }
+	if b isa int then { b = [b] }
+	
+	var p = begin a
+	var q = begin b
+	
+	while p and q do
+	{
+		if let cmp = compare (*p++, *q++) then
+		{
+			return cmp
+		}
+	}
+	
+	return int bool p - int bool q
+}
+
+var p = begin data
+var i = 0
+var sum = 0
+
+while p do
+{
+	++i
+	
+	let left  = *p++
+	let right = *p++
+	
+	if compare (left, right) < 0 then
+	{
+		sum += i
+	}
+}
+
+print sum
