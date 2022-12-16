@@ -1,0 +1,140 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
+
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
+
+let display = (import "status") { OUT <== _ }
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+def parse (line)
+{
+	let upper = 'A' .. 'Z'
+	let digit = '0' .. '9'
+	
+	let valve = [upper, upper] => str
+	let vlist = [valve, [", ", valve]*] => {[_]}
+	
+	let number = digit+ => int
+	
+	let tunnels = ["tunnels lead to valves " | "tunnel leads to valve "]
+	
+	let grammar =
+	[
+		"Valve ", valve,
+		[" has flow rate=", number, "; ", tunnels, vlist] => {[_]}
+	]
+	=> {head _ => tail _}
+	
+	var p = begin line
+	
+	return p += grammar
+}
+
+let data = (load input_path).lines() map parse
+
+let valves = str^data
+
+let flows = str^(valves map { v.key => v.value[ 0 ] })
+
+def dijkstra_map (start)
+{
+	var dmap = str^[]
+	
+	var distance = 0
+	
+	var frontier = [ start ]
+	
+	while frontier do
+	{
+		var new_frontier = []
+		
+		for room in (frontier ver { not v in dmap }) do
+		{
+			dmap[ room ] = distance
+			
+			new_frontier <-- *valves[ room ][ 1 ]
+		}
+		
+		++distance
+		
+		frontier <- new_frontier
+	}
+	
+	return start => dmap
+}
+
+let distance_map = str^( valves.keys map dijkstra_map )
+
+def viable_targets (targets, loc)
+{
+	let distances = distance_map[ loc ]
+	
+	let details = targets map { [v, flows[ v ], distances[ v ]] }
+	
+	let closest = Iter.min details via { v[ 2 ] }
+	
+	let viable = details ver { v[ 1 ] >= closest[ 1 ] } map { v[ 0 ] }
+	
+	return viable
+}
+
+def upper_bound (T, targets)
+{
+	let n = Math.min (T div 2 - 1, targets.length)
+	
+	if n <= 0 then
+	{
+		return 0
+	}
+	
+	var bound = 0
+	
+	for target in targets[ 0 -> n ] do
+	{
+		bound += flows[ target ] * (T -= 2)
+	}
+	
+	return bound
+}
+
+var most_pressure = 0
+
+def search (P, T, v, targets)
+{
+	if P > most_pressure then
+	{
+		most_pressure = P
+		
+		display most_pressure "..."
+	}
+	
+	if P + upper_bound (T, targets) <= most_pressure then
+	{
+		return ()
+	}
+	
+	for target in viable_targets (targets, v) do
+	{
+		let d = distance_map[ v ][ target ]
+		
+		let t = T - d - 1
+		
+		if t > 0 then
+		{
+			let remaining = targets ver { v != target }
+			
+			search (P + flows[ target ] * t, t, target, remaining)
+		}
+	}
+}
+
+let valves_to_open = Iter.sorted (flows ver .value) via {-v.value} map .key
+
+search (0, 30, "AA", valves_to_open)
+
+display ""
+
+print most_pressure
