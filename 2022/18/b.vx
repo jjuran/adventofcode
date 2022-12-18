@@ -1,0 +1,102 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
+
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
+
+let display = (import "status") { OUT <== _ }
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let data = (load input_path).lines() map { [v / ','] map int }
+
+let min_x = Iter.min (data map { v[ 0 ] }) - 1
+let max_x = Iter.max (data map { v[ 0 ] }) + 2
+let min_y = Iter.min (data map { v[ 1 ] }) - 1
+let max_y = Iter.max (data map { v[ 1 ] }) + 2
+let min_z = Iter.min (data map { v[ 2 ] }) - 1
+let max_z = Iter.max (data map { v[ 2 ] }) + 2
+
+let x_width = max_x - min_x
+let y_width = max_y - min_y
+let z_width = max_z - min_z
+
+var grid = " " * (x_width * y_width * z_width)
+
+var exposed_sides = 0
+
+for cube in data do
+{
+	display "" exposed_sides
+	
+	var x1 = cube
+	var y1 = cube
+	var z1 = cube
+	
+	++x1[ 0 ]
+	++y1[ 1 ]
+	++z1[ 2 ]
+	
+	exposed_sides += int (not x1 in data) * 2
+	exposed_sides += int (not y1 in data) * 2
+	exposed_sides += int (not z1 in data) * 2
+	
+	var x, var y, var z = *cube
+	
+	x -= min_x
+	y -= min_y
+	z -= min_z
+	
+	let i = (z * y_width + y) * x_width + x
+	
+	grid[ i ] = '#'
+}
+
+def neighbors (i, c)
+{
+	let deltas = [1, x_width, x_width * y_width]
+	
+	return deltas map { v, -v }
+	              map { i + v }
+	              ver { v in 0 -> grid.length and grid[ v ] == c }
+}
+
+var n_filled = 0
+
+def flood_fill
+{
+	var frontier = [ 0 ]
+	
+	while frontier do
+	{
+		display "" n_filled
+		
+		var new_frontier = []
+		
+		for i in frontier do
+		{
+			if grid[ i ] == ' ' then
+			{
+				++n_filled
+				
+				grid[ i ] = '.'
+				
+				new_frontier <-- *neighbors( i, ' ' )
+			}
+		}
+		
+		frontier <- new_frontier
+	}
+}
+
+flood_fill()
+
+for i in (0 -> grid.length ver { grid[ v ] == ' ' }) do
+{
+	exposed_sides -= neighbors( i, '#' ).length
+}
+
+display ""
+
+print exposed_sides

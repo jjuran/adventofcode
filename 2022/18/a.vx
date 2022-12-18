@@ -1,0 +1,35 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
+
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
+
+let display = (import "status") { OUT <== _ }
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let data = (load input_path).lines() map { [v / ','] map int }
+
+var exposed_sides = 0
+
+for cube in data do
+{
+	display "" exposed_sides
+	
+	var x1 = cube
+	var y1 = cube
+	var z1 = cube
+	
+	++x1[ 0 ]
+	++y1[ 1 ]
+	++z1[ 2 ]
+	
+	exposed_sides += int (not x1 in data) * 2
+	exposed_sides += int (not y1 in data) * 2
+	exposed_sides += int (not z1 in data) * 2
+}
+
+display ""
+
+print exposed_sides
