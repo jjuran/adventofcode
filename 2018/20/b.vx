@@ -41,7 +41,7 @@ def route (p, dx=0, dy=0)
 	{
 		if c in dirs then
 		{
-			const dir_x, const dir_y = *dirs[ c ]
+			const (dir_x, dir_y) = *dirs[ c ]
 			
 			x += dir_x
 			y += dir_y
