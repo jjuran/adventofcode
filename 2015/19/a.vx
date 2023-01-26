@@ -14,15 +14,6 @@ const alpha = upper | lower
 
 const word = alpha+ => str
 
-def parsed (text)
-{
-	var p = begin text
-	
-	const key, const value = p += [word, " => ", word]
-	
-	return key => value
-}
-
 const molecule = data[ n + 1 ]
 var   patterns = str^[]
 
