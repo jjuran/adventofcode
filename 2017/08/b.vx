@@ -18,12 +18,10 @@ const conds = str^
 	"!=": {head _ != tail _},
 ]
 
-def get { if _ in registers then {registers[ _ ]} else {0} }
+def get (reg) { if reg in registers then {registers[ reg ]} else {0} }
 
-def add
+def add (reg, arg)
 {
-	const reg, const arg = _
-	
 	if reg in registers then
 	{
 		registers[ reg ] += arg
