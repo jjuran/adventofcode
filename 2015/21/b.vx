@@ -84,7 +84,7 @@ def parse_store (text)
 	return p += store
 }
 
-const weapons, const armors, const rings = *([parse_store DATA] map .value)
+const (weapons, armors, rings) = *([parse_store DATA] map .value)
 
 const Player = 0
 
