@@ -6,10 +6,8 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 const data = (load input_path).lines()
 
-def nice
+def nice (s)
 {
-	const s = _
-	
 	const pad = "\0" * 2
 	
 	if not '\0' in packed s pad ~ packed pad s then
