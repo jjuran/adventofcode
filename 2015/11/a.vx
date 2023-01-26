@@ -21,10 +21,8 @@ const throttle = thread
 	}
 }
 
-def two-pair
+def two-pair (word)
 {
-	const word = _
-	
 	var first-pair = '\0'
 	var last-char  = '\0'
 	
@@ -48,10 +46,8 @@ def two-pair
 	return false
 }
 
-def straight
+def straight (word)
 {
-	const word = _
-	
 	var ups = 0
 	
 	var last-char = '\0'
