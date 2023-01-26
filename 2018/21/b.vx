@@ -16,7 +16,7 @@ for line in program do
 	const mnemonic = line[ 0 -> 4 ]
 	const operands = [substr (line, 5) / ' '] map int
 	
-	const a, const b, ... = *operands
+	const (a, b), ... = *operands
 	
 	if mnemonic == "muli" and b > 2^16 then
 	{
