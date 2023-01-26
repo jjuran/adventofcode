@@ -13,13 +13,13 @@ def key (coords)
 
 def adjacent-sum (pt)
 {
-	const x, const y = *pt
+	const (x, y) = *pt
 	
 	var sum = 0
 	
 	for d in neighbors do
 	{
-		const dx, const dy = *d
+		const (dx, dy) = *d
 		
 		const k = key [x + dx, y + dy]
 		
