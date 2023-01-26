@@ -24,9 +24,7 @@ def listof (s)
 	
 	i += 2
 	
-	var list = s[ i -> n ] " "
-	
-	translate( &list, ", ", "\n\n" )
+	let list = translated( s[ i -> n ] " ", ", ", "\n\n" )
 	
 	return list.lines() map { _ or () }
 }
