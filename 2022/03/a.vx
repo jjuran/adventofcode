@@ -23,7 +23,7 @@ def inventory (items)
 
 def search (rucksack)
 {
-	let a, let b = rucksack / 2
+	let (a, b) = rucksack / 2
 	
 	let both = inventory a & inventory b
 	
