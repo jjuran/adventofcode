@@ -27,7 +27,7 @@ for m in data do
 {
 	const delta = moves[ m ]
 	
-	const dx, const dy = *delta
+	const (dx, dy) = *delta
 	
 	one[ 0 ] += dx
 	one[ 1 ] += dy
