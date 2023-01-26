@@ -34,7 +34,7 @@ def give (bot, value)
 
 def distribute (value, dst)
 {
-	const kind, const id = *dst
+	const (kind, id) = *dst
 	
 	if kind == "output" then
 	{
@@ -52,7 +52,7 @@ for config in data do
 	
 	if words[ 0 ] == "value" then
 	{
-		const value, const bot = int words[ 1 ], words[ 5 ]
+		const (value, bot) = int words[ 1 ], words[ 5 ]
 		
 		#inputs <-- value => bot
 		
