@@ -20,7 +20,7 @@ def rangify (s)
 
 def coordinate (s)
 {
-	const symbol, const data = s / '='
+	const (symbol, data) = s / '='
 	
 	return *symbol => rangify data
 }
@@ -54,10 +54,10 @@ grid[ spring ] = '+'
 
 for vein in coordinates do
 {
-	const xs, const ys = *vein
+	const (xs, ys) = *vein
 	
-	const x0, const x1 = *xs
-	const y0, const y1 = *ys
+	const (x0, x1) = *xs
+	const (y0, y1) = *ys
 	
 	for y in y0 .. y1 do
 	{
@@ -105,7 +105,7 @@ def spread (source)
 		
 		if const bounds = bounded source then
 		{
-			const left, const right = *bounds
+			const (left, right) = *bounds
 			
 			for i in left .. right do
 			{
