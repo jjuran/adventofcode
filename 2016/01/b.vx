@@ -22,10 +22,8 @@ const turn = byte^
 	'R': { dx, dy = dy, -dx },
 ]
 
-def go
+def go (n)
 {
-	const n = _
-	
 	x += n * dx
 	y += n * dy
 }
