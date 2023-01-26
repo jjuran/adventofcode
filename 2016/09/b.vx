@@ -20,7 +20,7 @@ def decompressed-length (data)
 			
 			const marker = q - p
 			
-			const m_len, const m_rep = *([marker / 'x'] map int)
+			const (m_len, m_rep) = *([marker / 'x'] map int)
 			
 			p = ++q + m_len
 			
