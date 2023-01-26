@@ -14,9 +14,7 @@ def dump (screen)
 	
 	for i in 0 -> 6 do
 	{
-		var scanline = screen[ i ].string
-		
-		translate( &scanline, "\x00\x01", " X" )
+		let scanline = translated( screen[ i ].string, x"00 01", " X" )
 		
 		dump <-- "   " scanline
 	}
