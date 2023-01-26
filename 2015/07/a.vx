@@ -22,33 +22,25 @@ for instruction in data do
 	circuit[ wire ] = input
 }
 
-def NOT { u16.decode ~(u16.encode _) }
+def NOT (x) { u16.decode ~(u16.encode x) }
 
-def AND
+def AND (a, b)
 {
-	const a, const b = _
-	
 	return u16.decode (u16.encode a & u16.encode b)
 }
 
-def OR
+def OR (a, b)
 {
-	const a, const b = _
-	
 	return u16.decode (u16.encode a | u16.encode b)
 }
 
-def LSHIFT
+def LSHIFT (signal, n)
 {
-	const signal, const n = _
-	
 	return u16 (signal * 2^n)
 }
 
-def RSHIFT
+def RSHIFT (signal, n)
 {
-	const signal, const n = _
-	
 	return half^n signal
 }
 
@@ -60,10 +52,8 @@ const binary-ops = str^
 	RSHIFT: RSHIFT,
 ]
 
-def chase
+def chase (trace)
 {
-	const trace = _
-	
 	try
 	{
 		return int trace
