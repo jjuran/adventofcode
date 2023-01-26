@@ -10,15 +10,13 @@ translate( &data, "[]", "  " )
 
 const addresses = data.lines()
 
-def is_aba
+def is_aba (s)
 {
-	return _[ 0 ] == _[ 2 ] and _[ 0 ] != _[ 1 ]
+	return s[ 0 ] == s[ 2 ] and s[ 0 ] != s[ 1 ]
 }
 
-def get_ABAs
+def get_ABAs (segment)
 {
-	const segment = _
-	
 	var result = []
 	
 	const len = segment.length
