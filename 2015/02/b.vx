@@ -10,7 +10,7 @@ var total = 0
 
 for dimensions in data do
 {
-	const x, const y, const z = *([dimensions / 'x'] map int)
+	const (x, y, z) = *([dimensions / 'x'] map int)
 	
 	const a = x + y
 	const b = y + z
