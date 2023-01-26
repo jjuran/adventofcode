@@ -72,7 +72,7 @@ def filter (before, instruction, after)
 	
 	def reg (i) { before[ i ] }
 	
-	const opcode, const a, const b, const c = *instruction
+	const (opcode, a, b, c) = *instruction
 	
 	const instruction_set =
 	[
@@ -96,7 +96,7 @@ def filter (before, instruction, after)
 	
 	for behavior in instruction_set do
 	{
-		const mode1, const mode2, const f = *behavior
+		const (mode1, mode2, f) = *behavior
 		
 		if f (mode1 a, mode2 b) == after[ c ] then
 		{

@@ -80,7 +80,7 @@ def examine (before, instruction, after)
 	
 	def reg (i) { before[ i ] }
 	
-	const opcode, const a, const b, const c = *instruction
+	const (opcode, a, b, c) = *instruction
 	
 	if known[ opcode ] then
 	{
@@ -109,7 +109,7 @@ def examine (before, instruction, after)
 	
 	for i in 0 -> 16 do
 	{
-		const mode1, const mode2, const f = *instruction_set[ i ]
+		const (mode1, mode2, f) = *instruction_set[ i ]
 		
 		if f (mode1 a, mode2 b) == after[ c ] then
 		{
@@ -179,11 +179,11 @@ display ""
 
 for instruction in program do
 {
-	const opcode, const a, const b, const c = *instruction
+	const (opcode, a, b, c) = *instruction
 	
 	const index = u8 known[ opcode ] - u8 'a'
 	
-	const mode1, const mode2, const f = *instruction_set[ index ]
+	const (mode1, mode2, f) = *instruction_set[ index ]
 	
 	registers[ c ] = f (mode1 a, mode2 b)
 }
