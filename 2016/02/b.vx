@@ -18,10 +18,8 @@ var keys =
 
 translate( &keys, " ", "\0" )
 
-def get
+def get (x, y)
 {
-	const x, const y = _
-	
 	const range = 0 -> 5
 	
 	return x in range and y in range and keys[ y * 5 + x ]
