@@ -33,7 +33,7 @@ var M = 1  # super modulus
 
 for disc in initial_discs do
 {
-	const dt, const m, const k = *disc
+	const (dt, m, k) = *disc
 	
 	const delay = -(k + T + dt) mod m
 	
