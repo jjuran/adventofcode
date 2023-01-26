@@ -8,19 +8,15 @@ const data = (load input_path).lines()
 
 const len = data[ 0 ].length
 
-def find
+def find (haystack, needle)
 {
-	const haystack, const needle = _
-	
 	const parts = [haystack / needle]
 	
 	return parts[ 0 ].size
 }
 
-def most_frequent_in
+def most_frequent_in (letters)
 {
-	const letters = _
-	
 	var histogram = x"00" * 26
 	
 	for c in letters do
