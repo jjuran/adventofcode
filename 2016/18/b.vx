@@ -11,9 +11,10 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 const N = 400000
 
-var data = (load input_path).lines()[ 0 ]  # e.g. ".^^.^.^^^^"
+let data = translated ((load input_path).lines()[ 0 ], ".^", x"00 FF")
 
-translate( &data, ".^", "\x00\xFF" )
+# `data` is a string of e.g. ".^^.^.^^^^", semantically a bit vector
+# (i.e. b"0110101111"), which we're storing as one byte (00 or FF) per bit.
 
 var odds = packed mince data             # e.g. ".^^^^"  i.e. "01111"
 var even = packed mince substr(data, 1)  # e.g. "^..^^"  i.e. "10011"
