@@ -75,10 +75,10 @@ for step in data do
 	
 	const coords = get-coords target
 	
-	const pt0, const pt1 = *coords
+	const (pt0, pt1) = *coords
 	
-	const x0, const y0 = *pt0
-	const x1, const y1 = *pt1
+	const (x0, y0) = *pt0
+	const (x1, y1) = *pt1
 	
 	const mask = make-mask( x0, x1 + 1 )
 	
