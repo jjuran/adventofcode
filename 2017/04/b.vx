@@ -6,10 +6,8 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 const data = (load input_path).lines()
 
-def fingerprint
+def fingerprint (word)
 {
-	const word = _
-	
 	var counts = "\0" * 128
 	
 	for c in word do
