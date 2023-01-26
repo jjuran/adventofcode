@@ -46,7 +46,7 @@ def dance
 		}
 		else if code == 'p' then
 		{
-			const a, const b = data / '/'
+			const (a, b) = data / '/'
 			
 			swap ((begin dancers).find(a).past.length,
 			      (begin dancers).find(b).past.length)
