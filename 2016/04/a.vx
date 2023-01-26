@@ -8,10 +8,8 @@ const data = (load input_path).lines()
 
 var sum = 0
 
-def checksum
+def checksum (letters)
 {
-	const letters = _
-	
 	var histogram = x"00" * 26
 	
 	for c in letters do
