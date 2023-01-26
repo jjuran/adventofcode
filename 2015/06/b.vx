@@ -15,26 +15,20 @@ const grid-row = record( size: 1000, encode: ..., decode: ... )
 
 var light-grid = vector[ grid-row ] 1000
 
-def point
+def point (x_comma_y)
 {
-	const x_comma_y = _
-	
 	return [x_comma_y / ','] map int
 }
 
-def get-coords
+def get-coords (xy_through_xy)
 {
-	const xy_through_xy = _
-	
 	const parts = [xy_through_xy / ' '][[0, 2]]
 	
 	return parts map point
 }
 
-def turn-on
+def turn-on (row, x0, x1)
 {
-	const row, const x0, const x1 = _
-	
 	#assert not '\xff' in row[ x0 -> x1 ]
 	
 	const affected = row[ x0 -> x1 ] map {byte (u8 _ + 1)}
@@ -42,19 +36,15 @@ def turn-on
 	return row[ 0 -> x0 ] (packed affected) row[ x1 -> 1000 ]
 }
 
-def turn-off
+def turn-off (row, x0, x1)
 {
-	const row, const x0, const x1 = _
-	
 	const affected = row[ x0 -> x1 ] map {_ and byte (u8 _ - 1)}
 	
 	return row[ 0 -> x0 ] (packed affected) row[ x1 -> 1000 ]
 }
 
-def toggle
+def toggle (row, x0, x1)
 {
-	const row, const x0, const x1 = _
-	
 	#assert not '\xff' in row[ x0 -> x1 ]
 	#assert not '\xfe' in row[ x0 -> x1 ]
 	
