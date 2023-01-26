@@ -86,9 +86,9 @@ while ++n <= n_instructions and IP < n_instructions do
 	const mnemonic = line[ 0 -> 4 ]
 	const operands = [substr (line, 5) / ' '] map int
 	
-	const mode1, const mode2, const f = *instruction_set[ mnemonic ]
+	const (mode1, mode2, f) = *instruction_set[ mnemonic ]
 	
-	const a, const b, const c = *operands
+	const (a, b, c) = *operands
 	
 	registers[ c ] = f (mode1 a, mode2 b)
 	
