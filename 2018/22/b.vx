@@ -13,7 +13,7 @@ const data = (load input_path).lines()
 
 const depth = int (begin data[ 0 ] + "depth: ").rest
 
-const X, const Y = eval (begin data[ 1 ] + "target: ").rest
+const (X, Y) = eval (begin data[ 1 ] + "target: ").rest
 
 # It takes one minute to move between regions, and seven minutes to reequip.
 # In the worst case, we can reequip on every move, so the upper bound for

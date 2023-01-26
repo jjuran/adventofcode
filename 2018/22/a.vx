@@ -8,7 +8,7 @@ const data = (load input_path).lines()
 
 const depth = int (begin data[ 0 ] + "depth: ").rest
 
-const X, const Y = eval (begin data[ 1 ] + "target: ").rest
+const (X, Y) = eval (begin data[ 1 ] + "target: ").rest
 
 const width  = X + 1
 const height = Y + 1
