@@ -6,15 +6,13 @@ var cells = str^[ "0,0": 1 ]
 
 const neighbors = -1 .. 1 map { const x = _; *(-1 .. 1 map { [x, _] }) }
 
-def key
+def key (coords)
 {
-	return join( ",", *_ )
+	return ",".join *coords
 }
 
-def adjacent-sum
+def adjacent-sum (pt)
 {
-	const pt = _
-	
 	const x, const y = *pt
 	
 	var sum = 0
@@ -31,10 +29,8 @@ def adjacent-sum
 	return sum
 }
 
-def generate-path
+def generate-path (yield)
 {
-	const yield = _
-	
 	yield [0, 0]
 	
 	var r = 0  # radius
