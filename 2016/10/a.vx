@@ -15,10 +15,8 @@ var outputs = str^[]
 
 var doubles = []
 
-def give
+def give (bot, value)
 {
-	const bot, const value = _
-	
 	if not bot in holding then
 	{
 		holding[ bot ] = [value]
@@ -34,10 +32,8 @@ def give
 	}
 }
 
-def distribute
+def distribute (value, dst)
 {
-	const value, const dst = _
-	
 	const kind, const id = *dst
 	
 	if kind == "output" then
