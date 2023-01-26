@@ -6,10 +6,8 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 const data = (load input_path).lines()[ 0 ]
 
-def decompressed-length
+def decompressed-length (data)
 {
-	const data = _
-	
 	var p = begin data
 	
 	var len = 0
