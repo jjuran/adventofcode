@@ -59,7 +59,7 @@ var x3_to_4 = str^[]
 
 for line in data do
 {
-	const src, const dst = parse line
+	const (src, dst) = parse line
 	
 	if src.length == "../..".length then
 	{
