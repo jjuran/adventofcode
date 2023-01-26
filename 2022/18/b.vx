@@ -42,7 +42,7 @@ for cube in data do
 	exposed_sides += int (not y1 in data) * 2
 	exposed_sides += int (not z1 in data) * 2
 	
-	var x, var y, var z = *cube
+	var (x, y, z) = *cube
 	
 	x -= min_x
 	y -= min_y
