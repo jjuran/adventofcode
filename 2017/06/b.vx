@@ -4,11 +4,7 @@ const bindir = dirname realpath argv[ 0 ]
 
 const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-var data = (load input_path)
-
-translate( &data, "\t", "\n" )
-
-data = data.lines() map int
+var data = translated( load input_path, "\t", "\n" ).lines() map int
 
 const n = data.length
 
