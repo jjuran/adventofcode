@@ -21,7 +21,7 @@ for replacement in data[ 0 -> n ] do
 {
 	var p = begin replacement
 	
-	const atom, const submolecule = p += [word, " => ", word]
+	const (atom, submolecule) = p += [word, " => ", word]
 	
 	assert not submolecule in patterns
 	
