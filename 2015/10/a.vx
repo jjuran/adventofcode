@@ -4,10 +4,8 @@ const data = "1113122113"
 
 var memo = str^[]
 
-def split
+def split (s: str)
 {
-	const s (str) = _
-	
 	var result = []
 	
 	var p = begin s
@@ -28,10 +26,8 @@ def split
 	return result
 }
 
-def look-and-say
+def look-and-say (s: str)
 {
-	const s (str) = _
-	
 	if s in memo then
 	{
 		return *memo[ s ]
