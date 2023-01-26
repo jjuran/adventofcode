@@ -6,15 +6,13 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 const data = (load input_path).lines()
 
-def nameof
+def nameof (s)
 {
-	return [_ / ' '][ 0 ]
+	return [s / ' '][ 0 ]
 }
 
-def listof
+def listof (s)
 {
-	var s = _
-	
 	const n = s.length
 	
 	var i = 0
@@ -33,9 +31,9 @@ def listof
 	return list.lines() map { _ or () }
 }
 
-def last
+def last (s)
 {
-	return _[ _.length - 1 ]
+	return s[ s.length - 1 ]
 }
 
 const n = data.length

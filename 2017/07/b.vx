@@ -6,15 +6,13 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 const data = (load input_path).lines()
 
-def nameof
+def nameof (s)
 {
-	return [_ / ' '][ 0 ]
+	return [s / ' '][ 0 ]
 }
 
-def listof
+def listof (s)
 {
-	var s = _
-	
 	const n = s.length
 	
 	var i = 0
@@ -33,10 +31,8 @@ def listof
 	return list.lines() map { _ or () }
 }
 
-def weightof
+def weightof (s)
 {
-	var s = _
-	
 	const n = s.length
 	
 	var i = 0
@@ -60,9 +56,9 @@ def weightof
 	return number
 }
 
-def last
+def last (s)
 {
-	return _[ _.length - 1 ]
+	return s[ s.length - 1 ]
 }
 
 const n = data.length
@@ -73,10 +69,8 @@ var names = []
 var seen = str^[]
 var disc = str^[]
 
-def tower-weight
+def tower-weight (name)
 {
-	const name = _
-	
 	if name in tower-weights then
 	{
 		return tower-weights[ name ]
@@ -97,10 +91,8 @@ def tower-weight
 	return tower-weights[ name ] = total
 }
 
-def check
+def check (name)
 {
-	const name = _
-	
 	const list = disc[ name ]
 	
 	const weights = list map tower-weight
