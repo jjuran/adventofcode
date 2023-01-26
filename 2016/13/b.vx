@@ -54,7 +54,7 @@ def dijkstra_map (x, y, max)
 		
 		for coords in frontier do
 		{
-			const x, const y = *coords
+			const (x, y) = *coords
 			
 			if y == height then
 			{

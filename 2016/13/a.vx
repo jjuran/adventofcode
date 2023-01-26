@@ -51,7 +51,7 @@ def shortest_distance (x, y, X, Y)
 		
 		for coords in frontier do
 		{
-			const x, const y = *coords
+			const (x, y) = *coords
 			
 			if y == height then
 			{
