@@ -14,7 +14,7 @@ for operation in data do
 	
 	if words.length == 2 then
 	{
-		const width, const height = *([words[ 1 ] / 'x'] map int)
+		const (width, height) = *([words[ 1 ] / 'x'] map int)
 		
 		for i in 0 -> height do
 		{
@@ -26,7 +26,7 @@ for operation in data do
 	
 	const offset = int words[ 4 ]
 	
-	const axis, const index = words[ 2 ] / '='
+	const (axis, index) = words[ 2 ] / '='
 	
 	const i = int index
 	
