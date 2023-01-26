@@ -17,7 +17,7 @@ const format = [number, " players; last marble is worth ", number => {_ * 100}]
 
 var p = begin data
 
-const n_players, const nth_marble = p += format
+const (n_players, nth_marble) = p += format
 
 var scores = [0 (*) n_players]
 
