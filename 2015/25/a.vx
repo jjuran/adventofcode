@@ -16,7 +16,7 @@ var p = begin load input_path
 
 p = p.find "row"
 
-const row, const col = p += ["row ", number, ", column ", number]
+const (row, col) = p += ["row ", number, ", column ", number]
 
 def summation (max)
 {
