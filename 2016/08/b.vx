@@ -8,10 +8,8 @@ const data = (load input_path).lines()
 
 var screen = [x"00" * 50 (*) 6]
 
-def dump
+def dump (screen)
 {
-	const screen = _
-	
 	var dump = []
 	
 	for i in 0 -> 6 do
