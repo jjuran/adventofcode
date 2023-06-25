@@ -16,7 +16,7 @@ def valid (s)
 {
 	var p = begin s
 	
-	const low, const high, const c, const password = p += passwd
+	const (low, high, c, password) = p += passwd
 	
 	const n = password pop { v == c }
 	
