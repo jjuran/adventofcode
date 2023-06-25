@@ -31,6 +31,6 @@ for i in 0 -> npx do
 	composed[ i ] = composite( i )
 }
 
-translate( &composed, "01", " X" )
+composed = translated( composed, "01", " X" )
 
 print "\n" (["", composed / h] map { "    " v "\n" })
