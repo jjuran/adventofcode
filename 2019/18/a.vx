@@ -87,7 +87,7 @@ def decompose (i)
 
 def neighbors (i)
 {
-	const x, const y = decompose i
+	const (x, y) = decompose i
 	
 	return dirs map { [v[0] + x, v[1] + y] }
 	            ver { v[0] in 0 -> width and v[1] in 0 -> height }
