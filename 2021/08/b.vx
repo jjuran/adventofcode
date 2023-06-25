@@ -8,7 +8,7 @@ const data = (load input_path).lines()
 
 def parse (line)
 {
-	const left, const right = line / '|'
+	const (left, right) = line / '|'
 	
 	const signals = [left / ' '] ver ...
 	const output = [right / ' '] ver ...

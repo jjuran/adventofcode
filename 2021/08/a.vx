@@ -8,7 +8,7 @@ const data = (load input_path).lines()
 
 def trivial_outputs (line)
 {
-	const left, const right = line / '|'
+	const (left, right) = line / '|'
 	
 	return [right / ' '] ver { v.length in [2, 4, 3, 7] }
 }
