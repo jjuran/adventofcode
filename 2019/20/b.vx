@@ -167,7 +167,7 @@ def find_portal_labels
 
 find_portal_labels()
 
-const start, const finish = *portkeys[[ "AA", "ZZ" ]]
+const (start, finish) = *portkeys[[ "AA", "ZZ" ]]
 
 var reachable_portals = int^(all_portals.keys map {v => []})
 
