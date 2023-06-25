@@ -64,7 +64,7 @@ def first_card_to_win
 		
 		for o in occurrences[ number ] do
 		{
-			const c, const i, const j = *o
+			const (c, i, j) = *o
 			
 			markings[ c ][ i * 5 + j ] = 'x'
 			
