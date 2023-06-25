@@ -2,7 +2,7 @@
 
 const data = "138307-654504"
 
-const min, const max = data / '-'
+const (min, max) = data / '-'
 
 def has_double (s6)
 {
