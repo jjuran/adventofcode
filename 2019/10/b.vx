@@ -14,7 +14,7 @@ var grid = str lines
 const height = lines.length
 const width = grid.length / height
 
-const X, const Y = eval pipe
+const (X, Y) = eval pipe
 
 def set_cell( x, y, v )
 {
@@ -30,7 +30,7 @@ def contains( x, y )
 
 def angular_ordering (coordinates)
 {
-	const x, const y = *coordinates
+	const (x, y) = *coordinates
 	
 	if x == 0 or y == 0 then
 	{
