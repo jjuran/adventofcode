@@ -28,7 +28,7 @@ def store (addr, data)
 
 for line in data do
 {
-	const dst, const eq, const src = line / ' '
+	const (dst, eq, src) = line / ' '
 	
 	if dst == "mask" then
 	{

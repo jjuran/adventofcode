@@ -88,7 +88,7 @@ for line in data do
 {
 	display "" ++i "/" n
 	
-	const dst, const eq, const src = line / ' '
+	const (dst, eq, src) = line / ' '
 	
 	if dst == "mask" then
 	{
