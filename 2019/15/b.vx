@@ -113,7 +113,7 @@ def gridify
 	
 	for kv in floorplan do
 	{
-		const x, const y = *([kv.key / ','] map int)
+		const (x, y) = *([kv.key / ','] map int)
 		
 		grid[ (x - min_x) + (y - min_y) * width ] = kv.value
 	}
