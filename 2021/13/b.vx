@@ -6,13 +6,13 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 def parse
 {
-	const dots_chunk, const folds_chunk = load input_path / "\n\n"
+	const (dots_chunk, folds_chunk) = load input_path / "\n\n"
 	
 	const dots = [dots_chunk / '\n'] map { [eval v] }
 	
 	def parse_fold (line)
 	{
-		const axis, const pos = substr (line, "fold along ".length) / '='
+		const (axis, pos) = substr (line, "fold along ".length) / '='
 		
 		return [u8 *axis - u8 'x', int pos]
 	}
@@ -50,7 +50,7 @@ var grid = (" " * width) "\n" * height
 
 for dot in dots do
 {
-	const x, const y = *dot
+	const (x, y) = *dot
 	
 	grid[ x + y * stride ] = '#'
 }
