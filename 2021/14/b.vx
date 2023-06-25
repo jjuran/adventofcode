@@ -6,11 +6,11 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 def parse
 {
-	const polymer, const rules_chunk = load input_path / "\n\n"
+	const (polymer, rules_chunk) = load input_path / "\n\n"
 	
 	def parse_rule (line)
 	{
-		const a, const b = line / " -> "
+		const (a, b) = line / " -> "
 		
 		return a => b
 	}
@@ -18,7 +18,7 @@ def parse
 	return polymer, str^(rules_chunk.lines() map parse_rule)
 }
 
-const polymer, const rules = parse()
+const (polymer, rules) = parse()
 
 def make_elements
 {
