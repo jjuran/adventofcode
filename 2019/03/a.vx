@@ -6,7 +6,7 @@ const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 const data = (load input_path).lines()
 
-const one, const two = *(data map { [v / ','] })
+const (one, two) = *(data map { [v / ','] })
 
 def segments (path)
 {
@@ -62,8 +62,8 @@ def segments (path)
 
 def cross (h, v)
 {
-	const x0, const y, const x1 = *h
-	const x, const y0, const y1 = *v
+	const (x0, y, x1) = *h
+	const (x, y0, y1) = *v
 	
 	assert x0 <= x1
 	assert y0 <= y1
@@ -99,8 +99,8 @@ def distance (coord)
 	return coord map abs per Math.sum
 }
 
-const ah, const av = segments one
-const bh, const bv = segments two
+const (ah, av) = segments one
+const (bh, bv) = segments two
 
 const intersects =
 [
