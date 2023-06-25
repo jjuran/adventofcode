@@ -77,7 +77,7 @@ var image = " " * (width * height)
 
 for panel in painted_panels do
 {
-	const x, const y = *([panel.key / ','] map int)
+	const (x, y) = *([panel.key / ','] map int)
 	
 	image[ min_x + x + (min_y + y) * width ] = panel.value
 }
