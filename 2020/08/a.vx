@@ -8,7 +8,7 @@ const data = (load input_path).lines()
 
 def parse (s)
 {
-	const opcode, const operand = s / ' '
+	const (opcode, operand) = s / ' '
 	
 	return [opcode, int operand]
 }

@@ -10,7 +10,7 @@ const n = data.length
 
 def parse (s)
 {
-	const opcode, const operand = s / ' '
+	const (opcode, operand) = s / ' '
 	
 	return [opcode, int operand]
 }
