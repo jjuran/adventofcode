@@ -15,7 +15,7 @@ for cave in (links map { *v }) do
 
 for link in links do
 {
-	const a, const b = *link
+	const (a, b) = *link
 	
 	graph[ a ] <-- b
 	graph[ b ] <-- a
