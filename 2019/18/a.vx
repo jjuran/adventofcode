@@ -324,7 +324,7 @@ def keys_beyond_path (path)
 		}
 	}
 	
-	translate( &possible_keys, path, "\0" * path.length )
+	possible_keys = translated( possible_keys, path, "\0" * path.length )
 	
 	return str (possible_keys ver ...)
 }
