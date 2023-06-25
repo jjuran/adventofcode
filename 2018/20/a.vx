@@ -118,7 +118,7 @@ def route (p, dx=0, dy=0)
 
 route (begin data + '^')
 
-translate (&grid, "+", "\0")
+grid = translated (grid, "+", "\0")
 
 const offsets =
 [
