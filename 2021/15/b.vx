@@ -17,7 +17,7 @@ def generate_full_map
 	
 	for x in 1 -> 9 do
 	{
-		translate (&grid, "123456789", "234567891")
+		grid = translated (grid, "123456789", "234567891")
 		
 		subgrids <-- grid.lines()
 	}
