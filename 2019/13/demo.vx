@@ -80,7 +80,7 @@ OUT <== CLEAN
 
 while var tuple = thrice machine.run do
 {
-	const x, const y, const t = tuple
+	const (x, y, t) = tuple
 	
 	if x < 0 then
 	{
