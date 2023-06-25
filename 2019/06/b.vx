@@ -10,7 +10,7 @@ var orbits = str^[]
 
 for row in data do
 {
-	const a, const b = row / ')'
+	const (a, b) = row / ')'
 	
 	orbits[ b ] = a
 }
