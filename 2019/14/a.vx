@@ -9,7 +9,7 @@ const data = (load input_path).lines()
 
 def parse (measure)
 {
-	const n, const name = measure / ' '
+	const (n, name) = measure / ' '
 	
 	return name => int n
 }
