@@ -46,14 +46,14 @@ var max_x = 0
 var min_y = 0
 var max_y = 0
 
-painted_panels[ "0,0" ] = 1
+painted_panels[ "0,0" ] = 'X'
 
 while (+) (var c = machine.run sample) do
 {
 	const d = machine.run()
 	
 	# paint a cell
-	painted_panels[ x "," y ] = c
+	painted_panels[ x "," y ] = " X"[ c ]
 	
 	# turn left or right
 	dir = (dir + d * 2 - 1) mod 4
@@ -73,15 +73,13 @@ while (+) (var c = machine.run sample) do
 const width  = 1 + max_x - min_x
 const height = 1 + max_y - min_y
 
-var image = "0" * (width * height)
+var image = " " * (width * height)
 
 for panel in painted_panels do
 {
 	const x, const y = *([panel.key / ','] map int)
 	
-	image[ min_x + x + (min_y + y) * width ] = *(str panel.value)
+	image[ min_x + x + (min_y + y) * width ] = panel.value
 }
-
-translate( &image, "01", " X" )
 
 print "\n    ".join ("\n", image / height, "")
