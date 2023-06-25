@@ -44,11 +44,9 @@ def expand (grid)
 	return z_margin grid z_margin
 }
 
-var grid = expand data
+var grid = translated (expand data, ". ", "\0" * 2)
 
 const gridlen = stride * height
-
-translate (&grid, ". ", "\0" * 2)
 
 const xs   = [-1, 0, 1]
 const xys  = xs  map { v - stride,  v, v + stride  }
