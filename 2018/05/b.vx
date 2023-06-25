@@ -74,7 +74,7 @@ def expunge (s, c)
 {
 	const pattern = packed c * 2 ~ x"0020"
 	
-	translate( &s, pattern, x"0000" )
+	s = translated( s, pattern, x"0000" )
 	
 	return string (s ver ...)
 }
