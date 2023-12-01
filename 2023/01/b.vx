@@ -1,0 +1,52 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let data = (load input_path).lines()
+
+let digit = '0' .. '9'
+
+let digit_names = ["zero one two three four five six seven eight nine" / ' ']
+
+let num_digit = digit => str
+
+let abc_digit = 0 .. 9 map {  digit_names[ v ] => {v} } per {a | b}
+let cba_digit = 0 .. 9 map { -digit_names[ v ] => {v} } per {a | b}
+
+def first_digit (s)
+{
+	var p = begin s
+	
+	while not (var x = p += num_digit | abc_digit) do
+	{
+		++p
+	}
+	
+	return x
+}
+
+def last_digit (s)
+{
+	var p = begin -s
+	
+	while not (var x = p += num_digit | cba_digit) do
+	{
+		++p
+	}
+	
+	return x
+}
+
+def calibration (s)
+{
+	let a = first_digit s
+	let b = last_digit s
+	
+	return int str (a, b)
+}
+
+let sum = data map calibration per Math.sum
+
+print sum

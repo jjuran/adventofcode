@@ -1,0 +1,21 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let data = (load input_path).lines()
+
+let digit = '0' .. '9'
+
+def calibration (s)
+{
+	let a = *((begin  s).find digit)
+	let b = *((begin -s).find digit)
+	
+	return int str (a, b)
+}
+
+let sum = data map calibration per Math.sum
+
+print sum
