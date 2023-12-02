@@ -1,0 +1,44 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let data = (load input_path).lines()
+
+let colors = ["red green blue" / ' ']
+
+let digit = '0' .. '9'
+
+let number = digit+ => int
+
+let color = [colors per {a | b}] => str
+
+let count = [number, ' ', color] => {tail _ => head _}
+let subset = [count, [", ", count]*] => {[_]}
+let samples = [subset, ["; ", subset]*] => {[_]}
+
+let grammar = ["Game ", number, ": ", samples] => {head _ => tail _}
+
+def parse (line)
+{
+	var p = begin line
+	
+	return p += grammar
+}
+
+let limits = str^[red: 12, green: 13, blue: 14]
+
+def impossible_subset (subset)
+{
+	return subset ver { v.value > limits[ v.key ]  }
+}
+
+def impossible (samples)
+{
+	return samples ver { impossible_subset v }
+}
+
+let sum = data map parse ver { not impossible v.value } map .key per {a + b}
+
+print sum
