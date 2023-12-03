@@ -1,0 +1,94 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let data = (load input_path).lines()
+
+let width = data[ 0 ].length
+let height = data.length
+
+let xwidth  = width  + 2
+let xheight = height + 2
+
+let blank = "." * xwidth
+let wider = data map { '.' v '.' }
+let xdata = [ blank, *wider, blank ]
+
+let digit = '0' .. '9'
+
+def get_number (i, j)
+{
+	let line = xdata[ i ]
+	
+	var j0 = j - 1
+	var j1 = j + 1
+	
+	while line[ j0 ] in digit do
+	{
+		--j0
+	}
+	
+	++j0
+	
+	while line[ j1 ] in digit do
+	{
+		++j1
+	}
+	
+	return int line[ j0 -> j1 ]
+}
+
+def row_numbers (i, j)
+{
+	let line = xdata[ i ]
+	
+	if line[ j ] in digit then
+	{
+		return get_number (i, j)
+	}
+	
+	let left  = if line[ j - 1 ] in digit then { get_number (i, j - 1) }
+	let right = if line[ j + 1 ] in digit then { get_number (i, j + 1) }
+	
+	return left, right
+}
+
+def adjacent_numbers (i, j)
+{
+	let line = xdata[ i ]
+	
+	let above = row_numbers (i - 1, j)
+	let below = row_numbers (i + 1, j)
+	
+	let left  = if line[ j - 1 ] in digit then { get_number (i, j - 1) }
+	let right = if line[ j + 1 ] in digit then { get_number (i, j + 1) }
+	
+	return [above, below, left, right]
+}
+
+var sum = 0
+
+for i in 1 .. height do
+{
+	let line = xdata[ i ]
+	
+	var p = begin line
+	
+	while p = p.find '*' do
+	{
+		let j = p.past.length
+		
+		let numbers = adjacent_numbers (i, j)
+		
+		if numbers.length == 2 then
+		{
+			sum += numbers per {a * b}
+		}
+		
+		++p
+	}
+}
+
+print sum

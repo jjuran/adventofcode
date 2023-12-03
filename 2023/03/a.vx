@@ -1,0 +1,57 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let data = (load input_path).lines()
+
+let width = data[ 0 ].length
+let height = data.length
+
+let xwidth  = width  + 2
+let xheight = height + 2
+
+let blank = "." * xwidth
+let wider = data map { '.' v '.' }
+let xdata = [ blank, *wider, blank ]
+
+let digit = '0' .. '9'
+let symbol = ~(digit | '.')
+
+def symbol_adjacent (i, j0, j1)
+{
+	let line = xdata[ i ]
+	
+	return
+		line[ --j0 ] in symbol or
+		line[ j1++ ] in symbol or
+		xdata[ i - 1 ][ j0 -> j1 ] ver { v in symbol } or
+		xdata[ i + 1 ][ j0 -> j1 ] ver { v in symbol }
+}
+
+var sum = 0
+
+for i in 1 .. height do
+{
+	let line = xdata[ i ]
+	
+	var p = begin line
+	
+	while p = p.find digit do
+	{
+		var q = p.find ~digit or p + p.rest.length
+		
+		let j0 = p.past.length
+		let j1 = q.past.length
+		
+		if symbol_adjacent (i, j0, j1) then
+		{
+			sum += int (q - p)
+		}
+		
+		p = q
+	}
+}
+
+print sum
