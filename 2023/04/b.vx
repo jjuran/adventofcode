@@ -1,0 +1,42 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let data = (load input_path).lines()
+
+let digit = '0' .. '9'
+
+let number = [' '*, digit+ => int]
+
+let numbers = number+ => {[_]}
+
+let card = ["Card ", ' '*, digit+, ": ", numbers, " | ", numbers]
+
+var counts = [ 1 (*) data.length ]
+
+def matches (line)
+{
+	var p = begin line
+	
+	let (winners, mine) = p += card
+	
+	let n = mine pop { v in winners }
+	
+	return n
+}
+
+for i in 0 -> data.length do
+{
+	let n = matches data[ i ]
+	
+	for j in i + 1 .. i + n do
+	{
+		counts[ j ] += counts[ i ]
+	}
+}
+
+let total = counts per {a + b}
+
+print total

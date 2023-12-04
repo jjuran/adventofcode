@@ -1,0 +1,30 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let data = (load input_path).lines()
+
+let digit = '0' .. '9'
+
+let number = [' '*, digit+ => int]
+
+let numbers = number+ => {[_]}
+
+let card = ["Card ", ' '*, digit+, ": ", numbers, " | ", numbers]
+
+def points (line)
+{
+	var p = begin line
+	
+	let (winners, mine) = p += card
+	
+	let n = mine pop { v in winners }
+	
+	return n and 2^(n - 1)
+}
+
+let total = data map points per {a + b}
+
+print total
