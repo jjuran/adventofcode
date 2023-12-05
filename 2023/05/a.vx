@@ -1,0 +1,55 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let text = load input_path
+
+let digit = '0' .. '9'
+let lower = 'a' .. 'z'
+
+let number = [' '*, digit+ => int]
+let word = lower+
+
+let numbers = number+ => {[_]}
+let table_entry = [number (*) 3, "\n"] => {[_]}
+let table_entries = table_entry+ => {[_]}
+
+let seed_list = ["seeds: ", numbers, "\n"]
+
+let table = ["\n", word, "-to-", word, " map:\n", table_entries]
+let tables = table+ => {[_]}
+
+let grammar = [seed_list, tables]
+
+def parse (s)
+{
+	var p = begin s
+	
+	return p += grammar
+}
+
+let (seeds, maps) = parse text
+
+def lookup (table, id)
+{
+	for entry in table do
+	{
+		let (dst, src, n) = *entry
+		
+		if id in src -> src + n then
+		{
+			return id - src + dst
+		}
+	}
+	
+	return id
+}
+
+let lookups = maps map { lookup % v }
+let convert = lookups per { b * a }
+
+let locations = seeds map convert
+
+print Iter.min locations

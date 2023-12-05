@@ -1,0 +1,123 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let text = load input_path
+
+def sorted_by_0 (sequence)
+{
+	return Iter.sorted sequence via { v[ 0 ] }
+}
+
+let digit = '0' .. '9'
+let lower = 'a' .. 'z'
+
+let number = [' '*, digit+ => int]
+let word = lower+
+
+let numbers = number+ => {[_]}
+let table_entry = [number (*) 3, "\n"] => {[_]}
+let table_entries = table_entry+ => { Iter.sorted [_] via {v[ 1 ]} }
+
+let seed_range = [number (*) 2] => {[_]}
+let seed_range_list = ["seeds: ", seed_range+, "\n"] => { sorted_by_0 [_] }
+
+let table = ["\n", word, "-to-", word, " map:\n", table_entries]
+let tables = table+ => {[_]}
+
+let grammar = [seed_range_list, tables]
+
+def parse (s)
+{
+	var p = begin s
+	
+	return p += grammar
+}
+
+let (seed_ranges, maps) = parse text
+
+def split_range (r, entry)
+{
+	let (dst, src, n) = *entry
+	
+	let (low, len) = *r
+	let end = low + len
+	
+	if end <= src then
+	{
+		return [r], []
+	}
+	
+	let src_end = src + n
+	
+	if low >= src_end then
+	{
+		return [], [r]
+	}
+	
+	var finalized = []
+	var remaining = []
+	
+	if low < src then
+	{
+		finalized <-- [low, src - low]
+	}
+	
+	if end > src_end then
+	{
+		remaining <-- [src_end, end - src_end]
+	}
+	
+	let a = Math.max (low, src)
+	let e = Math.min (end, src_end)
+	
+	finalized <-- [a - src + dst, e - a ]
+	
+	return finalized, remaining
+}
+
+def lookup (table, ranges)
+{
+	var result = []
+	
+	for entry in table do
+	{
+		let src_end = entry[ 1 ] + entry[ 2 ]
+		
+		var new_ranges = []
+		
+		var i = 0
+		
+		for r in ranges do
+		{
+			if r[ 0 ] >= src_end then
+			{
+				new_ranges <-- *ranges[ i -> ranges.length ]
+				
+				break
+			}
+			
+			++i
+			
+			let (finalized, remaining) = split_range (r, entry)
+			
+			result     <-- *finalized
+			new_ranges <-- *remaining
+		}
+		
+		ranges <- new_ranges
+	}
+	
+	result <-- *ranges
+	
+	return sorted_by_0 result
+}
+
+let lookups = maps map { lookup % v }
+let convert = lookups per { b * a }
+
+let locations = convert seed_ranges map { v[ 0 ] }
+
+print Iter.min locations
