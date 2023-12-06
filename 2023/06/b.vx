@@ -1,0 +1,65 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let text = load input_path
+
+let digit = '0' .. '9'
+
+let numeric = [' '*, digit+ => str]
+
+let number = numeric+ => int * str
+
+let field_name = ["Time" | "Distance"]
+
+let field = [field_name, ": ", number, "\n"]
+
+let grammar = [field, field]
+
+def parse ()
+{
+	var p = begin text
+	
+	return p += grammar
+}
+
+let (total_time, distance_record) = parse()
+
+let midpoint = total_time div 2
+
+def record_broken (charge_time)
+{
+	let move_time = total_time - charge_time
+	
+	let distance = charge_time * move_time
+	
+	return distance > distance_record
+}
+
+def shortest_winning_charge_time()
+{
+	var min = 0
+	var max = midpoint
+	
+	while max > min do
+	{
+		let mid = min + (max - min) div 2
+		
+		if record_broken mid then
+		{
+			max = mid
+		}
+		else
+		{
+			min = mid + 1
+		}
+	}
+	
+	return min
+}
+
+let n_winning_moves = (midpoint - shortest_winning_charge_time()) * 2 + 1
+
+print n_winning_moves
