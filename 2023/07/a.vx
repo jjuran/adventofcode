@@ -1,0 +1,72 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let text = load input_path
+
+let lines = text.lines()
+
+let digit = '0' .. '9'
+let upper = 'A' .. 'Z'
+
+let card = digit | upper
+
+let hand = card+ => { translated (_, "23456789" -"AKQJT", "abcdefghijklm") }
+
+let number = [' '*, digit+ => int]
+
+let grammar = [hand, " ", number] => {[_]}
+
+def parse (line)
+{
+	var p = begin line
+	
+	return p += grammar
+}
+
+def hand_type (hand)
+{
+	var counts = [ 0 (*) 14 ]
+	
+	for card in hand do
+	{
+		++counts[ u8 card - u8 'a' ]
+	}
+	
+	if 5 in counts then
+	{
+		return 6
+	}
+	
+	if 4 in counts then
+	{
+		return 5
+	}
+	
+	if 3 in counts then
+	{
+		return if 2 in counts then {4} else {3}
+	}
+	
+	let n_pairs = counts pop { v == 2 }
+	
+	return n_pairs
+}
+
+var bid_hands = lines map parse map { [ hand_type v[ 0 ], *v ] }
+
+bid_hands = Iter.sorted bid_hands via { v[ 1 ] }
+bid_hands = Iter.sorted bid_hands via { v[ 0 ] }
+
+var sum = 0
+
+var rank = 0
+
+for bid_hand in bid_hands do
+{
+	sum += ++rank * bid_hand[ 2 ]
+}
+
+print sum

@@ -1,0 +1,101 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let text = load input_path
+
+let lines = text.lines()
+
+let digit = '0' .. '9'
+let upper = 'A' .. 'Z'
+
+let card = digit | upper
+
+let hand = card+ => { translated (_, "J" "23456789" -"AKQT", "abcdefghijklm") }
+
+let number = [' '*, digit+ => int]
+
+let grammar = [hand, " ", number] => {[_]}
+
+def parse (line)
+{
+	var p = begin line
+	
+	return p += grammar
+}
+
+def hand_type (hand)
+{
+	var counts = [ 0 (*) 14 ]
+	
+	for card in hand do
+	{
+		++counts[ u8 card - u8 'a' ]
+	}
+	
+	let n_jokers = counts[ 0 ]
+	
+	if n_jokers >= 4 or 5 - n_jokers in counts[ 1 -> 13 ] then
+	{
+		return 6
+	}
+	
+	if n_jokers == 3 or 4 - n_jokers in counts[ 1 -> 13 ] then
+	{
+		return 5
+	}
+	
+	let n_pairs = counts pop { v == 2 }
+	
+	if n_jokers == 2 then
+	{
+		return 3  # three of a kind
+	}
+	
+	if 3 in counts then
+	{
+		if n_jokers then
+		{
+			return 4  # full house
+		}
+		
+		return if 2 in counts then {4} else {3}
+	}
+	
+	if n_jokers == 1 then
+	{
+		if n_pairs == 2 then
+		{
+			return 4  # full house
+		}
+		
+		if n_pairs == 1 then
+		{
+			return 3  # three of a kind
+		}
+		
+		return 1  # one pair
+	}
+	
+	return n_pairs
+}
+
+assert hand_type "aabcd" == 3
+
+var bid_hands = lines map parse map { [ hand_type v[ 0 ], *v ] }
+
+bid_hands = Iter.sorted bid_hands via { v[ 1 ] }
+bid_hands = Iter.sorted bid_hands via { v[ 0 ] }
+
+var sum = 0
+
+var rank = 0
+
+for bid_hand in bid_hands do
+{
+	sum += ++rank * bid_hand[ 2 ]
+}
+
+print sum
