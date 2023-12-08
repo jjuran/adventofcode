@@ -1,0 +1,71 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
+
+def import (lib) { eval (load, realpath) libdir lib ".vsl" }
+
+let display = (import "status") { OUT <== _ }
+
+let sieve-of-eratosthenes = import "sieve-of-eratosthenes"
+
+let lcm = (import "lcm").with sieve-of-eratosthenes
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let text = load input_path
+
+let digit = '0' .. '9'
+let upper = 'A' .. 'Z'
+
+let _steps = upper+ => { translated (str _, "LR", "\x00\x01") }
+
+let node = [(digit | upper) (*) 3] => str
+let pair = ['(', node, ", ", node, ')'] => {[_]}
+let link = [node, " = ", pair, '\n'] => { head _ => tail _ }
+
+let _links = link+ => {str^[_]}
+
+let grammar = [_steps, "\n\n", _links]
+
+def parse (text)
+{
+	var p = begin text
+	
+	return p += grammar
+}
+
+let (steps, links) = parse text
+
+let n_steps = steps.length
+
+let starts = links.keys ver { v[ 2 ] == 'A' }
+
+def trace (here)
+{
+	display "Tracing from " here "..."
+	
+	var n = 0
+	
+	while here[ 2 ] != 'Z' do
+	{
+		for step in steps do
+		{
+			here = links[ here ][ u8 step ]
+		}
+		
+		n += n_steps
+	}
+	
+	return n
+}
+
+let lengths = (starts map trace)
+
+display "Calculating lcm..."
+
+let X = lcm lengths
+
+display ""
+
+print X

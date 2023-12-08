@@ -1,0 +1,46 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let text = load input_path
+
+let upper = 'A' .. 'Z'
+
+let _steps = upper+ => { translated (str _, "LR", "\x00\x01") }
+
+let node = [upper (*) 3] => str
+let pair = ['(', node, ", ", node, ')'] => {[_]}
+let link = [node, " = ", pair, '\n'] => { head _ => tail _ }
+
+let _links = link+ => {str^[_]}
+
+let grammar = [_steps, "\n\n", _links]
+
+def parse (text)
+{
+	var p = begin text
+	
+	return p += grammar
+}
+
+let (steps, links) = parse text
+
+let n_steps = steps.length
+
+var n = 0
+
+var here = "AAA"
+
+while here != "ZZZ" do
+{
+	for step in steps do
+	{
+		here = links[ here ][ u8 step ]
+	}
+	
+	n += n_steps
+}
+
+print n
