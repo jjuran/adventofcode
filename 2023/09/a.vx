@@ -1,0 +1,23 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let lines = (load input_path).lines() map { [v / ' '] map int }
+
+def next_predicted (seq)
+{
+	if not Iter.popcount seq then
+	{
+		return 0
+	}
+	
+	let derivative = seq gap {b - a}
+	
+	return seq[ derivative.length ] + next_predicted derivative
+}
+
+let sum = lines map next_predicted per {a + b}
+
+print sum
