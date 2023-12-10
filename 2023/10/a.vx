@@ -1,0 +1,72 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let data = load input_path
+
+let lines = data.lines()
+
+var width = lines[ 0 ].length
+
+var height = lines.length
+
+width  += 2
+height += 2
+
+let empty = "." * width
+let xgrid = str (empty "\n", lines map { "." v ".\n" }, empty "\n")
+
+let stride = width + 1
+
+let start_index = (begin xgrid).find('S').past.length
+
+var dmap = "\0" * xgrid.length
+
+let start_x = start_index mod stride
+let start_y = start_index div stride
+
+def neighbors (index)
+{
+	return [index - 1, index + 1, index - stride, index + stride]
+}
+
+def connecting_neighbors (index)
+{
+	let N = index - stride
+	let S = index + stride
+	let W = index - 1
+	let E = index + 1
+	
+	let north = if xgrid[ N ] in "|F7" then {N}
+	let south = if xgrid[ S ] in "|LJ" then {S}
+	let west  = if xgrid[ W ] in "-FL" then {W}
+	let east  = if xgrid[ E ] in "-7J" then {E}
+	
+	return [north, south, west, east]
+}
+
+var distance = 0
+
+var frontier = [start_index]
+
+while frontier do
+{
+	var more = []
+	
+	for next in frontier do
+	{
+		dmap[ next ] = byte distance
+		
+		more <-- *(connecting_neighbors next ver { not dmap[ v ] })
+	}
+	
+	frontier <- more
+	
+	++distance
+}
+
+--distance
+
+print distance

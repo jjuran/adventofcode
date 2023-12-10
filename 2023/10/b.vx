@@ -1,0 +1,139 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let data = load input_path
+
+let lines = data.lines()
+
+var width = lines[ 0 ].length
+
+var height = lines.length
+
+width  += 4
+height += 4
+
+let empty = "." * width
+let xgrid = str (empty "\n" * 2, lines map { ".." v "..\n" }, empty "\n" * 2)
+
+let stride = width + 1
+
+let start_index = (begin xgrid).find('S').past.length
+
+var dmap = "\0" * xgrid.length
+
+let bwidth  = width  * 2
+let bheight = height * 2
+let bstride = bwidth + 1
+
+let OOO = ("O" * bwidth) "\n"
+let O_O = "O" ("." * (bwidth - 2)) "O\n"
+
+var omap = str (OOO, O_O * (bheight - 2), OOO)
+
+def connecting_neighbors (index)
+{
+	let c = xgrid[ index ]
+	
+	let N = index - stride
+	let S = index + stride
+	let W = index - 1
+	let E = index + 1
+	
+	let north = if c in "S|LJ" and xgrid[ N ] in "|F7" then {N}
+	let south = if c in "S|F7" and xgrid[ S ] in "|LJ" then {S}
+	let west  = if c in "S-7J" and xgrid[ W ] in "-FL" then {W}
+	let east  = if c in "S-FL" and xgrid[ E ] in "-7J" then {E}
+	
+	return [north, south, west, east]
+}
+
+var frontier = [start_index]
+
+while frontier do
+{
+	var more = []
+	
+	for next in frontier do
+	{
+		dmap[ next ] = xgrid[ next ]
+		
+		more <-- *(connecting_neighbors next ver { not dmap[ v ] })
+	}
+	
+	frontier <- more
+}
+
+for y in 1 -> height - 1 do
+{
+	for x in 1 -> width - 1 do
+	{
+		let j = y * stride + x
+		
+		let c = dmap[ j ]
+		
+		let i = y * 2 * bstride + x * 2
+		
+		if not c then
+		{
+			continue
+		}
+		
+		omap[ i ] = c
+		
+		if c in "-LF" or c == 'S' and dmap[ j + 1 ] in "-7J" then
+		{
+			omap[ i + 1 ] = '-'
+		}
+		
+		if c in "|F7" or c == 'S' and dmap[ j + stride ] in "|LJ" then
+		{
+			omap[ i + bstride ] = '|'
+		}
+	}
+}
+
+def neighbors (index)
+{
+	return [index - 1, index + 1, index - bstride, index + bstride]
+}
+
+frontier = [bstride + 1]
+
+while frontier do
+{
+	var more = []
+	
+	for next in frontier do
+	{
+		let c = omap[ next ]
+		
+		if c == '.' then
+		{
+			omap[ next ] = 'O'
+			
+			more <-- *(neighbors next)
+		}
+	}
+	
+	frontier <- more
+}
+
+for yy in 1 -> height do
+{
+	for xx in 1 -> width do
+	{
+		let i = yy * 2 * bstride + xx * 2
+		
+		if omap[ i ] == '.' then
+		{
+			omap[ i ] = 'I'
+		}
+	}
+}
+
+let X = omap pop { v == 'I' }
+
+print X
