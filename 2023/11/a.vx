@@ -1,0 +1,103 @@
+#!/usr/bin/env minivx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+var data = load input_path
+
+var lines = data.lines()
+
+var width = lines[ 0 ].length
+
+var height = lines.length
+
+var stride = width + 1
+
+var xgrid = data
+
+def get_column (x)
+{
+	return 0 -> height map { lines[ v ][ x ] } per str
+}
+
+let columns = 0 -> width map { get_column v }
+
+def duplicate_column (x)
+{
+	for y in 0 -> height do
+	{
+		lines[ y ] = lines[ y ][ 0 -> x + 1 ] lines[ y ][ x -> width ]
+	}
+	
+	xgrid = lines map { v "\n" } per str
+	
+	++width
+	++stride
+}
+
+let empty_cols = 0 -> width  ver { not '#' in columns[ v ] }
+let empty_rows = 0 -> height ver { not '#' in lines[ v ] }
+
+def expand_horizontally
+{
+	for col in -empty_cols do
+	{
+		duplicate_column col
+	}
+}
+
+def expand_vertically
+{
+	for row in -empty_rows do
+	{
+		xgrid = xgrid[ 0 -> (row + 1) * stride ] xgrid[ row * stride -> xgrid.length ]
+		
+		++height
+	}
+}
+
+expand_horizontally()
+expand_vertically()
+
+def find_galaxies
+{
+	var result = []
+	
+	var p = begin xgrid
+	
+	while p = p.find '#' do
+	{
+		let index = p.past.length
+		
+		let y = index div stride
+		let x = index mod stride
+		
+		result <-- [x, y]
+		
+		++p
+	}
+	
+	return result
+}
+
+def distance (a, b)
+{
+	return abs (a[0] - b[0]) + abs (a[1] - b[1])
+}
+
+let galaxies = find_galaxies()
+
+let n = galaxies.length
+
+var sum = 0
+
+for i in 0 -> n do
+{
+	for j in i + 1 -> n do
+	{
+		sum += distance (galaxies[ i ], galaxies[ j ])
+	}
+}
+
+print sum
