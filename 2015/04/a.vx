@@ -1,8 +1,8 @@
 #!/usr/bin/env lvx
 
-const data = "ckczppom"
+let data = "ckczppom"
 
-const n = 5
+let n = 5
 
 var suffix = 0
 
@@ -11,4 +11,4 @@ while (hex md5 data ++suffix)[ 0 -> n ] != "0" * n do
 	# just loop
 }
 
-print suffix
+put suffix

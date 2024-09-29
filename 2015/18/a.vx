@@ -1,24 +1,24 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
-const width = ((begin data).find '\n').past.length
-const stride = width + 1
+let width = ((begin data).find '\n').past.length
+let stride = width + 1
 
-const blank_line = (" " * width) "\n"
+let blank_line = (" " * width) "\n"
 
 var grid (str) = "\r" blank_line data blank_line
 
-const neighbor_offsets = -1 .. 1 map { v - stride, v, v + stride } ver ...
+let neighbor_offsets = -1 .. 1 map { v - stride, v, v + stride } ver ...
 
 def count_neighbors (index)
 {
@@ -33,9 +33,9 @@ def step
 	{
 		for j in 0 -> width do
 		{
-			const index (int) = 1 + j + (1 + i) * stride
+			let index (int) = 1 + j + (1 + i) * stride
 			
-			const n (int) = count_neighbors index
+			let n (int) = count_neighbors index
 			
 			if n != 2 then
 			{
@@ -54,8 +54,8 @@ for i in 0 -> 100 do
 	step()
 }
 
-const count = grid pop {v == '#'}
+let count = grid pop {v == '#'}
 
 display ""
 
-print count
+put count

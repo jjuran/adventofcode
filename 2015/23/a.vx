@@ -1,12 +1,12 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const N = data.length
+let N = data.length
 
 var RF = [0, 0]  # register file
 var IP = 0       # instruction pointer
@@ -47,21 +47,21 @@ def JIO (reg, offset)
 	}
 }
 
-const digit = '0' .. '9'
+let digit = '0' .. '9'
 
-const num = ['+', digit+ => int] | (['-', digit+] => int)
-const reg = 'a' .. 'b' => {u8 *_ - u8 'a'}
+let num = ['+', digit+ => int] | (['-', digit+] => int)
+let reg = 'a' .. 'b' => {u8 *_ - u8 'a'}
 
-const hlf = ["hlf ", reg]            => HLF
-const tpl = ["tpl ", reg]            => TPL
-const inc = ["inc ", reg]            => INC
-const jmp = ["jmp ",            num] => JMP
-const jie = ["jie ", reg, ", ", num] => JIE
-const jio = ["jio ", reg, ", ", num] => JIO
+let hlf = ["hlf ", reg]            => HLF
+let tpl = ["tpl ", reg]            => TPL
+let inc = ["inc ", reg]            => INC
+let jmp = ["jmp ",            num] => JMP
+let jie = ["jie ", reg, ", ", num] => JIE
+let jio = ["jio ", reg, ", ", num] => JIO
 
-const illegal = ~byteclass()* => { throw "Illegal instruction: " _ }
+let illegal = ~byteclass()* => { throw "Illegal instruction: " _ }
 
-const grammar = hlf | tpl | inc | jmp | jie | jio | illegal
+let grammar = hlf | tpl | inc | jmp | jie | jio | illegal
 
 var A = 0
 var B = 0
@@ -73,4 +73,4 @@ while IP < N do
 	p += grammar
 }
 
-print RF[ 1 ]  # print the value in register `b`
+put RF[ 1 ]  # print the value in register `b`

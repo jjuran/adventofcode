@@ -1,12 +1,12 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[ 0 ]
+let data = (load input_path).lines()[ 0 ]
 
-const moves = byte^
+let moves = byte^
 [
 	'^': [0, 1],
 	'v': [0, -1],
@@ -19,20 +19,20 @@ var two = [0, 0]
 
 var visited = str^[ "0,0": true ]
 
-const key = join % ","
+let key = join % ","
 
 var total = 1
 
 for m in data do
 {
-	const delta = moves[ m ]
+	let delta = moves[ m ]
 	
-	const (dx, dy) = *delta
+	let (dx, dy) = *delta
 	
 	one[ 0 ] += dx
 	one[ 1 ] += dy
 	
-	const k = key *one
+	let k = key *one
 	
 	if not k in visited then
 	{
@@ -44,4 +44,4 @@ for m in data do
 	one <-> two
 }
 
-print total
+put total

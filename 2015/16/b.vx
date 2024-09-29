@@ -1,12 +1,12 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const scan = str^(DATA.lines() map eval)
+let scan = str^(DATA.lines() map eval)
 
 def parse (s)
 {
@@ -16,7 +16,7 @@ def parse (s)
 	
 	var q = p.find ':'
 	
-	const i = int (q - p)
+	let i = int (q - p)
 	
 	q += ": ".length
 	
@@ -25,11 +25,11 @@ def parse (s)
 
 def matching (sue)
 {
-	const details = sue.value
+	let details = sue.value
 	
 	for compound in scan do
 	{
-		const key = compound.key
+		let key = compound.key
 		
 		if not key in details then
 		{
@@ -56,9 +56,9 @@ def matching (sue)
 	return true
 }
 
-const matches = data map parse ver matching
+let matches = data map parse ver matching
 
-print matches[ 0 ].key
+put matches[ 0 ].key
 
 end.
 children: 3

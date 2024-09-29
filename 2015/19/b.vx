@@ -1,18 +1,18 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const n = data.length - 2
+let n = data.length - 2
 
-const upper = 'A' .. 'Z'
-const lower = 'a' .. 'z'
-const alpha = upper | lower
+let upper = 'A' .. 'Z'
+let lower = 'a' .. 'z'
+let alpha = upper | lower
 
-const word = alpha+ => str
+let word = alpha+ => str
 
 var molecule = data[ n + 1 ]
 var patterns = str^[]
@@ -21,7 +21,7 @@ for replacement in data[ 0 -> n ] do
 {
 	var p = begin replacement
 	
-	const (atom, submolecule) = p += [word, " => ", word]
+	let (atom, submolecule) = p += [word, " => ", word]
 	
 	assert not submolecule in patterns
 	
@@ -70,7 +70,7 @@ def steps_to_e (molecule)
 		{
 			if var p = (begin molecule).find pat.key then
 			{
-				const q = p
+				let q = p
 				
 				p += pat.key
 				
@@ -94,4 +94,4 @@ def steps_to_e (molecule)
 	return 0
 }
 
-print steps_to_e molecule
+put steps_to_e molecule

@@ -1,22 +1,22 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const modular = import "modular"
+let modular = import "modular"
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const digit = '0' .. '9'
-const number = digit+ => int
+let digit = '0' .. '9'
+let number = digit+ => int
 
 var p = begin load input_path
 
 p = p.find "row"
 
-const (row, col) = p += ["row ", number, ", column ", number]
+let (row, col) = p += ["row ", number, ", column ", number]
 
 def summation (max)
 {
@@ -34,13 +34,13 @@ def diagonalize (row, col)
 	return col + summation (row + col)
 }
 
-const seed    = 20151125
-const factor  = 252533
-const modulus = 33554393
+let seed    = 20151125
+let factor  = 252533
+let modulus = 33554393
 
 def generate_nth_code (index)
 {
 	return seed * modular.power( factor, index, modulus ) % modulus
 }
 
-print generate_nth_code diagonalize (row, col)
+put generate_nth_code diagonalize (row, col)

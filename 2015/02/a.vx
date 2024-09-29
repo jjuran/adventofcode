@@ -1,24 +1,24 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var total = 0
 
 for dimensions in data do
 {
-	const (x, y, z) = *([dimensions / 'x'] map int)
+	let (x, y, z) = *([dimensions / 'x'] map int)
 	
-	const a = x * y
-	const b = y * z
-	const c = z * x
+	let a = x * y
+	let b = y * z
+	let c = z * x
 	
-	const minimum = Math.min (a, b, c)
+	let minimum = Math.min (a, b, c)
 	
 	total += 2 * (a + b + c) + minimum
 }
 
-print total
+put total

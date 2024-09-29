@@ -1,14 +1,14 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 def nice (s)
 {
-	const pad = "\0" * 2
+	let pad = "\0" * 2
 	
 	if not '\0' in packed s pad ~ packed pad s then
 	{
@@ -17,7 +17,7 @@ def nice (s)
 	
 	for j in 0 -> s.length - 3 do
 	{
-		const pair = s[ j -> j + 2 ]
+		let pair = s[ j -> j + 2 ]
 		
 		if pair in s[ j + 2 -> s.length ] then
 		{
@@ -28,6 +28,6 @@ def nice (s)
 	return false
 }
 
-const total = data pop nice
+let total = data pop nice
 
-print total
+put total

@@ -1,36 +1,36 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
 def mapify (k, v) { k => v }
 
-const alpha = 'A' .. 'Z' | 'a' .. 'z'
-const digit = '0' .. '9'
-const number = ['-'?, digit+] => int
-const word = alpha+
+let alpha = 'A' .. 'Z' | 'a' .. 'z'
+let digit = '0' .. '9'
+let number = ['-'?, digit+] => int
+let word = alpha+
 
-const property = [ word, " ", number ]
-const proplist = [ property, [", ", property]* ]
-const ingredient = [ word => str, ": ", proplist => { [_] } ] => mapify
-const ingredlist = [ingredient, '\n']+ => { str^[_] }
+let property = [ word, " ", number ]
+let proplist = [ property, [", ", property]* ]
+let ingredient = [ word => str, ": ", proplist => { [_] } ] => mapify
+let ingredlist = [ingredient, '\n']+ => { str^[_] }
 
 var p = begin data
 
-const ingredients = p += ingredlist
+let ingredients = p += ingredlist
 
-const n_properties = 4
-const n_ingredients = ingredients.length
-const v_ingredients = ingredients.values
-const i_ingredients = 0 -> n_ingredients
+let n_properties = 4
+let n_ingredients = ingredients.length
+let v_ingredients = ingredients.values
+let i_ingredients = 0 -> n_ingredients
 
 assert n_ingredients == 4
 
@@ -62,11 +62,11 @@ for i in 1 -> 100 - 1 - 1 - 1 do
 	{
 		for k in 1 -> 100 - i - j - 1 do
 		{
-			const l = 100 - i - j - k
+			let l = 100 - i - j - k
 			
-			const recipe = [i, j, k, l]
+			let recipe = [i, j, k, l]
 			
-			const score = cookie_score recipe
+			let score = cookie_score recipe
 			
 			if score > best_score then
 			{
@@ -79,4 +79,4 @@ for i in 1 -> 100 - 1 - 1 - 1 do
 
 display ""
 
-print best_score
+put best_score

@@ -1,10 +1,10 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var cities = str^[]
 
@@ -13,9 +13,9 @@ var routes = str^[]
 
 for route in data do
 {
-	const words = [route / ' ']
+	let words = [route / ' ']
 	
-	var src, var dst, const distance = *words[[0, 2, 4]]
+	var (src, dst), let distance = *words[[0, 2, 4]]
 	
 	if src > dst then
 	{
@@ -33,6 +33,6 @@ for x in routes do
 	#warn x.key ": " x.value
 }
 
-const distance = [3, 4, 8, 14, 14, 22, 52] per Math.sum
+let distance = [3, 4, 8, 14, 14, 22, 52] per Math.sum
 
-print distance
+put distance

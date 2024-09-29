@@ -1,20 +1,20 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const total_eggnog = 150
+let total_eggnog = 150
 
-const container_sizes = (load input_path).lines() map int
-const container_count = container_sizes.length
+let container_sizes = (load input_path).lines() map int
+let container_count = container_sizes.length
 
-const limit = 2^container_count
+let limit = 2^container_count
 
 var bitmask = 0
 
@@ -27,7 +27,7 @@ var solutions = 0
 
 while ++bitmask < limit do
 {
-	const current_indices = 0 -> container_count ver in_bitmask
+	let current_indices = 0 -> container_count ver in_bitmask
 	
 	if container_sizes[ current_indices ] per Math.sum == total_eggnog then
 	{
@@ -42,4 +42,4 @@ while ++bitmask < limit do
 
 display ""
 
-print solutions
+put solutions

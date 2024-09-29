@@ -1,12 +1,12 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[ 0 ]
+let data = (load input_path).lines()[ 0 ]
 
-const ev = eval data
+let ev = eval data
 
 var sum = 0
 
@@ -25,9 +25,9 @@ def descend
 	}
 	else if _ isa function then
 	{
-		const table = str^[ _() ]
+		let table = str^[ _() ]
 		
-		const values = table.values
+		let values = table.values
 		
 		if not "red" in (values ver {v isa string}) then
 		{
@@ -38,4 +38,4 @@ def descend
 
 descend ev
 
-print sum
+put sum

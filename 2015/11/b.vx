@@ -1,17 +1,17 @@
 #!/usr/bin/env vx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const data = "hxbxwxba"
+let data = "hxbxwxba"
 
 var report = null
 
-const throttle = thread
+let throttle = thread
 {
 	while true do
 	{
@@ -28,7 +28,7 @@ def two-pair (word)
 	
 	for c in word do
 	{
-		const same = c == last-char
+		let same = c == last-char
 		
 		last-char = c
 		
@@ -119,6 +119,6 @@ password = next^2 password
 
 display ""
 
-print password
+put password
 
 exit 0

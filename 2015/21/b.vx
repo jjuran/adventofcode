@@ -1,18 +1,18 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const digit = '0' .. '9'
-const upper = 'A' .. 'Z'
-const lower = 'a' .. 'z'
-const alpha = upper | lower
-const alnum = alpha | digit
-const title = (alpha | ' ')+ => str
-const value = digit+ => int
-const field = [title, ": ", value] => { head _ => tail _ }
-const sheet = [field, "\n"]+ => { str^[ _ ] }
+let digit = '0' .. '9'
+let upper = 'A' .. 'Z'
+let lower = 'a' .. 'z'
+let alpha = upper | lower
+let alnum = alpha | digit
+let title = (alpha | ' ')+ => str
+let value = digit+ => int
+let field = [title, ": ", value] => { head _ => tail _ }
+let sheet = [field, "\n"]+ => { str^[ _ ] }
 
 def parse_stats (text)
 {
@@ -21,9 +21,9 @@ def parse_stats (text)
 	return p += sheet
 }
 
-const boss_stats_table = parse_stats load input_path
+let boss_stats_table = parse_stats load input_path
 
-const boss_stats = boss_stats_table[[ "Hit Points", "Damage", "Armor" ]]
+let boss_stats = boss_stats_table[[ "Hit Points", "Damage", "Armor" ]]
 
 def stat (s)
 {
@@ -44,7 +44,7 @@ def subparse_aisle (headings, listings: ...)
 	var p = start
 	p = p.find ':'
 	
-	const section = p - start
+	let section = p - start
 	
 	p += ':'
 	
@@ -54,17 +54,17 @@ def subparse_aisle (headings, listings: ...)
 		column_names   <-- (p += alpha+ => str)
 	}
 	
-	const n_columns = column_names.length
+	let n_columns = column_names.length
 	
-	const offsets = column_offsets
+	let offsets = column_offsets
 	
-	const items = [listings] map
+	let items = [listings] map
 	{
-		const listing = v
+		let listing = v
 		
-		const name = listing[ 0 -> offsets[ 0 ] ]
+		let name = listing[ 0 -> offsets[ 0 ] ]
 		
-		const stats = 0 -> n_columns map { stat substr (listing, offsets[ v ]) }
+		let stats = 0 -> n_columns map { stat substr (listing, offsets[ v ]) }
 		
 		name => stats,
 	}
@@ -72,10 +72,10 @@ def subparse_aisle (headings, listings: ...)
 	return section => items
 }
 
-const heads =  [upper, (alnum | ' ' | ':')+, '\n'] => str
-const items = ([upper, (alnum | ' ' | '+')+, '\n'] => str)+
-const aisle = ['\n', heads, items] => subparse_aisle
-const store = aisle+
+let heads =  [upper, (alnum | ' ' | ':')+, '\n'] => str
+let items = ([upper, (alnum | ' ' | '+')+, '\n'] => str)+
+let aisle = ['\n', heads, items] => subparse_aisle
+let store = aisle+
 
 def parse_store (text)
 {
@@ -84,9 +84,9 @@ def parse_store (text)
 	return p += store
 }
 
-const (weapons, armors, rings) = *([parse_store DATA] map .value)
+let (weapons, armors, rings) = *([parse_store DATA] map .value)
 
-const Player = 0
+let Player = 0
 
 def battle (stats)
 {
@@ -94,20 +94,20 @@ def battle (stats)
 	
 	def damage (attacker, defender)
 	{
-		const damage = stats[ attacker ][ 1 ]
-		const armor  = stats[ defender ][ 2 ]
+		let damage = stats[ attacker ][ 1 ]
+		let armor  = stats[ defender ][ 2 ]
 		
 		return Math.max (damage - armor, 1)
 	}
 	
 	def turn ()
 	{
-		const attacker = whose_turn
-		const defender = 1 - whose_turn
+		let attacker = whose_turn
+		let defender = 1 - whose_turn
 		
-		const damaged = damage (attacker, defender)
+		let damaged = damage (attacker, defender)
 		
-		const hp = stats[ defender ][ 0 ] -= damaged
+		let hp = stats[ defender ][ 0 ] -= damaged
 		
 		if hp <= 0 then
 		{
@@ -126,16 +126,16 @@ def battle (stats)
 
 def boss_battle (damage, armor)
 {
-	const player_stats = [100, damage, armor]
+	let player_stats = [100, damage, armor]
 	
 	return battle [ player_stats, boss_stats ]
 }
 
-const n_weapons = 5
-const n_armors  = 6  # because it's optional
-const n_rings   = 7  # ditto
+let n_weapons = 5
+let n_armors  = 6  # because it's optional
+let n_rings   = 7  # ditto
 
-const max_configs = n_weapons * n_armors * n_rings^2
+let max_configs = n_weapons * n_armors * n_rings^2
 
 var losses = []
 
@@ -143,27 +143,27 @@ for config in 0 -> max_configs do
 {
 	var x = config
 	
-	const R1 = x mod n_rings - 1;  x = x div n_rings
-	const R2 = x mod n_rings - 1;  x = x div n_rings
+	let R1 = x mod n_rings - 1;  x = x div n_rings
+	let R2 = x mod n_rings - 1;  x = x div n_rings
 	
 	if R2 >= 0 and R2 >= R1 then
 	{
 		continue
 	}
 	
-	const Ar = x mod n_armors - 1;  x = x div n_armors
-	const We = x
+	let Ar = x mod n_armors - 1;  x = x div n_armors
+	let We = x
 	
-	const weapon = weapons[ We ]
-	const armor  = if Ar >= 0 then {armors[ Ar ]}
-	const ring1  = if R1 >= 0 then {rings[ R1 ]}
-	const ring2  = if R2 >= 0 then {rings[ R2 ]}
+	let weapon = weapons[ We ]
+	let armor  = if Ar >= 0 then {armors[ Ar ]}
+	let ring1  = if R1 >= 0 then {rings[ R1 ]}
+	let ring2  = if R2 >= 0 then {rings[ R2 ]}
 	
-	const outfit = [ weapon, armor, ring1, ring2 ]
+	let outfit = [ weapon, armor, ring1, ring2 ]
 	
-	const stats = 0 -> 3 map { const i = v; outfit map { v.value[ i ] } per Math.sum }
+	let stats = 0 -> 3 map { let i = v; outfit map { v.value[ i ] } per Math.sum }
 	
-	const winner = boss_battle (*stats[ 1 .. 2 ])
+	let winner = boss_battle (*stats[ 1 .. 2 ])
 	
 	if winner != Player then
 	{
@@ -171,7 +171,7 @@ for config in 0 -> max_configs do
 	}
 }
 
-print Iter.max losses
+put Iter.max losses
 
 end.
 

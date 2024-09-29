@@ -1,18 +1,18 @@
 #!/usr/bin/env vx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines() map int
+let data = (load input_path).lines() map int
 
-const total_weight = data per Math.sum
-const equal_weight = total_weight / 3
+let total_weight = data per Math.sum
+let equal_weight = total_weight / 3
 
 assert equal_weight isa int
 
@@ -33,9 +33,9 @@ def package_count_bound (data)
 	}
 }
 
-const desc = -data
+let desc = -data
 
-const lower_bound = package_count_bound desc
+let lower_bound = package_count_bound desc
 
 def find (seq, x)  { if x in seq then {x} }
 
@@ -45,9 +45,9 @@ def find_n_with_sum (n, sum, seq, chan, others=[])
 	
 	if n == 1 then
 	{
-		if const found = find (seq, sum) then
+		if let found = find (seq, sum) then
 		{
-			const solution = [found, *others]
+			let solution = [found, *others]
 			
 			chan <== solution
 		}
@@ -56,7 +56,7 @@ def find_n_with_sum (n, sum, seq, chan, others=[])
 	{
 		while seq.length >= n do
 		{
-			const x = seq[ 0 ]
+			let x = seq[ 0 ]
 			
 			seq = [ tail *seq ]
 			
@@ -72,7 +72,7 @@ def find_any_with_sum (sum, seq)
 {
 	while seq do
 	{
-		const x = seq[ 0 ]
+		let x = seq[ 0 ]
 		
 		seq = [ tail *seq ]
 		
@@ -124,7 +124,7 @@ var best_QE = data per Math.product  # ditto
 
 def measure (solution)
 {
-	const N = solution.length
+	let N = solution.length
 	
 	if N < best_N then
 	{
@@ -135,7 +135,7 @@ def measure (solution)
 	}
 	else if N == best_N then
 	{
-		const QE = solution per Math.product
+		let QE = solution per Math.product
 		
 		if QE < best_QE then
 		{
@@ -150,7 +150,7 @@ def phase2 (selection)
 {
 	# data and selection are both ascending, as required.
 	
-	const remaining = removing (data, selection)
+	let remaining = removing (data, selection)
 	
 	# find_any_with_sum() has no ordering requirements, but desc is faster.
 	
@@ -180,4 +180,4 @@ for n in lower_bound .. data.length div 3 do
 
 display ""
 
-print best_QE
+put best_QE

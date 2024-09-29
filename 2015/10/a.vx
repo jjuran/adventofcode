@@ -1,6 +1,6 @@
 #!/usr/bin/env lvx
 
-const data = "1113122113"
+let data = "1113122113"
 
 var memo = str^[]
 
@@ -39,8 +39,8 @@ def look-and-say (s: str)
 	
 	while p do
 	{
-		const q = p
-		const c = *p++
+		let q = p
+		let c = *p++
 		
 		p += c*
 		
@@ -76,4 +76,4 @@ for i in 1 .. 40 do
 
 let n = x map { v.key.length * v.value } per Math.sum
 
-print n
+put n

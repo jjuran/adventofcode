@@ -1,15 +1,15 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input = if argc > 1 then {argv[ 1 ]} else {"29000000"}
+let input = if argc > 1 then {argv[ 1 ]} else {"29000000"}
 
-const target = int input
+let target = int input
 
 def gift_count (house)
 {
@@ -32,7 +32,7 @@ def gift_count (house)
 
 for house in 1 .. target do
 {
-	const gifts (int) = gift_count house
+	let gifts (int) = gift_count house
 	
 	if house mod 2^9 == 0 then
 	{
@@ -47,5 +47,3 @@ for house in 1 .. target do
 		break
 	}
 }
-
-end.

@@ -1,23 +1,23 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var signals = str^[]
 var circuit = str^[]
 
 for instruction in data do
 {
-	const words = [instruction / ' ']
+	let words = [instruction / ' ']
 	
 	var n = words.length
 	
-	const wire = words[ --n ]
+	let wire = words[ --n ]
 	
-	const input = words[ 0 -> --n ]
+	let input = words[ 0 -> --n ]
 	
 	circuit[ wire ] = input
 }
@@ -44,7 +44,7 @@ def RSHIFT (signal, n)
 	return half^n signal
 }
 
-const binary-ops = str^
+let binary-ops = str^
 [
 	AND: AND,
 	OR: OR,
@@ -60,39 +60,39 @@ def chase (trace)
 	}
 	catch {}
 	
-	const wire = trace
+	let wire = trace
 	
 	if wire in signals then
 	{
 		return signals[ wire ]
 	}
 	
-	const input = circuit[ wire ]
+	let input = circuit[ wire ]
 	
-	const n = input.length
+	let n = input.length
 	
 	if n == 1 then
 	{
-		const signal = chase input[ 0 ]
+		let signal = chase input[ 0 ]
 		
 		return signals[ wire ] = signal
 	}
 	
 	if n == 2 then
 	{
-		const signal = NOT chase input[ 1 ]
+		let signal = NOT chase input[ 1 ]
 		
 		return signals[ wire ] = signal
 	}
 	
-	const operator = input[ 1 ]
+	let operator = input[ 1 ]
 	
-	const a = chase input[ 0 ]
-	const b = chase input[ 2 ]
+	let a = chase input[ 0 ]
+	let b = chase input[ 2 ]
 	
-	const signal = binary-ops[ operator ] (a, b)
+	let signal = binary-ops[ operator ] (a, b)
 	
 	return signals[ wire ] = signal
 }
 
-print chase "a"
+put chase "a"

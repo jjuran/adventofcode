@@ -1,23 +1,23 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const digit = '0' .. '9'
-const upper = 'A' .. 'Z'
-const lower = 'a' .. 'z'
-const alpha = upper | lower
-const alnum = alpha | digit
-const title = (alpha | ' ')+ => str
-const value = digit+ => int
-const field = [title, ": ", value] => { head _ => tail _ }
-const sheet = [field, "\n"]+ => { str^[ _ ] }
+let digit = '0' .. '9'
+let upper = 'A' .. 'Z'
+let lower = 'a' .. 'z'
+let alpha = upper | lower
+let alnum = alpha | digit
+let title = (alpha | ' ')+ => str
+let value = digit+ => int
+let field = [title, ": ", value] => { head _ => tail _ }
+let sheet = [field, "\n"]+ => { str^[ _ ] }
 
 def parse_stats (text)
 {
@@ -26,16 +26,16 @@ def parse_stats (text)
 	return p += sheet
 }
 
-const boss_stats_table = parse_stats load input_path
+let boss_stats_table = parse_stats load input_path
 
-const Boss_HP     = boss_stats_table[ "Hit Points" ]
-const Boss_damage = boss_stats_table[ "Damage" ]
+let Boss_HP     = boss_stats_table[ "Hit Points" ]
+let Boss_damage = boss_stats_table[ "Damage" ]
 
-const spell_names = [ "Missile Drain Shield Poison Recharge" / ' ' ]
-const spell_costs = [    53,    73,   113,   173,    229 ]
-const spell_times = [     0,     0,     6,     6,      5 ]
+let spell_names = [ "Missile Drain Shield Poison Recharge" / ' ' ]
+let spell_costs = [    53,    73,   113,   173,    229 ]
+let spell_times = [     0,     0,     6,     6,      5 ]
 
-const initial_state =
+let initial_state =
 	boss_HP:    Boss_HP,
 	player_HP:  50,
 	armor:      0,
@@ -52,18 +52,18 @@ def battle_round (state, spell)
 	var spent     = state.spent
 	var timers    = state.timers
 	
-	const Missile  = { boss_HP -= 4 }
-	const Drain    = { boss_HP -= 2; player_HP += 2 }
-	const Shield   = { armor   += 7 }
+	let Missile  = { boss_HP -= 4 }
+	let Drain    = { boss_HP -= 2; player_HP += 2 }
+	let Shield   = { armor   += 7 }
 	
-	const Poison   = { boss_HP -= 3 }
-	const Recharge = { mana    += 101 }
+	let Poison   = { boss_HP -= 3 }
+	let Recharge = { mana    += 101 }
 	
-	const spell_magic = [ Missile, Drain, Shield, ..., ... ]
-	const spell_recur = [ ..., ..., ..., Poison, Recharge ]
-	const effect_ends = [ ..., ..., { armor -= 7 }, ..., ... ]
+	let spell_magic = [ Missile, Drain, Shield, ..., ... ]
+	let spell_recur = [ ..., ..., ..., Poison, Recharge ]
+	let effect_ends = [ ..., ..., { armor -= 7 }, ..., ... ]
 	
-	const take_effects =
+	let take_effects =
 	{
 		for effect in 2 .. 4 do
 		{
@@ -94,7 +94,7 @@ def battle_round (state, spell)
 	
 	take_effects()
 	
-	if (const cost = spell_costs[ spell ]) > mana then
+	if (let cost = spell_costs[ spell ]) > mana then
 	{
 		return -1  # insufficient Vespene gas
 	}
@@ -109,7 +109,7 @@ def battle_round (state, spell)
 	
 	spell_magic[ spell ]()
 	
-	if const duration = spell_times[ spell ] then
+	if let duration = spell_times[ spell ] then
 	{
 		timers[ spell ] = duration
 	}
@@ -124,7 +124,7 @@ def battle_round (state, spell)
 	
 	take_effects()
 	
-	const damage = Math.max (Boss_damage - armor, 1)
+	let damage = Math.max (Boss_damage - armor, 1)
 	
 	if (player_HP -= damage) <= 0 then
 	{
@@ -140,7 +140,7 @@ var minimum = 0
 
 def simulate (state)
 {
-	const r = rep state
+	let r = rep state
 	
 	if r in memo then
 	{
@@ -173,6 +173,4 @@ simulate record initial_state
 
 display ""
 
-print minimum
-
-end.
+put minimum

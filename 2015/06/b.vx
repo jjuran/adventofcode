@@ -1,17 +1,17 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const grid-row = record( size: 1000, encode: ..., decode: ... )
+let grid-row = record( size: 1000, encode: ..., decode: ... )
 
 var light-grid = vector[ grid-row ] 1000
 
@@ -22,7 +22,7 @@ def point (x_comma_y)
 
 def get-coords (xy_through_xy)
 {
-	const parts = [xy_through_xy / ' '][[0, 2]]
+	let parts = [xy_through_xy / ' '][[0, 2]]
 	
 	return parts map point
 }
@@ -31,14 +31,14 @@ def turn-on (row, x0, x1)
 {
 	#assert not '\xff' in row[ x0 -> x1 ]
 	
-	const affected = row[ x0 -> x1 ] map {byte (u8 _ + 1)}
+	let affected = row[ x0 -> x1 ] map {byte (u8 _ + 1)}
 	
 	return row[ 0 -> x0 ] (packed affected) row[ x1 -> 1000 ]
 }
 
 def turn-off (row, x0, x1)
 {
-	const affected = row[ x0 -> x1 ] map {_ and byte (u8 _ - 1)}
+	let affected = row[ x0 -> x1 ] map {_ and byte (u8 _ - 1)}
 	
 	return row[ 0 -> x0 ] (packed affected) row[ x1 -> 1000 ]
 }
@@ -48,20 +48,20 @@ def toggle (row, x0, x1)
 	#assert not '\xff' in row[ x0 -> x1 ]
 	#assert not '\xfe' in row[ x0 -> x1 ]
 	
-	const affected = row[ x0 -> x1 ] map {byte (u8 _ + 2)}
+	let affected = row[ x0 -> x1 ] map {byte (u8 _ + 2)}
 	
 	return row[ 0 -> x0 ] (packed affected) row[ x1 -> 1000 ]
 }
 
-const n = data.length
+let n  = data.length
 var ii = 0
 
 for step in data do
 {
-	const action
-	const target
+	let action = ???
+	let target = ???
 	
-	const c = step[ 6 ]
+	let c = step[ 6 ]
 	
 	if c == 'f' then
 	{
@@ -79,12 +79,12 @@ for step in data do
 		target = substr( step, 7 )
 	}
 	
-	const coords = get-coords target
+	let coords = get-coords target
 	
-	const (pt0, pt1) = *coords
+	let (pt0, pt1) = *coords
 	
-	const (x0, y0) = *pt0
-	const (x1, y1) = *pt1
+	let (x0, y0) = *pt0
+	let (x1, y1) = *pt1
 	
 	display (++ii "/" n)
 	
@@ -100,7 +100,7 @@ var total = 0
 
 for i in 0 -> 1000 do
 {
-	const row = light-grid[ i ]
+	let row = light-grid[ i ]
 	
 	for j in row do
 	{
@@ -108,4 +108,4 @@ for i in 0 -> 1000 do
 	}
 }
 
-print total
+put total

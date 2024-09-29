@@ -1,12 +1,12 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const T = str => int
+let T = str => int
 
 var stats = str^[]
 
@@ -17,12 +17,12 @@ var max-distance = 0
 
 for row in data do
 {
-	const words = [row[ 0 -> row.length - 1 ] / ' ']
+	let words = [row[ 0 -> row.length - 1 ] / ' ']
 	
-	const name    = words[ 0 ]
-	const speed   = int words[ 3 ]
-	const stamina = int words[ 6 ]
-	const rest    = int words[ 13 ]
+	let name    = words[ 0 ]
+	let speed   = int words[ 3 ]
+	let stamina = int words[ 6 ]
+	let rest    = int words[ 13 ]
 	
 	stats[ name ] = record( v: speed, d: stamina, r: rest )
 	
@@ -34,9 +34,9 @@ for t in 0 -> 2503 do
 {
 	for x in stats do
 	{
-		const rec = x.value
+		let rec = x.value
 		
-		const period = rec.d + rec.r
+		let period = rec.d + rec.r
 		
 		if t mod period < rec.d then
 		{
@@ -53,6 +53,6 @@ for t in 0 -> 2503 do
 	}
 }
 
-const most = points map .value per Math.max
+let most = points map .value per Math.max
 
-print most 
+put most 

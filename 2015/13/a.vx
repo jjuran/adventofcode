@@ -1,29 +1,29 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const permute = (import "permute").permute
+let permute = (import "permute").permute
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const T = str => int
+let T = str => int
 
 var names = str^[]
 var subscores = str^[]
 
 for row in data do
 {
-	const words = [row[ 0 -> row.length - 1 ] / ' ']
+	let words = [row[ 0 -> row.length - 1 ] / ' ']
 	
-	const A = words[ 0 ]
-	const B = words[ 10 ]
-	const k = int (words[ 2 ][ 0 ] == 'g') * 2 - 1
-	const n = int words[ 3 ] * k
+	let A = words[ 0 ]
+	let B = words[ 10 ]
+	let k = int (words[ 2 ][ 0 ] == 'g') * 2 - 1
+	let n = int words[ 3 ] * k
 	
 	names[ A ] = null
 	names[ B ] = null
@@ -40,33 +40,33 @@ for A in names.keys do
 			continue
 		}
 		
-		const ab = A "-" B
-		const ba = B "-" A
+		let ab = A "-" B
+		let ba = B "-" A
 		
-		const sum = subscores[ ab ] + subscores[ ba ]
+		let sum = subscores[ ab ] + subscores[ ba ]
 		
 		subscores[ ab ] = sum
 		subscores[ ba ] = sum
 	}
 }
 
-const first = names.keys[ 0 ]
-const count = names.length
+let first = names.keys[ 0 ]
+let count = names.length
 
 def score (order)
 {
-	const subtotal = subscores[ first "-" order[ 0 ] ]
-	               + subscores[ first "-" order[ count - 2 ] ]
+	let subtotal = subscores[ first "-" order[ 0 ] ]
+	             + subscores[ first "-" order[ count - 2 ] ]
 	
 	order <-- first
 	
 	order = [first, *order]
 	
-	const keys = 0 -> count map { "-".join *order[[v, v + 1]] }
+	let keys = 0 -> count map { "-".join *order[[v, v + 1]] }
 	
 	return keys map { subscores[ v ] } per Math.sum
 }
 
-const scores = permute names.keys[ 1 -> count ] map score
+let scores = permute names.keys[ 1 -> count ] map score
 
-print Iter.max scores
+put Iter.max scores
