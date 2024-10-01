@@ -1,8 +1,8 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const data = "01111001100111011"
+let data = "01111001100111011"
 
 def negated (s)
 {
@@ -43,4 +43,4 @@ def checksum (s)
 
 assert checksum "110010110100" == "100"
 
-print checksum expansion (data, 272)
+put checksum expansion (data, 272)

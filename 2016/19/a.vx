@@ -1,6 +1,6 @@
 #!/usr/bin/env lvx
 
-const data = 3014603
+let data = 3014603
 
 var N = data
 var S = 1
@@ -18,4 +18,4 @@ while N > 1 do
 	N /:= 2
 }
 
-print S
+put S

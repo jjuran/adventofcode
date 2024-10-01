@@ -1,20 +1,20 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var screen = [x"00" * 50 (*) 6]
 
 for operation in data do
 {
-	const words = [operation / ' ']
+	let words = [operation / ' ']
 	
 	if words.length == 2 then
 	{
-		const (width, height) = *([words[ 1 ] / 'x'] map int)
+		let (width, height) = *([words[ 1 ] / 'x'] map int)
 		
 		for i in 0 -> height do
 		{
@@ -24,11 +24,11 @@ for operation in data do
 		continue
 	}
 	
-	const offset = int words[ 4 ]
+	let offset = int words[ 4 ]
 	
-	const (axis, index) = words[ 2 ] / '='
+	let (axis, index) = words[ 2 ] / '='
 	
-	const i = int index
+	let i = int index
 	
 	if axis == "y" then
 	{
@@ -37,9 +37,9 @@ for operation in data do
 		continue
 	}
 	
-	const copy = packed (0 -> 6 map { screen[ _ ][ i ] })
+	let copy = packed (0 -> 6 map { screen[ v ][ i ] })
 	
-	const rotated = (copy * 2)[ 6 - offset -> 12 - offset ]
+	let rotated = (copy * 2)[ 6 - offset -> 12 - offset ]
 	
 	for j in 0 -> 6 do
 	{
@@ -47,6 +47,6 @@ for operation in data do
 	}
 }
 
-const count = screen map { _ map u8 per Math.sum } per Math.sum
+let count = screen map { v map u8 per Math.sum } per Math.sum
 
-print count
+put count

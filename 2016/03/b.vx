@@ -1,16 +1,16 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var valid = 0
 
 def check
 {
-	const edges = *_
+	let edges = *_
 	
 	if Math.sum edges > Math.max edges * 2 then
 	{
@@ -22,16 +22,16 @@ var p = begin data
 
 while p do
 {
-	const a = *p++
-	const b = *p++
-	const c = *p++
+	let a = *p++
+	let b = *p++
+	let c = *p++
 	
-	const trio = [a, b, c] map {[_ / ' '] map {_ or ()} map int}
+	let trio = [a, b, c] map {[v / ' '] map {v or ()} map int}
 	
 	for i in 0 .. 2 do
 	{
-		check (trio map { _[ i ] })
+		check (trio map { v[ i ] })
 	}
 }
 
-print valid
+put valid

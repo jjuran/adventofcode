@@ -1,19 +1,19 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const grid = load input_path
-const lines = grid.lines()
-const width = lines[ 0 ].length
-const height = lines.length
-const stride = width + 1
+let grid = load input_path
+let lines = grid.lines()
+let width = lines[ 0 ].length
+let height = lines.length
+let stride = width + 1
 
 def neighbors (index)
 {
@@ -24,7 +24,7 @@ def neighbors (index)
 	]
 }
 
-const null_wall_maze = translated (grid, "#", "\0")
+let null_wall_maze = translated (grid, "#", "\0")
 
 def dijkstra_map (start)
 {
@@ -62,9 +62,9 @@ def dijkstra_map (start)
 	return dmap
 }
 
-const n_waypoints = Iter.popcount translated (grid, ".#\n", "\0" * 3)
+let n_waypoints = Iter.popcount translated (grid, ".#\n", "\0" * 3)
 
-const waypoints = 0 -> n_waypoints map { (begin grid).find(str v).past.length }
+let waypoints = 0 -> n_waypoints map { (begin grid).find(str v).past.length }
 
 def make_distances
 {
@@ -76,7 +76,7 @@ def make_distances
 	{
 		display "Mapping " i " of " n_waypoints
 		
-		const dmap = dijkstra_map waypoints[ i ]
+		let dmap = dijkstra_map waypoints[ i ]
 		
 		for j in 0 -> n_waypoints do
 		{
@@ -84,7 +84,7 @@ def make_distances
 			
 			if true or i < j then
 			{
-				const dist = distances[ dist_base + j ] - 1
+				let dist = distances[ dist_base + j ] - 1
 			}
 		}
 		
@@ -94,9 +94,9 @@ def make_distances
 	return distances
 }
 
-const distances = make_distances()
+let distances = make_distances()
 
-const targets = 1 -> n_waypoints map byte per packed
+let targets = 1 -> n_waypoints map byte per packed
 
 def traveling_salesman (loc=0, remaining=targets)
 {
@@ -105,15 +105,15 @@ def traveling_salesman (loc=0, remaining=targets)
 		display "Travelling via " loc " of " (n_waypoints - 1)
 	}
 	
-	const dist_base = loc * n_waypoints
+	let dist_base = loc * n_waypoints
 	
 	def travel (dest_byte)
 	{
-		const dest = u8 dest_byte
+		let dest = u8 dest_byte
 		
-		const distance = distances[ dist_base + dest ]
+		let distance = distances[ dist_base + dest ]
 		
-		const targets = remaining ver { v != dest_byte }
+		let targets = remaining ver { v != dest_byte }
 		
 		if not targets then
 		{
@@ -126,8 +126,8 @@ def traveling_salesman (loc=0, remaining=targets)
 	return remaining map travel per Math.min
 }
 
-const fewest_steps = traveling_salesman() - n_waypoints
+let fewest_steps = traveling_salesman() - n_waypoints
 
 display ""
 
-print fewest_steps
+put fewest_steps

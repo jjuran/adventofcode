@@ -1,10 +1,10 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[ 0 ]
+let data = (load input_path).lines()[ 0 ]
 
 def decompressed-length (data)
 {
@@ -18,13 +18,13 @@ def decompressed-length (data)
 		{
 			var q = p.find ')'
 			
-			const marker = q - p
+			let marker = q - p
 			
-			const (m_len, m_rep) = *([marker / 'x'] map int)
+			let (m_len, m_rep) = *([marker / 'x'] map int)
 			
 			p = ++q + m_len
 			
-			const subseq = p - q
+			let subseq = p - q
 			
 			len += m_rep * decompressed-length subseq
 		}
@@ -37,4 +37,4 @@ def decompressed-length (data)
 	return len
 }
 
-print decompressed-length data
+put decompressed-length data

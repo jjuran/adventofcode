@@ -1,15 +1,15 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const data = "ugkcyxxp"
+let data = "ugkcyxxp"
 
-const n = 5
+let n = 5
 
 var suffix = 0
 
@@ -19,13 +19,13 @@ while ' ' in password do
 {
 	if (hex md5 data ++suffix)[ 0 -> n ] == "0" * n then
 	{
-		const output = hex md5 data suffix
+		let output = hex md5 data suffix
 		
-		const o6 = output[ 5 ]
+		let o6 = output[ 5 ]
 		
 		if o6 <= '7' then
 		{
-			const pos = u8 o6 - 0x30
+			let pos = u8 o6 - 0x30
 			
 			if password[ pos ] == ' ' then
 			{
@@ -39,4 +39,4 @@ while ' ' in password do
 
 display ""
 
-print password
+put password

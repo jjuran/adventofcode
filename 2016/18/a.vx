@@ -1,10 +1,10 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const N = 40
+let N = 40
 
 var data = " " load input_path  # e.g. " .^^.^.^^^^\n"
 
@@ -16,10 +16,10 @@ def next (row)
 	
 	for i in 1 -> row.length - 1 do
 	{
-		const left  = row[ i - 1 ] == '^'
-		const right = row[ i + 1 ] == '^'
+		let left  = row[ i - 1 ] == '^'
+		let right = row[ i + 1 ] == '^'
 		
-		const is_safe = +(left == right)
+		let is_safe = +(left == right)
 		
 		result[ i ] = "^."[ is_safe ]
 		
@@ -34,4 +34,4 @@ for i in 1 -> N do
 	data = next data
 }
 
-print total
+put total

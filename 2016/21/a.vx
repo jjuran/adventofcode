@@ -1,19 +1,19 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var password = "abcdefgh"
 
-const N = password.length
+let N = password.length
 
 def swap_letter (a, b)
 {
-	const i = (begin password).find(a).past.length
-	const j = (begin password).find(b).past.length
+	let i = (begin password).find(a).past.length
+	let j = (begin password).find(b).past.length
 	
 	password[ i ] = *b
 	password[ j ] = *a
@@ -21,8 +21,8 @@ def swap_letter (a, b)
 
 def swap_position (a, b)
 {
-	const i = int a
-	const j = int b
+	let i = int a
+	let j = int b
 	
 	a = password[ i ]
 	b = password[ j ]
@@ -33,13 +33,13 @@ def swap_position (a, b)
 
 def move_position (a, b)
 {
-	const i = int a
-	const j = int b
+	let i = int a
+	let j = int b
 	
-	const i1 = i + 1
-	const j1 = j + 1
+	let i1 = i + 1
+	let j1 = j + 1
 	
-	const c = password[ i ]
+	let c = password[ i ]
 	
 	if i < j then
 	{
@@ -53,35 +53,35 @@ def move_position (a, b)
 
 def reverse_positions (a, b)
 {
-	const i = int a
-	const j = int b + 1
+	let i = int a
+	let j = int b + 1
 	
 	password = password[ 0 -> i ] -password[ i -> j ] password[ j -> N ]
 }
 
 def rotate_left (a, steps_)
 {
-	const n = int a
+	let n = int a
 	
 	password = password[ n -> N ] password[ 0 -> n ]
 }
 
 def rotate_right (a, steps_)
 {
-	const n = N - int a
+	let n = N - int a
 	
 	password = password[ n -> N ] password[ 0 -> n ]
 }
 
 def rotate_based (on_, letter)
 {
-	const index = (begin password).find(letter).past.length
-	const n = 1 + index + +(index >= 4)
+	let index = (begin password).find(letter).past.length
+	let n = 1 + index + +(index >= 4)
 	
 	rotate_right (n % N, "steps")
 }
 
-const verbs = str^
+let verbs = str^
 [
 	:swap_letter,
 	:swap_position,
@@ -94,9 +94,9 @@ const verbs = str^
 
 for operation in data do
 {
-	const op = [operation / ' ']
+	let op = [operation / ' ']
 	
 	verbs[ "_".join *op[[ 0, 1 ]] ] *op[[ 2, op.length - 1 ]]
 }
 
-print password
+put password

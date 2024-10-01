@@ -1,10 +1,10 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 def checksum (letters)
 {
@@ -12,7 +12,7 @@ def checksum (letters)
 	
 	for c in letters do
 	{
-		const i = u8 c - u8 'a'
+		let i = u8 c - u8 'a'
 		
 		histogram[ i ] = byte (u8 histogram[ i ] + 1)
 	}
@@ -21,9 +21,9 @@ def checksum (letters)
 	
 	for i in 1 .. 5 do
 	{
-		const max = histogram per Math.max
+		let max = histogram per Math.max
 		
-		const j = (begin histogram).find(max).past.size
+		let j = (begin histogram).find(max).past.size
 		
 		histogram[ j ] = '\0'
 		
@@ -33,36 +33,36 @@ def checksum (letters)
 	return result
 }
 
-const abc = str *('a' .. 'z')
+let abc = str ('a' .. 'z')
 
-const abc_2 = abc * 2
+let abc_2 = abc * 2
 
 def decrypt (name, n)
 {
-	const dst = substr( abc_2, n % 26, 26 )
+	let dst = substr( abc_2, n % 26, 26 )
 	
 	return translated( name, abc, dst )
 }
 
 for room in data do
 {
-	const len = room.length
+	let len = room.length
 	
-	const tag = room[ len - 6 -> len - 1 ]
+	let tag = room[ len - 6 -> len - 1 ]
 	
-	const name-id = room[ 0 -> len - 7 ]
+	let name-id = room[ 0 -> len - 7 ]
 	
-	const words = [name-id / '-']
+	let words = [name-id / '-']
 	
-	const n = words.length - 1
+	let n = words.length - 1
 	
-	const id = int words[ n ]
+	let id = int words[ n ]
 	
-	const letters = str words[ 0 -> n ]
+	let letters = str words[ 0 -> n ]
 	
 	if checksum letters == tag then
 	{
-		const name = join( " ", *words[ 0 -> n ] )
+		let name = join( " ", *words[ 0 -> n ] )
 		
 		if decrypt( name, id ) == "northpole object storage" then
 		{

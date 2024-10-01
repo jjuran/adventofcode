@@ -1,19 +1,19 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const min = Math.min
-const max = Math.max
+let min = Math.min
+let max = Math.max
 
 let keys = translated (str (mince substr( DATA, 1 )).lines(), " ", "\0")
 
 def get (x, y)
 {
-	const range = 0 -> 5
+	let range = 0 -> 5
 	
 	return x in range and y in range and keys[ y * 5 + x ]
 }
@@ -21,7 +21,7 @@ def get (x, y)
 var x = 0
 var y = 2
 
-const dirs = byte^
+let dirs = byte^
 [
 	'L': { get( x - 1, y ) and (x = x - 1) },
 	'R': { get( x + 1, y ) and (x = x + 1) },
@@ -38,12 +38,12 @@ for instruction in data do
 		dirs[ step ]()
 	}
 	
-	const index = y * 5 + x
+	let index = y * 5 + x
 	
 	code .= keys[ [index] ]
 }
 
-print code
+put code
 
 end.
 |    1    |

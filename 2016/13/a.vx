@@ -1,21 +1,21 @@
 #!/usr/bin/env lvx
 
-const data = 1364
+let data = 1364
 
-const X = 31
-const Y = 39
+let X = 31
+let Y = 39
 
 var width  = X + 1
 var height = Y + 1
 var stride = width + 1
 
-def bitstrings { _ map { v "\0", v "x" } }
+def bitstrings { v map { v "\0", v "x" } }
 
-const binary-strings = bitstrings^8 [ "" ]
+let binary-strings = bitstrings^8 [ "" ]
 
 def binarize (x)
 {
-	const bits = unhex hex x map { binary-strings[ int v ] }
+	let bits = unhex hex x map { binary-strings[ int v ] }
 	
 	return str bits
 }
@@ -51,7 +51,7 @@ def shortest_distance (x, y, X, Y)
 		
 		for coords in frontier do
 		{
-			const (x, y) = *coords
+			let (x, y) = *coords
 			
 			if y == height then
 			{
@@ -67,7 +67,7 @@ def shortest_distance (x, y, X, Y)
 				++stride
 			}
 			
-			const i = x + y * stride
+			let i = x + y * stride
 			
 			if not dmap[ i ] then
 			{
@@ -94,4 +94,4 @@ def shortest_distance (x, y, X, Y)
 	return ()
 }
 
-print shortest_distance (1, 1, X, Y)
+put shortest_distance (1, 1, X, Y)

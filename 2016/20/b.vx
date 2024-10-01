@@ -1,25 +1,25 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
-const digit = '0' .. '9'
-const value = digit+ => int
+let digit = '0' .. '9'
+let value = digit+ => int
 
-const IP_range =
+let IP_range =
 [
 	value, "-",
 	value, "\n",
 ]
 
-const schema = (IP_range => {[_]})+
+let schema = (IP_range => {[_]})+
 
 var p = begin data
 
-const IP_ranges = Iter.sorted [p += schema] via { v[0] }
+let IP_ranges = Iter.sorted [p += schema] via { v[0] }
 
 var lower = 0
 var upper = 0
@@ -41,4 +41,4 @@ if upper < 2^32 then
 	total += 2^32 - upper
 }
 
-print total
+put total

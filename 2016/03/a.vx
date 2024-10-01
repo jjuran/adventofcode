@@ -1,19 +1,19 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var valid = 0
 
 for line in data do
 {
-	const edges = [line / ' '] map {_ or ()} map int
+	let edges = [line / ' '] map {v or ()} map int
 	
-	const sum = Math.sum *edges
-	const max = Math.max *edges
+	let sum = Math.sum *edges
+	let max = Math.max *edges
 	
 	if sum - max > max then
 	{
@@ -21,4 +21,4 @@ for line in data do
 	}
 }
 
-print valid
+put valid

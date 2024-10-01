@@ -1,16 +1,16 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const len = data[ 0 ].length
+let len = data[ 0 ].length
 
 def find (haystack, needle)
 {
-	const parts = [haystack / needle]
+	let parts = [haystack / needle]
 	
 	return parts[ 0 ].size
 }
@@ -21,14 +21,14 @@ def most_frequent_in (letters)
 	
 	for c in letters do
 	{
-		const i = u8 c - u8 'a'
+		let i = u8 c - u8 'a'
 		
 		histogram[ i ] = byte (u8 histogram[ i ] + 1)
 	}
 	
-	const max = histogram per Math.max
+	let max = histogram per Math.max
 	
-	const i = find( histogram, max )
+	let i = find( histogram, max )
 	
 	return byte (i + u8 'a')
 }
@@ -37,7 +37,7 @@ var message = ""
 
 for i in 0 -> len do
 {
-	const letters = str (data map { _[ i ] })
+	let letters = str (data map { v[ i ] })
 	
 	message = message most_frequent_in letters
 }

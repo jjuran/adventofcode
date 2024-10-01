@@ -1,15 +1,15 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const N = 400000
+let N = 400000
 
 let data = translated ((load input_path).lines()[ 0 ], ".^", x"00 FF")
 
@@ -21,7 +21,7 @@ var even = packed mince substr(data, 1)  # e.g. "^..^^"  i.e. "10011"
 
 assert even.size == odds.size
 
-const n = even.size
+let n = even.size
 
 var total = Iter.popcount data
 
@@ -41,7 +41,7 @@ total = (2 * n * N - total)
 
 display ""
 
-print total
+put total
 
 end.
 

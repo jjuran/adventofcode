@@ -1,21 +1,21 @@
 #!/usr/bin/env lvx
 
-const data = "vkjiggvb"
+let data = "vkjiggvb"
 
 def successors (path)
 {
-	const up   = Iter.popcount translated (path, "DLR", "\0" * 3)
-	const down = Iter.popcount translated (path, "ULR", "\0" * 3)
+	let up   = Iter.popcount translated (path, "DLR", "\0" * 3)
+	let down = Iter.popcount translated (path, "ULR", "\0" * 3)
 	
-	const left  = Iter.popcount translated (path, "UDR", "\0" * 3)
-	const right = Iter.popcount translated (path, "UDL", "\0" * 3)
+	let left  = Iter.popcount translated (path, "UDR", "\0" * 3)
+	let right = Iter.popcount translated (path, "UDL", "\0" * 3)
 	
-	const dx = down - up
-	const dy = right - left
+	let dx = down - up
+	let dy = right - left
 	
-	const hash = hex md5 data path
+	let hash = hex md5 data path
 	
-	const steps =
+	let steps =
 	[
 		"U" (*) (dx > 0 and hash[ 0 ] > 'a'),
 		"D" (*) (dx < 3 and hash[ 1 ] > 'a'),
@@ -41,7 +41,7 @@ def shortest_path
 		
 		for path in frontier do
 		{
-			const paths = successors path
+			let paths = successors path
 			
 			if paths then
 			{
@@ -62,4 +62,4 @@ def shortest_path
 	return ()
 }
 
-print shortest_path()
+put shortest_path()

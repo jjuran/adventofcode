@@ -1,28 +1,28 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const data = "vkjiggvb"
+let data = "vkjiggvb"
 
 def successors (path)
 {
-	const up   = Iter.popcount translated (path, "DLR", "\0" * 3)
-	const down = Iter.popcount translated (path, "ULR", "\0" * 3)
+	let up   = Iter.popcount translated (path, "DLR", "\0" * 3)
+	let down = Iter.popcount translated (path, "ULR", "\0" * 3)
 	
-	const left  = Iter.popcount translated (path, "UDR", "\0" * 3)
-	const right = Iter.popcount translated (path, "UDL", "\0" * 3)
+	let left  = Iter.popcount translated (path, "UDR", "\0" * 3)
+	let right = Iter.popcount translated (path, "UDL", "\0" * 3)
 	
-	const dx = down - up
-	const dy = right - left
+	let dx = down - up
+	let dy = right - left
 	
-	const hash = hex md5 data path
+	let hash = hex md5 data path
 	
-	const steps =
+	let steps =
 	[
 		"U" (*) (dx > 0 and hash[ 0 ] > 'a'),
 		"D" (*) (dx < 3 and hash[ 1 ] > 'a'),
@@ -53,7 +53,7 @@ def longest_path_length
 		
 		for path in frontier do
 		{
-			const paths = successors path
+			let paths = successors path
 			
 			if paths then
 			{
@@ -74,8 +74,8 @@ def longest_path_length
 	return longest - 1
 }
 
-const longest = longest_path_length()
+let longest = longest_path_length()
 
 display ""
 
-print longest
+put longest

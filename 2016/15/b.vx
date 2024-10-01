@@ -1,24 +1,24 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const modular = import "modular"
+let modular = import "modular"
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path)
+let data = (load input_path)
 
-const N = data.lines().length
+let N = data.lines().length
 
-const bonus = [ N + 1, 11, 0 ]
+let bonus = [ N + 1, 11, 0 ]
 
-const digit = '0' .. '9'
-const value = digit+ => int
+let digit = '0' .. '9'
+let value = digit+ => int
 
-const disc_record =
+let disc_record =
 [
 	"Disc #",
 	value, " has ",
@@ -26,23 +26,23 @@ const disc_record =
 	value, ".\n",
 ]
 
-const schema = (disc_record => {[_]})+
+let schema = (disc_record => {[_]})+
 
 var p = begin data
 
-const initial_discs = [(p += schema), bonus]
+let initial_discs = [(p += schema), bonus]
 
 var T = 0
 var M = 1  # super modulus
 
 for disc in initial_discs do
 {
-	const (dt, m, k) = *disc
+	let (dt, m, k) = *disc
 	
-	const delay = -(k + T + dt) mod m
+	let delay = -(k + T + dt) mod m
 	
 	T += modular.alignment (delay, m, M)
 	M *= m
 }
 
-print T
+put T

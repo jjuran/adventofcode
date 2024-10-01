@@ -1,6 +1,6 @@
 #!/usr/bin/env lvx
 
-const data = 3014603
+let data = 3014603
 
 def calculate (n)
 {
@@ -19,4 +19,4 @@ def calculate (n)
 	return 2 * n - 3 * divisor
 }
 
-print calculate data
+put calculate data

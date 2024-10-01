@@ -1,12 +1,12 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 let data = translated (load input_path, "[]", "  ")
 
-const addresses = data.lines()
+let addresses = data.lines()
 
 def is_abba (s)
 {
@@ -15,7 +15,7 @@ def is_abba (s)
 
 def has_abba (segment)
 {
-	const len = segment.length
+	let len = segment.length
 	
 	for i in 0 .. len - 4 do
 	{
@@ -32,12 +32,12 @@ var count = 0
 
 for addr in addresses do
 {
-	const segments = [addr / ' ']
+	let segments = [addr / ' ']
 	
-	const n = half segments.length
+	let n = half segments.length
 	
-	const even = 0 .. n map {_ * 2}
-	const odd  = 0 -> n map {_ * 2 + 1}
+	let even = 0 .. n map {v * 2}
+	let odd  = 0 -> n map {v * 2 + 1}
 	
 	var good = false
 	var bad  = false
@@ -57,4 +57,4 @@ for addr in addresses do
 	if good then {++count}
 }
 
-print count
+put count
