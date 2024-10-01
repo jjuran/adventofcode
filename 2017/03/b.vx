@@ -66,25 +66,22 @@ def generate-path (yield)
 	}
 }
 
-var limit = 20
+# This is not a full function, so `return` exits the caller
 
-var path-coordinates = channel()
-
-var path-generator = thread { generate-path { path-coordinates <== _ } }
-
-var i = 0
-
-for pt in path-coordinates do
+let handler =
 {
+	let pt = _
+	
 	const sum = adjacent-sum pt
 	
 	if sum > data then
 	{
-		print sum
-		break
+		return sum
 	}
 	
 	cells[ key pt ] = sum
 }
 
-exit 0
+let sum = generate-path handler
+
+put sum
