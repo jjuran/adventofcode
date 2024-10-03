@@ -38,7 +38,7 @@ for instruction in data do
 {
 	const reg,
 	const op,
-	var arg,
+	const arg,
 	const literal-if,
 	const creg,
 	const cop,
@@ -46,14 +46,14 @@ for instruction in data do
 	
 	if conds[ cop ]( get creg, int carg ) then
 	{
-		arg = int arg
+		var x = int arg
 		
 		if op[ 0 ] == 'd' then
 		{
-			arg = -arg
+			x = -x
 		}
 		
-		add( reg, arg )
+		add( reg, x )
 		
 		maximum = Math.max( maximum, registers[ reg ] )
 	}
