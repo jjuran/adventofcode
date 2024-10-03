@@ -26,7 +26,7 @@ def listof (s)
 	
 	let list = translated( s[ i -> n ] " ", ", ", "\n\n" )
 	
-	return list.lines() map { _ or () }
+	return list.lines() ver ...
 }
 
 def weightof (s)
@@ -144,6 +144,8 @@ for x in names do
 	if not (x in seen.keys) then
 	{
 		bottom = x
+		
+		break
 	}
 }
 
