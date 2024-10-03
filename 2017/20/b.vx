@@ -1,22 +1,22 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var N = data.length
 
 def get_vector (line, c)
 {
-	const p = (begin line).find(c "=<") + 3
-	const q = p.find '>'
+	let p = (begin line).find(c "=<") + 3
+	let q = p.find '>'
 	
 	return [(q - p) / ','] map int
 }
@@ -45,16 +45,16 @@ def tick
 
 def detect_collisions
 {
-	const min_x = (Iter.min position via { v[ 0 ] })[ 0 ]
-	const max_x = (Iter.max position via { v[ 0 ] })[ 0 ]
-	const min_y = (Iter.min position via { v[ 1 ] })[ 1 ]
-	const max_y = (Iter.max position via { v[ 1 ] })[ 1 ]
-	const min_z = (Iter.min position via { v[ 2 ] })[ 2 ]
-	const max_z = (Iter.max position via { v[ 2 ] })[ 2 ]
+	let min_x = (Iter.min position via { v[ 0 ] })[ 0 ]
+	let max_x = (Iter.max position via { v[ 0 ] })[ 0 ]
+	let min_y = (Iter.min position via { v[ 1 ] })[ 1 ]
+	let max_y = (Iter.max position via { v[ 1 ] })[ 1 ]
+	let min_z = (Iter.min position via { v[ 2 ] })[ 2 ]
+	let max_z = (Iter.max position via { v[ 2 ] })[ 2 ]
 	
-	const n_x = max_x - min_x + 1
-	const n_y = max_y - min_y + 1
-	const n_z = max_z - min_z + 1
+	let n_x = max_x - min_x + 1
+	let n_y = max_y - min_y + 1
+	let n_z = max_z - min_z + 1
 	
 	var x_coords = "\0" * n_x
 	var y_coords = "\0" * n_y
@@ -62,11 +62,11 @@ def detect_collisions
 	
 	for i in 0 -> N do
 	{
-		const pos = position[ i ]
+		let pos = position[ i ]
 		
-		const x = pos[ 0 ] - min_x
-		const y = pos[ 1 ] - min_y
-		const z = pos[ 2 ] - min_z
+		let x = pos[ 0 ] - min_x
+		let y = pos[ 1 ] - min_y
+		let z = pos[ 2 ] - min_z
 		
 		x_coords[ x ] = x_coords[ x ] and 'X' or '.'
 		y_coords[ y ] = y_coords[ y ] and 'X' or '.'
@@ -81,15 +81,15 @@ def detect_collisions
 		
 		for i in 0 -> N do
 		{
-			const pos = position[ i ]
+			let pos = position[ i ]
 			
-			const x = pos[ 0 ] - min_x
-			const y = pos[ 1 ] - min_y
-			const z = pos[ 2 ] - min_z
+			let x = pos[ 0 ] - min_x
+			let y = pos[ 1 ] - min_y
+			let z = pos[ 2 ] - min_z
 			
 			if x_coords[ x ] == 'X' and y_coords[ y ] == 'X' and z_coords[ z ] == 'X' then
 			{
-				const key = ",".join *pos
+				let key = ",".join *pos
 				
 				if key in sites then
 				{
@@ -106,7 +106,7 @@ def detect_collisions
 		
 		if collisions_occurred then
 		{
-			const destroyed = sites.values ver { v.length > 1 } map { *v }
+			let destroyed = sites.values ver { v.length > 1 } map { *v }
 			
 			for target in destroyed do
 			{
@@ -147,4 +147,4 @@ while true do
 
 display ""
 
-print N
+put N

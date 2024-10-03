@@ -1,14 +1,14 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var registers = str^[]
 
-const conds = str^
+let conds = str^
 [
 	"<": {head _ < tail _},
 	">": {head _ > tail _},
@@ -36,13 +36,7 @@ var maximum = 0
 
 for instruction in data do
 {
-	const reg,
-	const op,
-	const arg,
-	const literal-if,
-	const creg,
-	const cop,
-	const carg = instruction / ' '
+	let (reg, op, arg, literal-if, creg, cop, carg) = instruction / ' '
 	
 	if conds[ cop ]( get creg, int carg ) then
 	{
@@ -59,4 +53,4 @@ for instruction in data do
 	}
 }
 
-print maximum
+put maximum

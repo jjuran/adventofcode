@@ -1,11 +1,11 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const data = 354
-const step = data + 1
+let data = 354
+let step = data + 1
 
-const N = 50 * 10^6
+let N = 50 * 10^6
 
 var current_offset = 0
 var zero_successor = 0
@@ -21,7 +21,7 @@ while ++n <= N do
 		zero_successor = n
 	}
 	
-	if const quotient = (n - current_offset) div step then
+	if let quotient = (n - current_offset) div step then
 	{
 		n += quotient
 		
@@ -29,4 +29,4 @@ while ++n <= N do
 	}
 }
 
-print zero_successor
+put zero_successor

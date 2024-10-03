@@ -1,10 +1,10 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 def nameof (s)
 {
@@ -13,7 +13,7 @@ def nameof (s)
 
 def listof (s)
 {
-	const n = s.length
+	let n = s.length
 	
 	var i = 0
 	
@@ -31,7 +31,7 @@ def listof (s)
 
 def weightof (s)
 {
-	const n = s.length
+	let n = s.length
 	
 	var i = 0
 	
@@ -47,9 +47,9 @@ def weightof (s)
 		++j
 	}
 	
-	const numeral = s[ i -> j ]
+	let numeral = s[ i -> j ]
 	
-	const number = int numeral
+	let number = int numeral
 	
 	return number
 }
@@ -59,7 +59,7 @@ def last (s)
 	return s[ s.length - 1 ]
 }
 
-const n = data.length
+let n = data.length
 
 var disc-weights  = str^[]
 var tower-weights = str^[]
@@ -78,7 +78,7 @@ def tower-weight (name)
 	
 	if name in disc then
 	{
-		const list = disc[ name ]
+		let list = disc[ name ]
 		
 		for subdisc in list do
 		{
@@ -91,12 +91,12 @@ def tower-weight (name)
 
 def check (name)
 {
-	const list = disc[ name ]
+	let list = disc[ name ]
 	
-	const weights = list map tower-weight
+	let weights = list map tower-weight
 	
-	const first  = weights[ 0 ]
-	const second = weights[ 1 ]
+	let first  = weights[ 0 ]
+	let second = weights[ 1 ]
 	
 	if first != second then
 	{
@@ -116,15 +116,15 @@ def check (name)
 
 for s in data do
 {
-	const name = nameof s
+	let name = nameof s
 	
-	const weight = weightof s
+	let weight = weightof s
 	
 	disc-weights[ name ] = weight
 	
 	if last s != ')' then
 	{
-		const list = listof s
+		let list = listof s
 		
 		disc[ name ] = list
 		
@@ -137,7 +137,7 @@ for s in data do
 	}
 }
 
-const bottom
+let bottom = ???
 
 for x in names do
 {
@@ -166,11 +166,11 @@ while var off-index = check unbalanced do
 	unbalanced = off-weight
 }
 
-const balanced = list[ +(list[ 0 ] == off-weight) ]
+let balanced = list[ +(list[ 0 ] == off-weight) ]
 
-const balanced-weight   = tower-weight balanced
-const unbalanced-weight = tower-weight unbalanced
+let balanced-weight   = tower-weight balanced
+let unbalanced-weight = tower-weight unbalanced
 
-const delta = balanced-weight - unbalanced-weight
+let delta = balanced-weight - unbalanced-weight
 
-print (disc-weights[ unbalanced ] + delta)
+put (disc-weights[ unbalanced ] + delta)

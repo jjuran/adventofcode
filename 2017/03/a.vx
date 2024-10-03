@@ -1,6 +1,6 @@
 #!/usr/bin/env lvx
 
-const data = 361527
+let data = 361527
 
 def steps
 {
@@ -15,9 +15,9 @@ def steps
 		x += 4 * i
 	}
 	
-	const a = abs((x - data) mod i - i/2)
+	let a = abs((x - data) mod i - i/2)
 	
 	return r + a
 }
 
-print steps data
+put steps data

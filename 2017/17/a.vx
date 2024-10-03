@@ -1,15 +1,15 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const data = 354
+let data = 354
 
-const N = 2017
+let N = 2017
 
 var indices = vector[ u32 ] (N + 1)
 var n_items = 1
@@ -34,4 +34,4 @@ for n in 1 .. N do
 
 display ""
 
-print indices[ N ]
+put indices[ N ]

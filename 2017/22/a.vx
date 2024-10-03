@@ -1,12 +1,12 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 var grid = load input_path
 
-const lines = grid.lines()
+let lines = grid.lines()
 
 var width  = lines[ 0 ].length
 var height = lines.length
@@ -15,7 +15,7 @@ var stride = width + 1
 var x = width  div 2
 var y = height div 2
 
-const moves =
+let moves =
 [
 	[  0, -1 ],  # up
 	[ -1,  0 ],  # left
@@ -29,10 +29,10 @@ var n_infections_caused = 0
 
 def work
 {
-	const i = x + y * stride
+	let i = x + y * stride
 	
-	const yaw
-	const now
+	let yaw = ???
+	let now = ???
 	
 	if grid[ i ] == '#' then
 	{
@@ -51,7 +51,7 @@ def work
 	
 	dir = (dir + yaw) mod 4
 	
-	const move = moves[ dir ]
+	let move = moves[ dir ]
 	
 	x += move[ 0 ]
 	y += move[ 1 ]
@@ -86,11 +86,11 @@ def work
 	}
 }
 
-const N = 10000
+let N = 10000
 
 for burst in 0 -> N do
 {
 	work()
 }
 
-print n_infections_caused
+put n_infections_caused

@@ -1,14 +1,14 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[ 0 ]
+let data = (load input_path).lines()[ 0 ]
 
-const lens = [data / ','] map int
+let lens = [data / ','] map int
 
-const N = 256
+let N = 256
 
 var list = packed (0 -> N map byte)
 
@@ -18,7 +18,7 @@ var skip = 0
 
 def rewind
 {
-	const mid = -pos mod N
+	let mid = -pos mod N
 	
 	return list[ mid -> N ] list[ 0 -> mid ]
 }
@@ -29,7 +29,7 @@ for len in lens do
 	list = -list[ 0 -> len ] list[ len -> N ]
 	
 	# advance
-	const delta = (len + skip) % N
+	let delta = (len + skip) % N
 	
 	list = list[ delta -> N ] list[ 0 -> delta ]
 	
@@ -39,4 +39,4 @@ for len in lens do
 	++skip
 }
 
-print rep (rewind()[ 0 .. 1 ] map int per Math.product)
+put rep (rewind()[ 0 .. 1 ] map int per Math.product)

@@ -1,18 +1,18 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var checksum = 0
 
 for row in data do
 {
-	const cells = [row / '\t'] map int
+	let cells = [row / '\t'] map int
 	
-	const n = cells.length
+	let n = cells.length
 	
 	var done = false
 	
@@ -22,8 +22,8 @@ for row in data do
 		{
 			if i == j then {continue}
 			
-			var x = cells[i]
-			var y = cells[j]
+			let x = cells[i]
+			let y = cells[j]
 			
 			if x < y then {continue}
 			
@@ -39,4 +39,4 @@ for row in data do
 	}
 }
 
-print checksum
+put checksum

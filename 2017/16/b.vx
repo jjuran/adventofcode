@@ -1,27 +1,27 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = [ (load input_path).lines()[0] / ',' ]
+let data = [ (load input_path).lines()[0] / ',' ]
 
-const n = 16
-const N = 10^9
+let n = 16
+let N = 10^9
 
-const lineup = string ('a' .. byte (u8 'a' + n - 1))
+let lineup = string ('a' .. byte (u8 'a' + n - 1))
 
 var dancers = lineup
 
 def swap (i, j)
 {
-	const a = dancers[ i ]
-	const b = dancers[ j ]
+	let a = dancers[ i ]
+	let b = dancers[ j ]
 	
 	dancers[ i ] = b
 	dancers[ j ] = a
@@ -31,12 +31,12 @@ def dance
 {
 	for move in data do
 	{
-		const code = move[ 0 ]
-		const data = substr (move, 1)
+		let code = move[ 0 ]
+		let data = substr (move, 1)
 		
 		if code == 's' then
 		{
-			const shift = n - int data
+			let shift = n - int data
 			
 			dancers = dancers[ shift -> n ] dancers[ 0 -> shift ]
 		}
@@ -46,7 +46,7 @@ def dance
 		}
 		else if code == 'p' then
 		{
-			const (a, b) = data / '/'
+			let (a, b) = data / '/'
 			
 			swap ((begin dancers).find(a).past.length,
 			      (begin dancers).find(b).past.length)
@@ -72,8 +72,8 @@ do
 }
 while dancers != lineup
 
-const i = N mod m
+let i = N mod m
 
 display ""
 
-print log[ i ]
+put log[ i ]

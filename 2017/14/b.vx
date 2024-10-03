@@ -1,31 +1,31 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display   = (import "status") { OUT <== _ }
-const knot-hash = import "knot-hash"
+let display   = (import "status") { OUT <== _ }
+let knot-hash = import "knot-hash"
 
-const data = "uugsqrei"
+let data = "uugsqrei"
 
 def bitstrings { _ map { v "\0", v "x" } }
 
-const binary-strings = bitstrings^8 [ "" ]
+let binary-strings = bitstrings^8 [ "" ]
 
 def binarize (data)
 {
-	const bits = data map { binary-strings[ int v ] }
+	let bits = data map { binary-strings[ int v ] }
 	
 	return str bits
 }
 
-const NUL = "\0"
+let NUL = "\0"
 
-const N = 128
+let N = 128
 
-const stride = N + 1
+let stride = N + 1
 
 var grid = str \
 (
@@ -34,7 +34,7 @@ var grid = str \
 	NUL * stride,
 )
 
-const dirs =
+let dirs =
 [
 	-stride,  # N
 	 stride,  # S
@@ -78,7 +78,7 @@ while i = find_used_from i do
 			
 			for d in dirs do
 			{
-				const offset = f + d
+				let offset = f + d
 				
 				new_frontier <-- offset
 			}
@@ -94,4 +94,4 @@ while i = find_used_from i do
 
 display ""
 
-print n_regions
+put n_regions

@@ -1,17 +1,17 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const modular = import "modular"
+let modular = import "modular"
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = eval "[" str((load input_path).lines() map { v "," }) "]"
+let data = eval "[" str((load input_path).lines() map { v "," }) "]"
 
-const max_range = (Iter.max data via .value).value
+let max_range = Iter.max (data map .value)
 
 var T = 0
 var M = 1  # supermodulus
@@ -30,18 +30,18 @@ def get_missing (n, set)
 
 for range in 2 .. max_range do
 {
-	const prime = range - 1
+	let prime = range - 1
 	
-	const set = data ver { v.value == range }
+	let set = data ver { v.value == range }
 	
 	if set.length == prime - 1 then
 	{
-		const wrap = set map { v.key mod (prime * 2) / 2 }
+		let wrap = set map { v.key mod (prime * 2) / 2 }
 		
-		const m  = prime
-		const dt = get_missing (prime, wrap)
+		let m  = prime
+		let dt = get_missing (prime, wrap)
 		
-		const delay = -(T + dt) mod m
+		let delay = -(T + dt) mod m
 		
 		T += modular.alignment (delay, m, M)
 		M *= m
@@ -52,10 +52,9 @@ def caught (delay)
 {
 	for kv in data do
 	{
-		const depth = kv.key
-		const range = kv.value
+		let (depth, range) = *kv
 		
-		const modulus = (range - 1) * 2
+		let modulus = (range - 1) * 2
 		
 		if (delay + depth) % modulus == 0 then
 		{
@@ -73,4 +72,4 @@ while caught delay do
 	delay += M
 }
 
-print delay
+put delay

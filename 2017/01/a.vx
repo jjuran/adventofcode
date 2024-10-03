@@ -1,10 +1,10 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[ 0 ]
+let data = (load input_path).lines()[ 0 ]
 
 var sum = 0
 
@@ -21,4 +21,4 @@ if data[ 0 ] == data[ data.length - 1 ] then
 	sum += u8 data[ 0 ] - u8 '0'
 }
 
-print sum
+put sum

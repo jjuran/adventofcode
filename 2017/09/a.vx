@@ -1,19 +1,18 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[ 0 ]
+let data = (load input_path).lines()[ 0 ]
 
 var score = 0
-
 var level = 0
 
 var p = begin data
 
-const regular-ops
-const garbage-ops
+let regular-ops = ???
+let garbage-ops = ???
 
 var ops
 
@@ -34,9 +33,9 @@ ops = regular-ops
 
 while p do
 {
-	const c = *p++
+	let c = *p++
 	
 	c in ops and ops[ c ]()
 }
 
-print score
+put score

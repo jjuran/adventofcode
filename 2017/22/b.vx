@@ -1,17 +1,17 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 var grid = translated (load input_path, ".#", x"0103")
 
-const lines = grid.lines()
+let lines = grid.lines()
 
 var width  = lines[ 0 ].length
 var height = lines.length
@@ -20,7 +20,7 @@ var stride = width + 1
 var x = width  div 2
 var y = height div 2
 
-const moves =
+let moves =
 [
 	[  0, -1 ],  # up
 	[ -1,  0 ],  # left
@@ -34,9 +34,9 @@ var n_infections_caused = 0
 
 def work
 {
-	const i = x + y * stride
+	let i = x + y * stride
 	
-	const state = u8 grid[ i ]
+	let state = u8 grid[ i ]
 	
 	if not state then
 	{
@@ -47,7 +47,7 @@ def work
 	
 	dir = (dir + state) mod 4
 	
-	const move = moves[ dir ]
+	let move = moves[ dir ]
 	
 	x += move[ 0 ]
 	y += move[ 1 ]
@@ -71,7 +71,7 @@ def work
 	}
 }
 
-const N = 10000000
+let N = 10000000
 
 for burst in 0 -> N do
 {
@@ -85,4 +85,4 @@ for burst in 0 -> N do
 
 display ""
 
-print n_infections_caused
+put n_infections_caused

@@ -1,28 +1,28 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const N = 5
+let N = 5
 
 def parse (line)
 {
-	const p = (begin line).find " => "
-	const q = p + " => "
+	let p = (begin line).find " => "
+	let q = p + " => "
 	
 	return p.past, q.rest
 }
 
-const transpose_indices_2x2 =
+let transpose_indices_2x2 =
 [
 	0, 1 + 2,
 	1, 1 + 3,
 ]
 
-const transpose_indices_3x3 =
+let transpose_indices_3x3 =
 [
 	0, 1 + 3, 2 + 6,
 	1, 1 + 4, 2 + 7,
@@ -31,25 +31,25 @@ const transpose_indices_3x3 =
 
 def flips (pattern)
 {
-	const rows = [pattern  / '/']
+	let rows = [pattern  / '/']
 	
-	const rflip = [-pattern  / '/']
-	const vflip = -rows
-	const hflip = -rflip
+	let rflip = [-pattern  / '/']
+	let vflip = -rows
+	let hflip = -rflip
 	
 	return rows, hflip, vflip, rflip
 }
 
 def variants_2x2 (pattern)
 {
-	const transpose = transpose_indices_2x2 map { pattern[ v ] }
+	let transpose = transpose_indices_2x2 map { pattern[ v ] }
 	
 	return [ flips pattern, flips "/".join (str transpose / 2) ]
 }
 
 def variants_3x3 (pattern)
 {
-	const transpose = transpose_indices_3x3 map { pattern[ v ] }
+	let transpose = transpose_indices_3x3 map { pattern[ v ] }
 	
 	return [ flips pattern, flips "/".join (str transpose / 3) ]
 }
@@ -59,7 +59,7 @@ var x3_to_4 = str^[]
 
 for line in data do
 {
-	const (src, dst) = parse line
+	let (src, dst) = parse line
 	
 	if src.length == "../..".length then
 	{
@@ -79,12 +79,12 @@ for line in data do
 
 def extract (grid, stride, dx, dy, x, y)
 {
-	const base = y * dy * stride + x * dx
+	let base = y * dy * stride + x * dx
 	
 	return 0 -> dy map
 	{
-		const i = base + v * stride
-		const j = i + dx
+		let i = base + v * stride
+		let j = i + dx
 		
 		grid[ i -> j ],
 	}
@@ -102,7 +102,7 @@ def fragment (grid, stride, dx, dy, nx, ny)
 
 def enhance (ruleset, square)
 {
-	const key = "/".join *square
+	let key = "/".join *square
 	
 	return [ruleset[ key ] / '/']
 }
@@ -119,7 +119,7 @@ def combine_row (squares)
 		return squares map { v[ i ] } per string
 	}
 	
-	const dx = squares[ 0 ].length
+	let dx = squares[ 0 ].length
 	
 	return 0 -> dx map scanline map { v "\n" } per string
 }
@@ -129,9 +129,9 @@ var patsize = 3
 
 for T in 0 -> N do
 {
-	const ruleset
-	const divisor
-	const factor
+	let ruleset = ???
+	let divisor = ???
+	let factor  = ???
 	
 	if patsize % 2 then
 	{
@@ -150,20 +150,20 @@ for T in 0 -> N do
 		factor  = 3
 	}
 	
-	const x = patsize / divisor
+	let x = patsize / divisor
 	
-	const stride = patsize + 1
+	let stride = patsize + 1
 	
-	const squares = fragment (pattern, stride, divisor, divisor, x, x)
+	let squares = fragment (pattern, stride, divisor, divisor, x, x)
 	
-	const enhanced = squares map enhance_row % ruleset
-	const combined = enhanced map combine_row
+	let enhanced = squares map enhance_row % ruleset
+	let combined = enhanced map combine_row
 	
 	pattern = "".join *combined
 	patsize = patsize * factor / divisor
 }
 
-print Iter.popcount translated (pattern, ".\n", "\0" * 2)
+put Iter.popcount translated (pattern, ".\n", "\0" * 2)
 
 end.
 .#.

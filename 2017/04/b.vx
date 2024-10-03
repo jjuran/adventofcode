@@ -1,10 +1,10 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 def fingerprint (word)
 {
@@ -12,7 +12,7 @@ def fingerprint (word)
 	
 	for c in word do
 	{
-		const i = int c
+		let i = int c
 		
 		counts[ i ] = byte (int counts[ i ] + 1)
 	}
@@ -30,7 +30,7 @@ for row in data do
 	
 	for word in [row / ' '] do
 	{
-		const fp = fingerprint word
+		let fp = fingerprint word
 		
 		if fp in seen then
 		{
@@ -44,4 +44,4 @@ for row in data do
 	total += +valid
 }
 
-print total
+put total

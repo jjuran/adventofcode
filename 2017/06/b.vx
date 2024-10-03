@@ -1,12 +1,12 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 var data = translated( load input_path, "\t", "\n" ).lines() map int
 
-const n = data.length
+let n = data.length
 
 def select
 {
@@ -15,7 +15,7 @@ def select
 	
 	for i in 0 -> n do
 	{
-		if (const x = data[ i ]) > max then
+		if (let x = data[ i ]) > max then
 		{
 			max = x
 			index = i
@@ -31,7 +31,7 @@ var total = 0
 
 while true do
 {
-	const key = rep data
+	let key = rep data
 	
 	if key in seen then
 	{
@@ -57,4 +57,4 @@ while true do
 	}
 }
 
-print total
+put total

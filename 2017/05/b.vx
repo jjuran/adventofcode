@@ -27,4 +27,4 @@ while ip in range do
 	ip += offset
 }
 
-print total
+put total

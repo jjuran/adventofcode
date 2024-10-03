@@ -1,24 +1,24 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const knot-hash = import "knot-hash"
+let knot-hash = import "knot-hash"
 
-const data = "uugsqrei"
+let data = "uugsqrei"
 
 def bitstrings { _ map { v "\0", v "x" } }
 
-const binary-strings = bitstrings^8 [ "" ]
-const one_bit_counts = binary-strings map { byte Iter.popcount v } per packed
+let binary-strings = bitstrings^8 [ "" ]
+let one_bit_counts = binary-strings map { byte Iter.popcount v } per packed
 
 def ones_count (s)
 {
 	return s map { u8 one_bit_counts[ u8 v ] } per Math.sum
 }
 
-const grid = 0 -> 128 map { knot-hash data "-" v } per packed
+let grid = 0 -> 128 map { knot-hash data "-" v } per packed
 
-print ones_count grid
+put ones_count grid

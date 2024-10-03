@@ -1,10 +1,10 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = eval "[" str((load input_path).lines() map { v "," }) "]"
+let data = eval "[" str((load input_path).lines() map { v "," }) "]"
 
 def severity
 {
@@ -12,12 +12,11 @@ def severity
 	
 	for kv in data do
 	{
-		const depth = kv.key
-		const range = kv.value
+		let (depth, range) = *kv
 		
-		const modulus = (range - 1) * 2
+		let modulus = (range - 1) * 2
 		
-		const caught = depth % modulus == 0
+		let caught = depth % modulus == 0
 		
 		total += depth * range * +caught
 	}
@@ -25,4 +24,4 @@ def severity
 	return total
 }
 
-print severity()
+put severity()

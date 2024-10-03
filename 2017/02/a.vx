@@ -1,21 +1,21 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var checksum = 0
 
 for row in data do
 {
-	const cells = [row / '\t'] map int
+	let cells = [row / '\t'] map int
 	
-	var minimum = Iter.min cells
-	var maximum = Iter.max cells
+	let minimum = Iter.min cells
+	let maximum = Iter.max cells
 	
 	checksum += maximum - minimum
 }
 
-print checksum
+put checksum

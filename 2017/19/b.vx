@@ -1,16 +1,16 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const grid = load input_path
-const lines = grid.lines()
-const first = lines[ 0 ]
-const width = first.length
-const stride = width + 1
+let grid = load input_path
+let lines = grid.lines()
+let first = lines[ 0 ]
+let width = first.length
+let stride = width + 1
 
-const movements =
+let movements =
 [
 	 stride,  # S
 	      1,  # E
@@ -18,7 +18,7 @@ const movements =
 	     -1,  # W
 ]
 
-const dirs = 0 -> movements.length map { v => movements[ v ] }
+let dirs = 0 -> movements.length map { v => movements[ v ] }
 
 var log = 0
 var dir = 0
@@ -30,11 +30,11 @@ while true do
 	
 	pos += movements[ dir ]
 	
-	const c = grid[ pos ]
+	let c = grid[ pos ]
 	
 	if c == '+' then
 	{
-		const d = dirs ver { (v.key - dir) % 2 and grid[ pos + v.value ] > ' ' }
+		let d = dirs ver { (v.key - dir) % 2 and grid[ pos + v.value ] > ' ' }
 		
 		dir = d[ 0 ].key
 	}
@@ -44,4 +44,4 @@ while true do
 	}
 }
 
-print log
+put log
