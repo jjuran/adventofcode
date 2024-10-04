@@ -1,27 +1,27 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
 def syntax
 {
-	const digit = '0' .. '9'
+	let digit = '0' .. '9'
 	
-	const opcode   = digit+ => int
-	const register = digit  => int
+	let opcode   = digit+ => int
+	let register = digit  => int
 	
-	const image = ["[", register, (", ", register) (*) 3, "]"] => { [_] }
-	const instruction = [opcode,  (" ",  register) (*) 3     ] => { [_] }
+	let image = ["[", register, (", ", register) (*) 3, "]"] => { [_] }
+	let instruction = [opcode,  (" ",  register) (*) 3     ] => { [_] }
 	
-	const sample =
+	let sample =
 	[
 		"Before: ", image, "\n",
 		instruction, "\n",
@@ -36,9 +36,9 @@ display "Parsing..."
 
 var p = begin data
 
-const samples = p += syntax()
+let samples = p += syntax()
 
-const n_samples = samples.length
+let n_samples = samples.length
 
 def AND (a, b)
 {
@@ -62,7 +62,7 @@ def EQ (a, b)
 
 var n_processed = 0
 
-const imm = ...
+let imm = ...
 
 def filter (before, instruction, after)
 {
@@ -72,9 +72,9 @@ def filter (before, instruction, after)
 	
 	def reg (i) { before[ i ] }
 	
-	const (opcode, a, b, c) = *instruction
+	let (opcode, a, b, c) = *instruction
 	
-	const instruction_set =
+	let instruction_set =
 	[
 		[ reg, reg, Math.sum ],
 		[ reg, imm, Math.sum ],
@@ -96,7 +96,7 @@ def filter (before, instruction, after)
 	
 	for behavior in instruction_set do
 	{
-		const (mode1, mode2, f) = *behavior
+		let (mode1, mode2, f) = *behavior
 		
 		if f (mode1 a, mode2 b) == after[ c ] then
 		{
@@ -110,8 +110,8 @@ def filter (before, instruction, after)
 	return false
 }
 
-const triambiguous = samples ver { filter *v }
+let triambiguous = samples ver { filter *v }
 
 display ""
 
-print Iter.popcount triambiguous
+put Iter.popcount triambiguous

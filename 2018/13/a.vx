@@ -1,24 +1,24 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 var grid = load input_path
 
-const grid_len = grid.length
+let grid_len = grid.length
 
-const width = (begin grid).find('\n').past.length
-const stride = width + 1
-const height = grid_len / stride
+let width = (begin grid).find('\n').past.length
+let stride = width + 1
+let height = grid_len / stride
 
-const E = 0
-const S = 1
-const W = 2
-const N = 3
-const X = 4
+let E = 0
+let S = 1
+let W = 2
+let N = 3
+let X = 4
 
-const deltas =
+let deltas =
 [
 	1,
 	stride,
@@ -26,7 +26,7 @@ const deltas =
 	-stride,
 ]
 
-const arrows = ">v<^X"
+let arrows = ">v<^X"
 
 var carts = []
 
@@ -35,7 +35,7 @@ carts <-- *(0 -> grid_len ver { grid[ v ] == 'v' } map { v => S => 1 })
 carts <-- *(0 -> grid_len ver { grid[ v ] == '<' } map { v => W => 1 })
 carts <-- *(0 -> grid_len ver { grid[ v ] == '>' } map { v => E => 1 })
 
-const background = translated (grid, "^v<>", "||--")
+let background = translated (grid, "^v<>", "||--")
 
 var crashed = ()
 
@@ -49,7 +49,7 @@ def move_cart (cart)
 	
 	address += deltas[ heading ]
 	
-	const c = grid[ address ]
+	let c = grid[ address ]
 	
 	if c in "^v<>" then
 	{
@@ -100,5 +100,5 @@ while not crashed do
 	move_carts()
 }
 
-const crash_site = ",".join crashed
-print crash_site
+let crash_site = ",".join crashed
+put crash_site

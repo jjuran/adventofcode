@@ -66,4 +66,4 @@ let max = Iter.max mappings via .value
 
 let index = max.key
 
-print (1 + index mod edge2, ",", 1 + index div edge2)
+put (1 + index mod edge2, ",", 1 + index div edge2)

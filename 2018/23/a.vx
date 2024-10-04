@@ -33,4 +33,4 @@ let max_range      = max_ranged[ 1 ]
 
 let count = data pop { distance (v[0], max_ranged_pos) <= max_range }
 
-print count
+put count

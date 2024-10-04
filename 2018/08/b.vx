@@ -1,24 +1,24 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[ 0 ]
+let data = (load input_path).lines()[ 0 ]
 
-const tree = [data / ' '] map int
+let tree = [data / ' '] map int
 
 def tree_value (p)
 {
-	const n_children = *p++
-	const n_metadata = *p++
+	let n_children = *p++
+	let n_metadata = *p++
 	
 	var children = []
 	var metadata = []
 	
 	for i in 0 -> n_children do
 	{
-		p, const value = tree_value p
+		p, let value = tree_value p
 		
 		children <-- value
 	}
@@ -45,4 +45,4 @@ def tree_value (p)
 	return p, value
 }
 
-print tail tree_value begin tree
+put tail tree_value begin tree

@@ -1,33 +1,33 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
-const digit = '0' .. '9'
-const number = digit+ => int
-const format = [number, " players; last marble is worth ", number]
+let digit = '0' .. '9'
+let number = digit+ => int
+let format = [number, " players; last marble is worth ", number]
 
 var p = begin data
 
-const (n_players, nth_marble) = p += format
+let (n_players, nth_marble) = p += format
 
 var scores = [0 (*) n_players]
 
-const n_brackets = nth_marble div 23
+let n_brackets = nth_marble div 23
 
 var current_player = 0
 
-const skip_delta = 22 - 6           # 16
-const divisor    = 21 + skip_delta  # 37
-const margin     = 8
+let skip_delta = 22 - 6           # 16
+let divisor    = 21 + skip_delta  # 37
+let margin     = 8
 
 def trace_marble (k, pos)
 {
@@ -35,7 +35,7 @@ def trace_marble (k, pos)
 	
 	while k > 0 do
 	{
-		const skips = (n - margin - pos) div divisor
+		let skips = (n - margin - pos) div divisor
 		
 		if pos > 0 and skips > 0 then
 		{
@@ -116,4 +116,4 @@ for k in 1 .. n_brackets do
 
 display ""
 
-print Iter.max scores
+put Iter.max scores

@@ -1,19 +1,19 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const N = 20
+let N = 20
 
-const initial_state = substr (data[ 0 ], "initial state: ".length)
+let initial_state = substr (data[ 0 ], "initial state: ".length)
 
 var state = "..." initial_state "..."
 var origin = 3
 
-const rules_dictionary = data[ 2 -> data.length ] map { v[ 0 -> 5 ] => v[ 9 ] }
+let rules_dictionary = data[ 2 -> data.length ] map { v[ 0 -> 5 ] => v[ 9 ] }
 
 def make_rules (dictionary)
 {
@@ -21,7 +21,7 @@ def make_rules (dictionary)
 	
 	for entry in dictionary do
 	{
-		const i = unbin "0b" translated (entry.key, ".#", "01")
+		let i = unbin "0b" translated (entry.key, ".#", "01")
 		
 		rules[ i ] = entry.value
 	}
@@ -29,7 +29,7 @@ def make_rules (dictionary)
 	return rules
 }
 
-const rules = make_rules rules_dictionary
+let rules = make_rules rules_dictionary
 
 def iterate
 {
@@ -37,15 +37,15 @@ def iterate
 	
 	for i in 2 -> state.length - 2 do
 	{
-		const subseq = state[ i - 2 .. i + 2 ]
+		let subseq = state[ i - 2 .. i + 2 ]
 		
-		const key = unbin "0b" translated (subseq, ".#", "01")
+		let key = unbin "0b" translated (subseq, ".#", "01")
 		
 		next_state[ i ] = rules[ key ]
 	}
 	
-	const pad_left  = next_state[ 2 ] == '#'
-	const pad_right = next_state[ state.length - 3 ] == '#'
+	let pad_left  = next_state[ 2 ] == '#'
+	let pad_right = next_state[ state.length - 3 ] == '#'
 	
 	state = ("." * pad_left) next_state ("." * pad_right)
 	
@@ -57,7 +57,7 @@ for i in 0 -> N do
 	iterate()
 }
 
-const indices = 0 -> state.length
+let indices = 0 -> state.length
 
-const sum = indices ver { state[ v ] == '#' } map { v - origin } per Math.sum
-print sum
+let sum = indices ver { state[ v ] == '#' } map { v - origin } per Math.sum
+put sum

@@ -1,18 +1,18 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const n_lines = data.length
+let n_lines = data.length
 
-const IP_reg = int substr (data[ 0 ], "#ip ".length)
+let IP_reg = int substr (data[ 0 ], "#ip ".length)
 
-const program = data[ 1 -> n_lines ]
+let program = data[ 1 -> n_lines ]
 
-const n_instructions = n_lines - 1
+let n_instructions = n_lines - 1
 
 def AND (a, b)
 {
@@ -34,13 +34,13 @@ def EQ (a, b)
 	return u8 (a == b)
 }
 
-const imm = ...
+let imm = ...
 
 var registers = [ 0 (*) 6 ]
 
 def reg (i) { registers[ i ] }
 
-const instruction_set = str^
+let instruction_set = str^
 [
 	addr: [ reg, reg, Math.sum ],
 	addi: [ reg, imm, Math.sum ],
@@ -81,26 +81,26 @@ while ++n <= n_instructions and IP < n_instructions do
 {
 	registers[ IP_reg ] = IP
 	
-	const line = program[ IP ]
+	let line = program[ IP ]
 	
-	const mnemonic = line[ 0 -> 4 ]
-	const operands = [substr (line, 5) / ' '] map int
+	let mnemonic = line[ 0 -> 4 ]
+	let operands = [substr (line, 5) / ' '] map int
 	
-	const (mode1, mode2, f) = *instruction_set[ mnemonic ]
+	let (mode1, mode2, f) = *instruction_set[ mnemonic ]
 	
-	const (a, b, c) = *operands
+	let (a, b, c) = *operands
 	
 	registers[ c ] = f (mode1 a, mode2 b)
 	
 	IP = registers[ IP_reg ] + 1
 }
 
-const x = Iter.max registers
+let x = Iter.max registers
 
-const x2 = almost_sqrt x
+let x2 = almost_sqrt x
 
 var factor_sum = 1 .. x2 ver { x % v == 0 } map { v + x / v } per Math.sum
 
 factor_sum += x2 * +(x2^2 == x)
 
-print factor_sum
+put factor_sum

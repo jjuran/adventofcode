@@ -1,50 +1,50 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 var grid = load input_path
 
-const N = 10
+let N = 10
 
-const width = (begin grid).find('\n').past.length
-const stride = width + 1
+let width = (begin grid).find('\n').past.length
+let stride = width + 1
 
-const blank = (" " * width) "\n"
+let blank = (" " * width) "\n"
 
 grid = " " blank grid blank
 
-const indices = 1 + stride -> grid.length - stride - 1
+let indices = 1 + stride -> grid.length - stride - 1
 
 def open (neighbors)
 {
-	const n_trees = neighbors pop { v == '|' }
+	let n_trees = neighbors pop { v == '|' }
 	
 	return ".|"[ +(n_trees >= 3) ]
 }
 
 def wood (neighbors)
 {
-	const n_yards = neighbors pop { v == '#' }
+	let n_yards = neighbors pop { v == '#' }
 	
 	return "|#"[ +(n_yards >= 3) ]
 }
 
 def yard (neighbors)
 {
-	const has_yard = neighbors pop { v == '#' }
-	const has_tree = neighbors pop { v == '|' }
+	let has_yard = neighbors pop { v == '#' }
+	let has_tree = neighbors pop { v == '|' }
 	
 	return ".#"[ has_yard and has_tree and 1 or 0 ]
 }
 
-const states = byte^
+let states = byte^
 [
 	'.': open,
 	'|': wood,
@@ -58,7 +58,7 @@ def smear (x)
 	return *(-1 .. 1 map {x + v})
 }
 
-const offsets = -1 .. 1 map { v * stride } map smear ver ...
+let offsets = -1 .. 1 map { v * stride } map smear ver ...
 
 def change
 {
@@ -86,5 +86,5 @@ def count (c)
 
 display ""
 
-const value = "|#" map count per Math.product
-print value
+let value = "|#" map count per Math.product
+put value

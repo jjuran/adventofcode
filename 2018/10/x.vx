@@ -1,21 +1,21 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const space = ' '*
-const digit = '0' .. '9'
-const coord = ['-'?, digit+] => int
-const tuple = ['<', space, coord, [',', space, coord]*, '>']
-const datum = ["position=", tuple, " velocity=", tuple] => { [_] }
+let space = ' '*
+let digit = '0' .. '9'
+let coord = ['-'?, digit+] => int
+let tuple = ['<', space, coord, [',', space, coord]*, '>']
+let datum = ["position=", tuple, " velocity=", tuple] => { [_] }
 
 def parse (s)
 {
@@ -26,7 +26,7 @@ def parse (s)
 
 def project (t, particle)
 {
-	var (x, y), const (dx, dy) = *particle
+	var (x, y), let (dx, dy) = *particle
 	
 	x += dx * t
 	y += dy * t
@@ -36,50 +36,48 @@ def project (t, particle)
 
 def bounding_box (particles)
 {
-	const min_x = particles map { v[ 0 ] } per Math.min
-	const min_y = particles map { v[ 1 ] } per Math.min
+	let min_x = particles map { v[ 0 ] } per Math.min
+	let min_y = particles map { v[ 1 ] } per Math.min
 	
-	const max_x = particles map { v[ 0 ] } per Math.max
-	const max_y = particles map { v[ 1 ] } per Math.max
+	let max_x = particles map { v[ 0 ] } per Math.max
+	let max_y = particles map { v[ 1 ] } per Math.max
 	
 	return [min_x, min_y, max_x, max_y]
 }
 
 def center_of_gravity (particles)
 {
-	const x = (particles map { v[ 0 ] } per Math.sum) div particles.length
-	const y = (particles map { v[ 1 ] } per Math.sum) div particles.length
+	let x = (particles map { v[ 0 ] } per Math.sum) div particles.length
+	let y = (particles map { v[ 1 ] } per Math.sum) div particles.length
 	
 	return [x, y]
 }
 
 def mass_vector (particles)
 {
-	const dx = particles map { v[ 2 ] } per Math.sum
-	const dy = particles map { v[ 3 ] } per Math.sum
+	let dx = particles map { v[ 2 ] } per Math.sum
+	let dy = particles map { v[ 3 ] } per Math.sum
 	
 	return [dx, dy]
 }
 
-const particles = data map parse
+let particles = data map parse
 
 def clustering_shift (t)
 {
-	const box0 = bounding_box (particles map project %   t)
-	const box1 = bounding_box (particles map project % ++t)
+	let box0 = bounding_box (particles map project %   t)
+	let box1 = bounding_box (particles map project % ++t)
 	
-	const w0 = box0[ 2 ] - box0[ 0 ]
-	const w1 = box1[ 2 ] - box1[ 0 ]
-	const h0 = box0[ 3 ] - box0[ 1 ]
-	const h1 = box1[ 3 ] - box1[ 1 ]
+	let w0 = box0[ 2 ] - box0[ 0 ]
+	let w1 = box1[ 2 ] - box1[ 0 ]
+	let h0 = box0[ 3 ] - box0[ 1 ]
+	let h1 = box1[ 3 ] - box1[ 1 ]
 	
-	const shifts =
+	let shifts =
 	[
 		w1 <=> w0,
 		h1 <=> h0,
 	]
-	
-	#warn "Shift: " (rep box0) " vs. " rep box1
 	
 	if Math.max *shifts == Math.min *shifts then
 	{
@@ -89,7 +87,7 @@ def clustering_shift (t)
 	return 0
 }
 
-const mvec = mass_vector particles
+let mvec = mass_vector particles
 
 var T = 0
 
@@ -101,14 +99,14 @@ while clustering_shift T < 0 do
 	
 	display "T = " T
 	
-	const points = particles map project % T
+	let points = particles map project % T
 	
-	const cog = center_of_gravity points
+	let cog = center_of_gravity points
 	
-	const dt_x = cog[ 0 ] * points.length div -mvec[ 0 ]
-	const dt_y = cog[ 1 ] * points.length div -mvec[ 1 ]
+	let dt_x = cog[ 0 ] * points.length div -mvec[ 0 ]
+	let dt_y = cog[ 1 ] * points.length div -mvec[ 1 ]
 	
-	const dt = Math.min (abs dt_x, abs dt_y) div 2
+	let dt = Math.min (abs dt_x, abs dt_y) div 2
 	
 	if dt == 0 then {break}
 	
@@ -135,22 +133,22 @@ while inc > 0 do
 
 display ""
 
-print T
+put T
 
-const points = particles map project % T
+let points = particles map project % T
 
-const min_x = Iter.min (points map {v[ 0 ]})
-const max_x = Iter.max (points map {v[ 0 ]})
-const min_y = Iter.min (points map {v[ 1 ]})
-const max_y = Iter.max (points map {v[ 1 ]})
+let min_x = Iter.min (points map {v[ 0 ]})
+let max_x = Iter.max (points map {v[ 0 ]})
+let min_y = Iter.min (points map {v[ 1 ]})
+let max_y = Iter.max (points map {v[ 1 ]})
 
 assert min_x >= 0
 assert min_y >= 0
 
-const width  = max_x + 1 - min_x
-const height = max_y + 1 - min_y
+let width  = max_x + 1 - min_x
+let height = max_y + 1 - min_y
 
-const npx = width * height
+let npx = width * height
 
 var grid = " " * npx
 
@@ -164,4 +162,4 @@ for point in points do
 	grid[ x + width * y ] = '*'
 }
 
-print "\n    ".join( "", grid / height, "" )
+put "\n    ".join( "", grid / height, "" )

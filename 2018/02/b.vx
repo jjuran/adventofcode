@@ -1,10 +1,10 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var result = 0
 
@@ -14,15 +14,15 @@ def run
 	{
 		for b in data do
 		{
-			const x = packed a ~ packed b
+			let x = packed a ~ packed b
 			
 			if Iter.popcount x == 1 then
 			{
-				const d = x ver ...
+				let d = x ver ...
 				
-				const i = (begin x).find(*d).past.size
+				let i = (begin x).find(*d).past.size
 				
-				const result = a[ 0 -> i ] a[ i + 1 -> a.length ]
+				let result = a[ 0 -> i ] a[ i + 1 -> a.length ]
 				
 				return result
 			}
@@ -30,4 +30,4 @@ def run
 	}
 }
 
-print run()
+put run()

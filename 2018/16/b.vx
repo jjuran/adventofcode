@@ -1,27 +1,27 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
 def syntax
 {
-	const digit = '0' .. '9'
+	let digit = '0' .. '9'
 	
-	const opcode   = digit+ => int
-	const register = digit  => int
+	let opcode   = digit+ => int
+	let register = digit  => int
 	
-	const image = ["[", register, (", ", register) (*) 3, "]"] => { [_] }
-	const instruction = [opcode,  (" ",  register) (*) 3     ] => { [_] }
+	let image = ["[", register, (", ", register) (*) 3, "]"] => { [_] }
+	let instruction = [opcode,  (" ",  register) (*) 3     ] => { [_] }
 	
-	const sample =
+	let sample =
 	[
 		"Before: ", image, "\n",
 		instruction, "\n",
@@ -36,13 +36,13 @@ display "Parsing..."
 
 var p = begin data
 
-const samples = p += syntax()
+let samples = p += syntax()
 
-const n_samples = samples.length
+let n_samples = samples.length
 
 p += "\n"*
 
-const program = p.rest.lines() map { [v / ' '] map int }
+let program = p.rest.lines() map { [v / ' '] map int }
 
 def AND (a, b)
 {
@@ -68,7 +68,7 @@ var opcode_matrix = [ "?" * 16 (*) 16 ]
 
 var known = "\0" * 16
 
-const imm = ...
+let imm = ...
 
 var n_processed = 0
 
@@ -80,14 +80,14 @@ def examine (before, instruction, after)
 	
 	def reg (i) { before[ i ] }
 	
-	const (opcode, a, b, c) = *instruction
+	let (opcode, a, b, c) = *instruction
 	
 	if known[ opcode ] then
 	{
 		return ()
 	}
 	
-	const instruction_set =
+	let instruction_set =
 	[
 		[ reg, reg, Math.sum ],
 		[ reg, imm, Math.sum ],
@@ -109,7 +109,7 @@ def examine (before, instruction, after)
 	
 	for i in 0 -> 16 do
 	{
-		const (mode1, mode2, f) = *instruction_set[ i ]
+		let (mode1, mode2, f) = *instruction_set[ i ]
 		
 		if f (mode1 a, mode2 b) == after[ c ] then
 		{
@@ -117,11 +117,11 @@ def examine (before, instruction, after)
 		}
 	}
 	
-	const n = result.length
+	let n = result.length
 	
 	var index = -1
 	
-	const others = 0 -> 16 ver { not v in result }
+	let others = 0 -> 16 ver { not v in result }
 	
 	for j in others do
 	{
@@ -155,7 +155,7 @@ var registers = [ 0 (*) 4 ]
 
 def reg (i) { registers[ i ] }
 
-const instruction_set =
+let instruction_set =
 [
 	[ reg, reg, Math.sum ],
 	[ reg, imm, Math.sum ],
@@ -179,13 +179,13 @@ display ""
 
 for instruction in program do
 {
-	const (opcode, a, b, c) = *instruction
+	let (opcode, a, b, c) = *instruction
 	
-	const index = u8 known[ opcode ] - u8 'a'
+	let index = u8 known[ opcode ] - u8 'a'
 	
-	const (mode1, mode2, f) = *instruction_set[ index ]
+	let (mode1, mode2, f) = *instruction_set[ index ]
 	
 	registers[ c ] = f (mode1 a, mode2 b)
 }
 
-print registers[ 0 ]
+put registers[ 0 ]

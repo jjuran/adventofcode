@@ -1,36 +1,36 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var fabric = vector[u8, 1000^2]()
 
 def rect_indices (x, y, w, h)
 {
-	return y -> y + h map { const i = v * 1000 + x; *(i -> i + w) }
+	return y -> y + h map { let i = v * 1000 + x; *(i -> i + w) }
 }
 
 for row in data do
 {
-	const p = (begin row).find '@' + 2
+	let p = (begin row).find '@' + 2
 	
-	const claim = p.rest
+	let claim = p.rest
 	
 	var q = (begin claim).find ':'
 	
-	const offset = q.past
+	let offset = q.past
 	
 	q += 2
 	
-	const area = q.rest
+	let area = q.rest
 	
-	const (x, y) = *([offset / ','] map int)
-	const (w, h) = *([area   / 'x'] map int)
+	let (x, y) = *([offset / ','] map int)
+	let (w, h) = *([area   / 'x'] map int)
 	
-	const indices = rect_indices( x, y, w, h )
+	let indices = rect_indices( x, y, w, h )
 	
 	for i in indices do
 	{
@@ -47,22 +47,22 @@ var id
 
 for row2 in data do
 {
-	const p = (begin row2).find '@' + 2
+	let p = (begin row2).find '@' + 2
 	
-	const claim = p.rest
+	let claim = p.rest
 	
 	var q = (begin claim).find ':'
 	
-	const offset = q.past
+	let offset = q.past
 	
 	q += 2
 	
-	const area = q.rest
+	let area = q.rest
 	
-	const (x, y) = *([offset / ','] map int)
-	const (w, h) = *([area   / 'x'] map int)
+	let (x, y) = *([offset / ','] map int)
+	let (w, h) = *([area   / 'x'] map int)
 	
-	const indices = rect_indices( x, y, w, h )
+	let indices = rect_indices( x, y, w, h )
 	
 	id = (p + -3).past
 	
@@ -78,4 +78,4 @@ for row2 in data do
 	if id then {break}
 }
 
-print substr( id, 1 )
+put substr( id, 1 )

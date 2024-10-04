@@ -1,15 +1,15 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const data = if argc > 1 then {argv[ 1 ]} else {"147061"}
+let data = if argc > 1 then {argv[ 1 ]} else {"147061"}
 
-const n = data.length
+let n = data.length
 
 var scoreboard = "37"
 
@@ -19,8 +19,8 @@ var N = 0
 
 while true do
 {
-	const one = int scoreboard[[ i ]]
-	const two = int scoreboard[[ j ]]
+	let one = int scoreboard[[ i ]]
+	let two = int scoreboard[[ j ]]
 	
 	scoreboard .= str (one + two)
 	
@@ -48,4 +48,4 @@ while true do
 
 display ""
 
-print N
+put N

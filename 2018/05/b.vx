@@ -1,10 +1,10 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[ 0 ]
+let data = (load input_path).lines()[ 0 ]
 
 var s = data
 
@@ -72,7 +72,7 @@ def complete_reaction (s)
 
 def expunge (s, c)
 {
-	const pattern = packed c * 2 ~ x"0020"
+	let pattern = packed c * 2 ~ x"0020"
 	
 	s = translated( s, pattern, x"0000" )
 	
@@ -81,6 +81,6 @@ def expunge (s, c)
 
 assert expunge( "Alpha", 'a' ) == "lph"
 
-const r = complete_reaction data
+let r = complete_reaction data
 
-print Iter.min ('a' .. 'z' map { (complete_reaction expunge( r, v )).length })
+put Iter.min ('a' .. 'z' map { (complete_reaction expunge( r, v )).length })

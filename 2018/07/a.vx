@@ -1,17 +1,17 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var prereqs = byte^[]
 
 for row0 in data do
 {
-	const a = row0[  5 ]
-	const b = row0[ 36 ]
+	let a = row0[  5 ]
+	let b = row0[ 36 ]
 	
 	prereqs[ a ] =
 	prereqs[ b ] = []
@@ -19,8 +19,8 @@ for row0 in data do
 
 for row in data do
 {
-	const a = row[  5 ]
-	const b = row[ 36 ]
+	let a = row[  5 ]
+	let b = row[ 36 ]
 	
 	prereqs[ b ] <-- a
 }
@@ -34,11 +34,11 @@ var order = []
 
 while prereqs do
 {
-	const step = next()
+	let step = next()
 	
 	order <-- step
 	
 	prereqs = prereqs ver {v.key != step} map {v.key => v.value ver {v != step}}
 }
 
-print str order
+put str order

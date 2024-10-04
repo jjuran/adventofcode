@@ -1,10 +1,10 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = Iter.sorted (load input_path).lines()
+let data = Iter.sorted (load input_path).lines()
 
 var guards = int^[]
 var sleeps = []
@@ -15,9 +15,9 @@ var sleep_time
 
 for row in data do
 {
-	const minute = int row[ 15 -> 17 ]
+	let minute = int row[ 15 -> 17 ]
 	
-	const code = row[ 19 ]
+	let code = row[ 19 ]
 	
 	if code == 'G' then
 	{
@@ -44,7 +44,7 @@ def total_sleep (guard)
 
 def sleepiest_minute (guard)
 {
-	const guard_sleeps = sleeps ver {v.key == guard} map .value
+	let guard_sleeps = sleeps ver {v.key == guard} map .value
 	
 	var minutes = [0 (*) 60]
 	
@@ -59,8 +59,8 @@ def sleepiest_minute (guard)
 	return ((Iter.max (0 -> 60 map { v => minutes[ v ] }) via .value)).key
 }
 
-const total_sleeps = guards.keys map { v => total_sleep v }
+let total_sleeps = guards.keys map { v => total_sleep v }
 
-const sleeper = (Iter.max total_sleeps via .value).key
+let sleeper = (Iter.max total_sleeps via .value).key
 
-print (sleeper * sleepiest_minute sleeper)
+put (sleeper * sleepiest_minute sleeper)

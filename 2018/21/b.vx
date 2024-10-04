@@ -1,22 +1,22 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const program = data[ 1 -> data.length ]
+let program = data[ 1 -> data.length ]
 
-const init
-const factor
+let init   = ???
+let factor = ???
 
 for line in program do
 {
-	const mnemonic = line[ 0 -> 4 ]
-	const operands = [substr (line, 5) / ' '] map int
+	let mnemonic = line[ 0 -> 4 ]
+	let operands = [substr (line, 5) / ' '] map int
 	
-	const (a, b), ... = *operands
+	let (a, b), ... = *operands
 	
 	if mnemonic == "muli" and b > 2^16 then
 	{
@@ -67,4 +67,4 @@ while true do
 	seed = next
 }
 
-print seed
+put seed

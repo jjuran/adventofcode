@@ -1,10 +1,10 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const data = if argc > 1 then {argv[ 1 ]} else {"147061"}
+let data = if argc > 1 then {argv[ 1 ]} else {"147061"}
 
-const N = int data
+let N = int data
 
 var scoreboard = "37"
 
@@ -13,8 +13,8 @@ var j = 1
 
 while scoreboard.length < N + 10 do
 {
-	const one = int scoreboard[[ i ]]
-	const two = int scoreboard[[ j ]]
+	let one = int scoreboard[[ i ]]
+	let two = int scoreboard[[ j ]]
 	
 	scoreboard .= str (one + two)
 	
@@ -22,4 +22,4 @@ while scoreboard.length < N + 10 do
 	j = (j + 1 + two) mod scoreboard.length
 }
 
-print scoreboard[ N -> N + 10 ]
+put scoreboard[ N -> N + 10 ]

@@ -1,17 +1,17 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var prereqs = byte^[]
 
 for row0 in data do
 {
-	const a = row0[  5 ]
-	const b = row0[ 36 ]
+	let a = row0[  5 ]
+	let b = row0[ 36 ]
 	
 	prereqs[ a ] =
 	prereqs[ b ] = []
@@ -19,8 +19,8 @@ for row0 in data do
 
 for row in data do
 {
-	const a = row[  5 ]
-	const b = row[ 36 ]
+	let a = row[  5 ]
+	let b = row[ 36 ]
 	
 	prereqs[ b ] <-- a
 }
@@ -30,7 +30,7 @@ def next
 	return prereqs ver {v.value.length == 0} map .key per Math.min
 }
 
-const N = 5
+let N = 5
 
 var assigned = "\0" * N
 
@@ -38,8 +38,8 @@ var timers = []
 
 def idle_worker
 {
-	const p = begin assigned
-	const q = p.find '\0'
+	let p = begin assigned
+	let q = p.find '\0'
 	
 	return
 	if q then
@@ -74,8 +74,8 @@ def tick
 	
 	for t in (timers ver {v.value == T}) do
 	{
-		const worker = t.key
-		const step = assigned[ worker ]
+		let worker = t.key
+		let step = assigned[ worker ]
 		
 		assigned[ worker ] = '\0'
 		
@@ -89,7 +89,7 @@ while prereqs do
 {
 	while var step = next() do
 	{
-		const worker = idle_worker()
+		let worker = idle_worker()
 		
 		if worker < 0 then
 		{
@@ -104,4 +104,4 @@ while prereqs do
 	tick()
 }
 
-print T
+put T

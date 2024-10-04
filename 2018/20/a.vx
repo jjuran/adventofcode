@@ -1,15 +1,15 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = *(load input_path).lines()
+let data = *(load input_path).lines()
 
 var grid = "\n".join ("#+#", "+X+", "#+#", "")
 
@@ -20,7 +20,7 @@ var stride = width + 1
 var X = 1
 var Y = 1
 
-const dirs = byte^
+let dirs = byte^
 [
 	'N': [0, -1],
 	'S': [0,  1],
@@ -41,7 +41,7 @@ def route (p, dx=0, dy=0)
 	{
 		if c in dirs then
 		{
-			const (dir_x, dir_y) = *dirs[ c ]
+			let (dir_x, dir_y) = *dirs[ c ]
 			
 			x += dir_x
 			y += dir_y
@@ -53,10 +53,10 @@ def route (p, dx=0, dy=0)
 			
 			if not y in 0 -> height then
 			{
-				const width2 = width div 2
+				let width2 = width div 2
 				
-				const walls = ("#+" * width2) "#\n"
-				const floor = ("+." * width2) "+\n"
+				let walls = ("#+" * width2) "#\n"
+				let floor = ("+." * width2) "+\n"
 				
 				if y < 0 then
 				{
@@ -74,9 +74,9 @@ def route (p, dx=0, dy=0)
 			}
 			else if not x in 0 -> width then
 			{
-				const lines = grid.lines()
+				let lines = grid.lines()
 				
-				const expand =
+				let expand =
 				if x < 0 then
 				{
 					X += 2
@@ -120,7 +120,7 @@ route (begin data + '^')
 
 grid = translated (grid, "+", "\0")
 
-const offsets =
+let offsets =
 [
 	-1, -stride,
 	 1,  stride,
@@ -163,4 +163,4 @@ def furthest_distance (start)
 
 display ""
 
-print furthest_distance (X + Y * stride)
+put furthest_distance (X + Y * stride)
