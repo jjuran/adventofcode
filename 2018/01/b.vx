@@ -6,9 +6,9 @@ let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 let data = (load input_path).lines() map int
 
-var seen = vector[u8] (x"00" * 2^20)
+var seen = x"00" * 2^20
 
-seen[ 0 + 2^19 ] = 1
+seen[ 0 + 2^19 ] = '\xFF'
 
 var freq = 0
 
@@ -26,6 +26,6 @@ while true do
 			exit 0
 		}
 		
-		seen[ i ] = 1
+		seen[ i ] = '\xFF'
 	}
 }
