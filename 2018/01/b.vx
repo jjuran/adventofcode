@@ -15,7 +15,7 @@ seen[ 0 + offset ] = '\xFF'
 
 var freq = 0
 
-while true do
+def mark_seen
 {
 	for d in data do
 	{
@@ -25,10 +25,17 @@ while true do
 		
 		if seen[ i ] then
 		{
-			print freq
-			exit 0
+			return true
 		}
 		
 		seen[ i ] = '\xFF'
 	}
+	
+	return false
 }
+
+while not mark_seen() do
+{
+}
+
+put freq
