@@ -11,9 +11,21 @@ let offset = extent div 2
 
 var seen = x"00" * extent
 
-seen[ 0 + offset ] = '\xFF'
-
 var freq = 0
+
+def shift (s, delta)
+{
+	let n = s.size
+	
+	if delta < 0 then
+	{
+		return s[ -delta -> n ] (x"00" * -delta)
+	}
+	else
+	{
+		return (x"00" * delta) s[ 0 -> n - delta ]
+	}
+}
 
 def mark_seen
 {
@@ -34,8 +46,29 @@ def mark_seen
 	return false
 }
 
-while not mark_seen() do
+let already_done = mark_seen()
+
+if not already_done and freq != 0 then
 {
+	let delta = freq
+	
+	var initially_seen = seen
+	
+	while true do
+	{
+		initially_seen = shift (initially_seen, delta)
+		
+		if '\xFF' in seen & initially_seen then
+		{
+			break
+		}
+		
+		seen |= initially_seen
+		
+		freq += delta
+	}
+	
+	mark_seen()
 }
 
 put freq
