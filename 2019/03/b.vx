@@ -65,8 +65,8 @@ def segments (path)
 
 def cross (h, v)
 {
-	var (x0, y, x1) = *h
-	var (x, y0, y1) = *v
+	var n, const (x0, y, x1) = *h
+	var m, const (x, y0, y1) = *v
 	
 	assert x0 <= x1
 	assert y0 <= y1
