@@ -116,4 +116,4 @@ for k in 1 .. n_brackets do
 
 display ""
 
-print (scores per Math.max)
+print Iter.max scores

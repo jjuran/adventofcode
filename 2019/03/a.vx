@@ -110,6 +110,6 @@ const intersects =
 
 const distances = intersects map distance ver ...
 
-const minimum = distances per Math.min
+const minimum = Iter.min distances
 
 print minimum
