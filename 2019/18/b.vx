@@ -348,7 +348,7 @@ def fix_paths
 }
 
 const mapped = knowledge_input map { v => quadrant find v }
-const sorted = Iter.sorted mapped via { v.value }
+const sorted = Iter.sorted mapped via .value
 
 const quadrants = 0 -> 4 map { const q = v; byte^(sorted ver { v.value == q }) }
 

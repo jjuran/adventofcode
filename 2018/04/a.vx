@@ -44,7 +44,7 @@ def total_sleep (guard)
 
 def sleepiest_minute (guard)
 {
-	const guard_sleeps = sleeps ver {v.key == guard} map {v.value}
+	const guard_sleeps = sleeps ver {v.key == guard} map .value
 	
 	var minutes = [0 (*) 60]
 	
@@ -56,11 +56,11 @@ def sleepiest_minute (guard)
 		}
 	}
 	
-	return ((Iter.max (0 -> 60 map { v => minutes[ v ] }) via {v.value})).key
+	return ((Iter.max (0 -> 60 map { v => minutes[ v ] }) via .value)).key
 }
 
 const total_sleeps = guards.keys map { v => total_sleep v }
 
-const sleeper = (Iter.max total_sleeps via {v.value}).key
+const sleeper = (Iter.max total_sleeps via .value).key
 
 print (sleeper * sleepiest_minute sleeper)

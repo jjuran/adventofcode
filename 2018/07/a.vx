@@ -27,7 +27,7 @@ for row in data do
 
 def next
 {
-	return prereqs ver {v.value.length == 0} map {v.key} per Math.min
+	return prereqs ver {v.value.length == 0} map .key per Math.min
 }
 
 var order = []

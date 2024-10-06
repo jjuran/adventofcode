@@ -39,7 +39,7 @@ for row in data do
 
 def sleepiest_minute (guard)
 {
-	const guard_sleeps = sleeps ver {v.key == guard} map {v.value}
+	const guard_sleeps = sleeps ver {v.key == guard} map .value
 	
 	var minutes = [0 (*) 60]
 	
@@ -51,7 +51,7 @@ def sleepiest_minute (guard)
 		}
 	}
 	
-	return (Iter.max (0 -> 60 map { v => minutes[ v ] }) via {v.value})
+	return Iter.max (0 -> 60 map { v => minutes[ v ] }) via .value
 }
 
 const frequent_sleeps = guards.keys map { v => sleepiest_minute v }

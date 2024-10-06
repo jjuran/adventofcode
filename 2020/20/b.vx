@@ -181,7 +181,7 @@ def transformed_edge_index (index, transform)
 
 def find_other_tile_with_shared_edge (edge)
 {
-	const previous = tile_grid ver ... map { v.key }
+	const previous = tile_grid ver ... map .key
 	const adjacent = adjacency[ canon edge ] ver { not v in previous }
 	
 	return *adjacent

@@ -249,7 +249,7 @@ def is_best_distance_to (distance, site, level)
 
 def compute_paths
 {
-	const minimum = Iter.min (paths map {v.key})
+	const minimum = Iter.min (paths map .key)
 	
 	const min_paths = paths ver {v.key == minimum}
 	const more_paths = paths ver {v.key > minimum}

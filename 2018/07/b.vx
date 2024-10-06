@@ -27,7 +27,7 @@ for row in data do
 
 def next
 {
-	return prereqs ver {v.value.length == 0} map {v.key} per Math.min
+	return prereqs ver {v.value.length == 0} map .key per Math.min
 }
 
 const N = 5
@@ -70,7 +70,7 @@ def assign (worker, step)
 
 def tick
 {
-	T = timers map {v.value} per Math.min
+	T = timers map .value per Math.min
 	
 	for t in (timers ver {v.value == T}) do
 	{
