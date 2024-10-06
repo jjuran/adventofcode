@@ -1,33 +1,33 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
-const lines = data.lines()
+let lines = data.lines()
 
-const width  = lines[ 0 ].length
-const height = lines.length
+let width  = lines[ 0 ].length
+let height = lines.length
 
 var grid = str lines
 
-const N = grid.length
+let N = grid.length
 
-const empty_grid = "." * N
+let empty_grid = "." * N
 
-const top    = 0 -> 5 map ...
-const left   = 0 -> 5 map { v * 5 }
-const right  = 0 -> 5 map { v * 5 + 4 }
-const bottom = 0 -> 5 map { v + 5 * 4 }
+let top    = 0 -> 5 map ...
+let left   = 0 -> 5 map { v * 5 }
+let right  = 0 -> 5 map { v * 5 + 4 }
+let bottom = 0 -> 5 map { v + 5 * 4 }
 
-const adjacency =
+let adjacency =
 [
 	[-1: [7, 11], 0: [1, 5]],   #  0 (0,0)
 	[-1: [7], 0: [0, 2, 6]],    #  1 (1,0)
@@ -64,13 +64,13 @@ var gridspace = [empty_grid, grid, empty_grid]
 
 def adjacent_to_one (outer-grid-inner, i)
 {
-	const adj = adjacency[ i ]
+	let adj = adjacency[ i ]
 	
 	var total = 0
 	
 	for level in adj do
 	{
-		const grid = outer-grid-inner[ level.key + 1 ]
+		let grid = outer-grid-inner[ level.key + 1 ]
 		
 		for j in level.value do
 		{
@@ -83,11 +83,11 @@ def adjacent_to_one (outer-grid-inner, i)
 
 def advance (outer-grid-inner)
 {
-	const grid = outer-grid-inner[ 1 ]
+	let grid = outer-grid-inner[ 1 ]
 	
 	var work = grid
 	
-	const adjacent_to = adjacent_to_one % outer-grid-inner
+	let adjacent_to = adjacent_to_one % outer-grid-inner
 	
 	for i in 0 -> N do
 	{
@@ -120,7 +120,7 @@ def count
 	return gridspace map { v pop {v == '#'} } per Math.sum
 }
 
-const n_steps = 200
+let n_steps = 200
 
 for i in 0 -> n_steps do
 {
@@ -131,4 +131,4 @@ for i in 0 -> n_steps do
 
 display ""
 
-print count()
+put count()

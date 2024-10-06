@@ -1,21 +1,21 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const permutations = (import "permute").permutations
+let permutations = (import "permute").permutations
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[0]
-const core = [data / ','] map int
+let data = (load input_path).lines()[0]
+let core = [data / ','] map int
 
 def less   (a, b) {a < b}
 def equals (a, b) {a == b}
 
-const opcodes = [ 0, Math.sum, Math.product, 3, 4, 5, 6, less, equals ]
+let opcodes = [ 0, Math.sum, Math.product, 3, 4, 5, 6, less, equals ]
 
 def run (inputs)
 {
@@ -27,9 +27,9 @@ def run (inputs)
 	
 	while true do
 	{
-		const opcode = memory[ PC++ ]
+		let opcode = memory[ PC++ ]
 		
-		const op = opcode % 100
+		let op = opcode % 100
 		
 		var modes = opcode div 100
 		
@@ -38,8 +38,8 @@ def run (inputs)
 			break
 		}
 		
-		const i = memory[ PC++ ]
-		const a = if modes % 10 then {i} else {memory[ i ]}
+		let i = memory[ PC++ ]
+		let a = if modes % 10 then {i} else {memory[ i ]}
 		
 		if op == 3 then
 		{
@@ -54,8 +54,8 @@ def run (inputs)
 		
 		modes = modes div 10
 		
-		const j = memory[ PC++ ]
-		const b = if modes % 10 then {j} else {memory[ j ]}
+		let j = memory[ PC++ ]
+		let b = if modes % 10 then {j} else {memory[ j ]}
 		
 		if op == 5 then
 		{
@@ -77,9 +77,9 @@ def run (inputs)
 			continue
 		}
 		
-		const k = memory[ PC++ ]
+		let k = memory[ PC++ ]
 		
-		const c = int opcodes[ op ]( a, b )
+		let c = int opcodes[ op ]( a, b )
 		
 		memory[ k ] = c
 	}
@@ -101,6 +101,6 @@ def full_run (phases)
 	return input
 }
 
-const outputs = permutations 5 map full_run
+let outputs = permutations 5 map full_run
 
-print Iter.max outputs
+put Iter.max outputs

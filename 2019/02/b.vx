@@ -1,14 +1,14 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const program = [packed data / ','] map {int v.string}
+let program = [packed data / ','] map {int v.string}
 
-const opcodes = [ null, Math.sum, Math.product ]
+let opcodes = [ null, Math.sum, Math.product ]
 
 var memory
 
@@ -29,21 +29,21 @@ def run
 	
 	while true do
 	{
-		const op = memory[ PC++ ]
+		let op = memory[ PC++ ]
 		
 		if op == 99 then
 		{
 			break
 		}
 		
-		const i = memory[ PC++ ]
-		const j = memory[ PC++ ]
-		const k = memory[ PC++ ]
+		let i = memory[ PC++ ]
+		let j = memory[ PC++ ]
+		let k = memory[ PC++ ]
 		
-		const a = memory[ i ]
-		const b = memory[ j ]
+		let a = memory[ i ]
+		let b = memory[ j ]
 		
-		const c = opcodes[ op ]( a, b )
+		let c = opcodes[ op ]( a, b )
 		
 		memory[ k ] = c
 	}
@@ -61,7 +61,7 @@ for i in 0 .. 99 do
 		
 		if output() == 19690720 then
 		{
-			print (100 * i + j)
+			put (100 * i + j)
 		}
 	}
 }

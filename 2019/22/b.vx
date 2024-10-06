@@ -1,27 +1,27 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const modular = import "modular"
+let modular = import "modular"
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
-const lines = data.lines()
+let lines = data.lines()
 
-const count = 101741582076661
+let count = 101741582076661
 
-const N = 119315717514047
+let N = 119315717514047
 
-const position = 2020
+let position = 2020
 
 var card = position
 
-const id_matrix = [1, 0, 0, 1]
+let id_matrix = [1, 0, 0, 1]
 
 def matrix_mul (a, b)
 {
@@ -49,7 +49,7 @@ var matrix = id_matrix
 
 def radix (inc)
 {
-	const inverse = modular.power( inc, (N - 2), N )
+	let inverse = modular.power( inc, (N - 2), N )
 	
 	matrix = matrix_mul( matrix, scale inverse )
 	
@@ -79,17 +79,17 @@ def shuffle
 {
 	for row in -lines do
 	{
-		const words = [row / ' ']
+		let words = [row / ' ']
 		
 		if words[ 0 ] == "cut" then
 		{
-			const n = int words[ 1 ]
+			let n = int words[ 1 ]
 			
 			cut n
 		}
 		else if words[ 1 ] == "with" then
 		{
-			const increment = int words[ 3 ]
+			let increment = int words[ 3 ]
 			
 			radix increment
 		}
@@ -123,6 +123,6 @@ shuffle()
 
 matrix = matrix_power( matrix, count )
 
-const result = matrix_mul( translation position, matrix )
+let result = matrix_mul( translation position, matrix )
 
-print result[ 2 ]
+put result[ 2 ]

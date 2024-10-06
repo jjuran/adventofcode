@@ -1,27 +1,27 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
-const intcode = import "intcode"
+let display = (import "status") { OUT <== _ }
+let intcode = import "intcode"
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[0]
-const core = [data / ','] map int
+let data = (load input_path).lines()[0]
+let core = [data / ','] map int
 
-const machine = intcode.machine core
+let machine = intcode.machine core
 
-const Space = ' '
-const Droid = 'D'
-const Wall  = '#'
-const Floor = '.'
-const Prune = 'x'
-const O2sys = '@'
-const O2air = 'O'
+let Space = ' '
+let Droid = 'D'
+let Wall  = '#'
+let Floor = '.'
+let Prune = 'x'
+let O2sys = '@'
+let O2air = 'O'
 
 var floorplan = str^[]
 var distances = str^[]
@@ -31,7 +31,7 @@ distances[ "0,0" ] = 0
 var X = 0
 var Y = 0
 
-const moves =
+let moves =
 [
 	null,
 	[  0, -1 ],  # N
@@ -42,14 +42,14 @@ const moves =
 
 def forward (dir)
 {
-	const m = moves[ dir ]
+	let m = moves[ dir ]
 	
 	return X + m[ 0 ], Y + m[ 1 ]
 }
 
 def sample (x, y)
 {
-	const key = x "," y
+	let key = x "," y
 	
 	return if key in floorplan then { floorplan[ key ] } else { Space }
 }
@@ -90,30 +90,30 @@ def input
 	return dir
 }
 
-const tokens = Wall Floor O2sys ""
+let tokens = Wall Floor O2sys ""
 
 def gridify
 {
-	const keys = floorplan.keys
+	let keys = floorplan.keys
 	
-	const xkeys = keys map {int [v / ','][0]}
-	const ykeys = keys map {int [v / ','][1]}
+	let xkeys = keys map {int [v / ','][0]}
+	let ykeys = keys map {int [v / ','][1]}
 	
-	const min_x = Iter.min xkeys
-	const max_x = Iter.max xkeys
-	const min_y = Iter.min ykeys
-	const max_y = Iter.max ykeys
+	let min_x = Iter.min xkeys
+	let max_x = Iter.max xkeys
+	let min_y = Iter.min ykeys
+	let max_y = Iter.max ykeys
 	
-	const width  = max_x + 1 - min_x
-	const height = max_y + 1 - min_y
+	let width  = max_x + 1 - min_x
+	let height = max_y + 1 - min_y
 	
-	const npx = width * height
+	let npx = width * height
 	
 	var grid = " " * npx
 	
 	for kv in floorplan do
 	{
-		const (x, y) = *([kv.key / ','] map int)
+		let (x, y) = *([kv.key / ','] map int)
 		
 		grid[ (x - min_x) + (y - min_y) * width ] = kv.value
 	}
@@ -129,11 +129,11 @@ while true do
 {
 	dir = next_dir()
 	
-	const output = machine.run input
+	let output = machine.run input
 	
-	const key = ",".join next_pos
+	let key = ",".join next_pos
 	
-	const c = tokens[ output ]
+	let c = tokens[ output ]
 	
 	floorplan[ key ] = c
 	
@@ -160,17 +160,17 @@ while true do
 	}
 }
 
-const oxypos = X, Y
+let oxypos = X, Y
 
 display "Oxygen system at " rep oxypos
 
 while dir = next_dir() do
 {
-	const output = machine.run input
+	let output = machine.run input
 	
-	const key = ",".join next_pos
+	let key = ",".join next_pos
 	
-	const c = tokens[ output ]
+	let c = tokens[ output ]
 	
 	floorplan[ key ] = c
 	
@@ -194,20 +194,20 @@ display "Pumping oxygen..."
 
 floorplan[ ",".join oxypos ] = O2sys
 
-var oxymap, const height = gridify()
+var oxymap, let height = gridify()
 
-const keys = floorplan.keys
+let keys = floorplan.keys
 
-const xkeys = keys map {int [v / ','][0]}
-const ykeys = keys map {int [v / ','][1]}
+let xkeys = keys map {int [v / ','][0]}
+let ykeys = keys map {int [v / ','][1]}
 
-const min_x = Iter.min xkeys
-const max_x = Iter.max xkeys
-const min_y = Iter.min ykeys
-const max_y = Iter.max ykeys
+let min_x = Iter.min xkeys
+let max_x = Iter.max xkeys
+let min_y = Iter.min ykeys
+let max_y = Iter.max ykeys
 
-const width  = max_x + 1 - min_x
-#const height = max_y + 1 - min_y
+let width  = max_x + 1 - min_x
+#let height = max_y + 1 - min_y
 
 var timer = 0
 
@@ -221,10 +221,10 @@ while true do
 	{
 		for m in moves[ 1 .. 4 ] do
 		{
-			const x = oxy[0] + m[0]
-			const y = oxy[1] + m[1]
+			let x = oxy[0] + m[0]
+			let y = oxy[1] + m[1]
 			
-			const index = x - min_x + (y - min_y) * width
+			let index = x - min_x + (y - min_y) * width
 			
 			if oxymap[ index ] in Prune Floor Droid "" then
 			{
@@ -247,4 +247,4 @@ while true do
 
 display ""
 
-print timer
+put timer

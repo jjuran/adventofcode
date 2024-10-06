@@ -1,24 +1,24 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const intcode = import "intcode"
+let intcode = import "intcode"
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[0]
-const core = [data / ','] map int
+let data = (load input_path).lines()[0]
+let core = [data / ','] map int
 
-const N = 50
+let N = 50
 
-const all_ids = 0 -> N
+let all_ids = 0 -> N
 
-const Idle = '-'
-const Ready = '*'
-const Running = '!'
+let Idle = '-'
+let Ready = '*'
+let Running = '!'
 
 var input_queues = all_ids map {[ v ]}
 
@@ -28,25 +28,25 @@ var T = time()
 
 def debug (s)
 {
-	const t = time() - T
+	let t = time() - T
 	
 	OUT <== "\r" t ": " s
 }
 
 def info (s)
 {
-	const t = time() - T
+	let t = time() - T
 	
-	print "\r" (" " * 80) "\r" t ": " s
+	put "\r" (" " * 80) "\r" t ": " s
 }
 
 def new_machine (id)
 {
 	def input
 	{
-		if const len = input_queues[ id ].length then
+		if let len = input_queues[ id ].length then
 		{
-			const next = input_queues[ id ][ 0 ]
+			let next = input_queues[ id ][ 0 ]
 			
 			input_queues[ id ] = input_queues[ id ][ 1 -> len ]
 			
@@ -54,7 +54,7 @@ def new_machine (id)
 		}
 		else
 		{
-			const was_idle = status[ id ] == Idle
+			let was_idle = status[ id ] == Idle
 			
 			status[ id ] = Idle
 			
@@ -69,7 +69,7 @@ def new_machine (id)
 		}
 	}
 	
-	const machine = intcode.machine core
+	let machine = intcode.machine core
 	
 	machine.connect-input input
 	
@@ -84,11 +84,11 @@ def run (id)
 	
 	debug status
 	
-	const machine = machines[ id ].value
+	let machine = machines[ id ].value
 	
 	while true do
 	{
-		const output = machine.run()
+		let output = machine.run()
 		
 		if output isa () then
 		{
@@ -101,10 +101,10 @@ def run (id)
 		}
 		else
 		{
-			const dst = output
+			let dst = output
 			
-			const x = machine.run()
-			const y = machine.run()
+			let x = machine.run()
+			let y = machine.run()
 			
 			if dst == 255 then
 			{
@@ -127,7 +127,7 @@ def run (id)
 
 while true do
 {
-	const runnable = (all_ids ver { input_queues[ v ] }) or all_ids
+	let runnable = (all_ids ver { input_queues[ v ] }) or all_ids
 	
 	for id in runnable do
 	{

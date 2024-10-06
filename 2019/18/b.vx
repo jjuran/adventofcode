@@ -1,41 +1,41 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 # Example a4.txt produces four solutions for part 1, only two of which are
 # minimal in part 2.  But as long as official input produces only solution,
 # this is sufficient.
 
-const knowledge_input = getenv "KNOWLEDGE_INPUT"
+let knowledge_input = getenv "KNOWLEDGE_INPUT"
 	or throw "KNOWLEDGE_INPUT must be set"
 
-const data = load input_path
+let data = load input_path
 
-const lines = data.lines()
+let lines = data.lines()
 
-const width  = lines[ 0 ].length
-const height = lines.length
+let width  = lines[ 0 ].length
+let height = lines.length
 
 var image = str lines
 
-const upper = 'A' .. 'Z'
-const lower = 'a' .. 'z'
+let upper = 'A' .. 'Z'
+let lower = 'a' .. 'z'
 
-const alpha = upper | lower
+let alpha = upper | lower
 
 def isalpha (c)
 {
 	return c in alpha
 }
 
-const dirs =
+let dirs =
 [
 	[  0, -1 ],  # N
 	[  0,  1 ],  # S
@@ -45,14 +45,14 @@ const dirs =
 
 def find (c)
 {
-	const p = (begin image).find c
+	let p = (begin image).find c
 	
 	return if p then {p.past.length}
 }
 
 # Nothing can be at (0,0), because that's a wall.
 
-const start = find '@'
+let start = find '@'
 
 var all_keys  = [ 0 (*) 26 ]
 var all_doors = [ 0 (*) 26 ]
@@ -61,7 +61,7 @@ var n_keys = 0
 
 for k in 'a' .. 'z' do
 {
-	const i = find k
+	let i = find k
 	
 	if i isa () then {break}
 	
@@ -76,7 +76,7 @@ var n_doors = 0
 
 for D in 'A' .. 'Z' do
 {
-	if const i = find D then
+	if let i = find D then
 	{
 		all_doors[ u8 D - u8 'A' ] = i
 		
@@ -96,7 +96,7 @@ def decompose (i)
 
 def neighbors (i)
 {
-	const (x, y) = decompose i
+	let (x, y) = decompose i
 	
 	return dirs map { [v[0] + x, v[1] + y] }
 	            ver { v[0] in 0 -> width and v[1] in 0 -> height }
@@ -115,7 +115,7 @@ var pathto = byte^[]
 
 def compute_distances_from_start (dungeon, start, path)
 {
-	const A = dungeon[ start ]
+	let A = dungeon[ start ]
 	
 	display "Distances from start: " path
 	
@@ -136,7 +136,7 @@ def compute_distances_from_start (dungeon, start, path)
 		
 		for edge in frontier do
 		{
-			const c = dungeon[ edge ]
+			let c = dungeon[ edge ]
 			
 			if isalpha c then
 			{
@@ -158,7 +158,7 @@ def compute_distances_from_start (dungeon, start, path)
 			
 			dungeon[ edge ] = '+'
 			
-			const moves = valid_moves edge ver { dungeon[ v ] != '+' }
+			let moves = valid_moves edge ver { dungeon[ v ] != '+' }
 			
 			new_frontier <-- *moves
 		}
@@ -173,14 +173,14 @@ def path_between (A, B)
 {
 	assert A != B
 	
-	const b = pathto[ B ]
+	let b = pathto[ B ]
 	
 	if A == '@' then
 	{
 		return b B
 	}
 	
-	const a = pathto[ A ]
+	let a = pathto[ A ]
 	
 	var p = begin a
 	var q = begin b
@@ -195,7 +195,7 @@ def path_between (A, B)
 
 def distance_between (A, B)
 {
-	const key = str _
+	let key = str _
 	
 	if key in distances.keys then
 	{
@@ -209,14 +209,14 @@ def distance_between (A, B)
 	
 	while q do
 	{
-		const a = *p++
-		const b = *q++
+		let a = *p++
+		let b = *q++
 		
 		if a == b then {continue}
 		
-		const subkey = str (a, b)
+		let subkey = str (a, b)
 		
-		const d =
+		let d =
 			if subkey in distances.keys
 				then {distances[ subkey ]}
 				else {distance_between (a, b)}
@@ -244,7 +244,7 @@ def measure_path (A, sequence)
 
 def compute_distances_from (start)
 {
-	const A = image[ start ]
+	let A = image[ start ]
 	
 	display "Distances from " A
 	
@@ -264,7 +264,7 @@ def compute_distances_from (start)
 		
 		for lead in leads do
 		{
-			const c = copy[ lead ]
+			let c = copy[ lead ]
 			
 			copy[ lead ] = '+'
 			
@@ -274,7 +274,7 @@ def compute_distances_from (start)
 				continue
 			}
 			
-			const moves = valid_moves lead ver { copy[ v ] != '+' }
+			let moves = valid_moves lead ver { copy[ v ] != '+' }
 			
 			new_leads <-- *moves
 		}
@@ -304,7 +304,7 @@ def precompute_distances
 
 precompute_distances()
 
-const center
+let center
 
 if image[ start + 1 ] == '.' then
 {
@@ -327,7 +327,7 @@ else
 	center = start + width + 1
 }
 
-const center_x = center mod width
+let center_x = center mod width
 
 def quadrant (i)
 {
@@ -347,17 +347,17 @@ def fix_paths
 	}
 }
 
-const mapped = knowledge_input map { v => quadrant find v }
-const sorted = Iter.sorted mapped via .value
+let mapped = knowledge_input map { v => quadrant find v }
+let sorted = Iter.sorted mapped via .value
 
-const quadrants = 0 -> 4 map { const q = v; byte^(sorted ver { v.value == q }) }
+let quadrants = 0 -> 4 map { let q = v; byte^(sorted ver { v.value == q }) }
 
-const key_lists = quadrants map { str v.keys }
+let key_lists = quadrants map { str v.keys }
 
 fix_paths()
 
-const numbers = key_lists map {measure_path( '@', v )}
+let numbers = key_lists map {measure_path( '@', v )}
 
 display ""
 
-print Math.sum *numbers
+put Math.sum *numbers

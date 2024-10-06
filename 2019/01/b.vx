@@ -1,14 +1,14 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 def fuel_cost (mass)
 {
-	const cost = mass div 3 - 2
+	let cost = mass div 3 - 2
 	
 	if cost <= 0 then
 	{
@@ -18,6 +18,6 @@ def fuel_cost (mass)
 	return cost + fuel_cost cost
 }
 
-const result = data map { fuel_cost int v } per {a + b}
+let result = data map { fuel_cost int v } per {a + b}
 
-print result
+put result

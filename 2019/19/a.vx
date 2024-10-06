@@ -1,21 +1,21 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
-const intcode = import "intcode"
+let display = (import "status") { OUT <== _ }
+let intcode = import "intcode"
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[0]
-const core = [data / ','] map int
+let data = (load input_path).lines()[0]
+let core = [data / ','] map int
 
 var i = -1
 
-const max_i = 50 * 50 - 1
+let max_i = 50 * 50 - 1
 
 var input_queue
 
@@ -28,11 +28,11 @@ var sum = 0
 
 for j in 0 -> 50 * 50 do
 {
-	const machine = intcode.machine core
+	let machine = intcode.machine core
 	
 	input_queue = begin [ j mod 50, j div 50 ]
 	
-	const output = machine.run input
+	let output = machine.run input
 	
 	sum += output
 	
@@ -41,4 +41,4 @@ for j in 0 -> 50 * 50 do
 
 display ""
 
-print sum
+put sum

@@ -1,27 +1,27 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const permute = (import "permute").permute
+let permute = (import "permute").permute
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[0]
-const core = [data / ','] map int
+let data = (load input_path).lines()[0]
+let core = [data / ','] map int
 
 def less   (a, b) {a < b}
 def equals (a, b) {a == b}
 
-const opcodes = [ 0, Math.sum, Math.product, 3, 4, 5, 6, less, equals ]
+let opcodes = [ 0, Math.sum, Math.product, 3, 4, 5, 6, less, equals ]
 
 def shift (arrayref)
 {
-	const values = *arrayref
+	let values = *arrayref
 	
-	const v = values[ 0 ]
+	let v = values[ 0 ]
 	
 	*arrayref = values[ 1 -> values.length ]
 	
@@ -44,9 +44,9 @@ def IntCode_machine (init)
 	
 	def step
 	{
-		const opcode = memory[ PC++ ]
+		let opcode = memory[ PC++ ]
 		
-		const op = opcode % 100
+		let op = opcode % 100
 		
 		var modes = opcode div 100
 		
@@ -56,12 +56,12 @@ def IntCode_machine (init)
 			return false
 		}
 		
-		const i = memory[ PC++ ]
-		const a = if modes % 10 then {i} else {memory[ i ]}
+		let i = memory[ PC++ ]
+		let a = if modes % 10 then {i} else {memory[ i ]}
 		
 		if op == 3 then
 		{
-			const ok = inputs.length > 0
+			let ok = inputs.length > 0
 			
 			if ok then
 			{
@@ -79,8 +79,8 @@ def IntCode_machine (init)
 		
 		modes = modes div 10
 		
-		const j = memory[ PC++ ]
-		const b = if modes % 10 then {j} else {memory[ j ]}
+		let j = memory[ PC++ ]
+		let b = if modes % 10 then {j} else {memory[ j ]}
 		
 		if op == 5 then
 		{
@@ -102,9 +102,9 @@ def IntCode_machine (init)
 			return true
 		}
 		
-		const k = memory[ PC++ ]
+		let k = memory[ PC++ ]
 		
-		const c = int opcodes[ op ]( a, b )
+		let c = int opcodes[ op ]( a, b )
 		
 		memory[ k ] = c
 		
@@ -126,9 +126,9 @@ def IntCode_machine (init)
 
 def full_run (phases)
 {
-	const amps = phases map IntCode_machine
+	let amps = phases map IntCode_machine
 	
-	const n = amps.length
+	let n = amps.length
 	
 	var i = 0
 	
@@ -149,6 +149,6 @@ def full_run (phases)
 	return output
 }
 
-const outputs = permute [*(5 .. 9)] map full_run
+let outputs = permute [*(5 .. 9)] map full_run
 
-print Iter.max outputs
+put Iter.max outputs

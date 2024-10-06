@@ -1,18 +1,18 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const intcode = import "intcode"
+let intcode = import "intcode"
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[0]
-const core = [data / ','] map int
+let data = (load input_path).lines()[0]
+let core = [data / ','] map int
 
-const dirs = str^
+let dirs = str^
 [
 	north: [0, 1],
 	south: [0, -1],
@@ -29,7 +29,7 @@ def input
 	return
 	if input_queue then
 	{
-		const c = *input_queue++
+		let c = *input_queue++
 		
 		OUT <== c
 		
@@ -37,7 +37,7 @@ def input
 	}
 }
 
-const machine = intcode.machine core
+let machine = intcode.machine core
 
 machine.connect-input input
 
@@ -72,7 +72,7 @@ for command in DATA.lines() do
 	run_command command
 }
 
-const objects =
+let objects =
 [
 	"fuel cell",
 	"easter egg",
@@ -89,11 +89,11 @@ for o in objects do
 	run_command "drop " o
 }
 
-const saved_machine_state = machine.suspend()
+let saved_machine_state = machine.suspend()
 
 def find_passcode (s)
 {
-	const prompt = "get in by typing "
+	let prompt = "get in by typing "
 	
 	var p = (begin s).find prompt
 	
@@ -102,9 +102,9 @@ def find_passcode (s)
 
 def attempt (bits)
 {
-	print ""
-	print "Object set #" bits
-	print ""
+	put ""
+	put "Object set #" bits
+	put ""
 	
 	machine.resume saved_machine_state
 	
@@ -112,7 +112,7 @@ def attempt (bits)
 	
 	for b in 0 -> 8 do
 	{
-		const k = 2^(7 - b)
+		let k = 2^(7 - b)
 		
 		if bits >= k then
 		{
@@ -123,13 +123,13 @@ def attempt (bits)
 		}
 	}
 	
-	const response = run_command "west"
+	let response = run_command "west"
 	
-	if const passcode = find_passcode response then
+	if let passcode = find_passcode response then
 	{
-		print "\n" "Carrying: " rep carried
+		put "\n" "Carrying: " rep carried
 		
-		print "\n    Main airlock passcode:  " passcode "\n"
+		put "\n    Main airlock passcode:  " passcode "\n"
 	}
 }
 

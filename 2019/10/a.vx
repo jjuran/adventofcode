@@ -1,22 +1,22 @@
 #!/usr/bin/env minivx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
-const lines = data.lines()
+let lines = data.lines()
 
-const grid = str lines
+let grid = str lines
 
-const height = lines.length
-const width = grid.length / height
+let height = lines.length
+let width = grid.length / height
 
 def mark_obstructed_along_ray( gridref, x, y, dx, dy )
 {
@@ -24,7 +24,7 @@ def mark_obstructed_along_ray( gridref, x, y, dx, dy )
 	
 	while (x += dx) in 0 -> width and (y += dy) in 0 -> height do
 	{
-		const index = x + y * width
+		let index = x + y * width
 		
 		if obstructed then
 		{
@@ -44,8 +44,8 @@ def count_asteroids( grid, index )
 		return 0
 	}
 	
-	const x = index mod width
-	const y = index div width
+	let x = index mod width
+	let y = index div width
 	
 	mark_obstructed_along_ray( &grid, x, y,  1,  0 )
 	mark_obstructed_along_ray( &grid, x, y, -1,  0 )
@@ -89,7 +89,7 @@ display "Max: [" max_index "] " max_count
 
 for i in 0 -> grid.length do
 {
-	const count = count_asteroids( grid, i )
+	let count = count_asteroids( grid, i )
 	
 	if count > max_count then
 	{
@@ -102,9 +102,9 @@ for i in 0 -> grid.length do
 
 display ""
 
-const x = max_index mod width
-const y = max_index div width
+let x = max_index mod width
+let y = max_index div width
 
-print max_count
+put max_count
 
 rewrite bindir "/10-pipe.txt" <== rep (x, y), "\n"

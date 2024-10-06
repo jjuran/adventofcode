@@ -1,19 +1,19 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const sieve-of-eratosthenes = import "sieve-of-eratosthenes"
+let sieve-of-eratosthenes = import "sieve-of-eratosthenes"
 
-const lcm = (import "lcm").with sieve-of-eratosthenes
+let lcm = (import "lcm").with sieve-of-eratosthenes
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 def parse_line (s)
 {
@@ -22,7 +22,7 @@ def parse_line (s)
 
 def dimension (positions)
 {
-	const n = positions.length
+	let n = positions.length
 	
 	var velocities (int[]) = [0 (*) n]
 	
@@ -31,7 +31,7 @@ def dimension (positions)
 		return rep (0 -> n map { positions[ v ], velocities[ v ] })
 	}
 	
-	const beginning = state()
+	let beginning = state()
 	
 	def step
 	{
@@ -39,13 +39,13 @@ def dimension (positions)
 		
 		for i in 1 -> n do
 		{
-			const a = positions[ i ]
+			let a = positions[ i ]
 			
 			for j in 0 -> i do
 			{
-				const b = positions[ j ]
+				let b = positions[ j ]
 				
-				const pull = b <=> a
+				let pull = b <=> a
 				
 				velocities[ i ] += pull
 				velocities[ j ] -= pull
@@ -65,15 +65,15 @@ def dimension (positions)
 	return record( :step )
 }
 
-const positions = data map parse_line
+let positions = data map parse_line
 
-const axes = "XYZ"
+let axes = "XYZ"
 
 def find_period (i)
 {
-	const axis = axes[ i ] ": "
+	let axis = axes[ i ] ": "
 	
-	const d = dimension (positions map { v[ i ] })
+	let d = dimension (positions map { v[ i ] })
 	
 	var steps = 0
 	
@@ -93,12 +93,12 @@ def find_period (i)
 	return steps
 }
 
-const cycles = 0 -> 3 map find_period
+let cycles = 0 -> 3 map find_period
 
 display rep cycles
 
-const result = lcm cycles
+let result = lcm cycles
 
 display ""
 
-print result
+put result

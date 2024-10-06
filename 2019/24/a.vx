@@ -1,19 +1,19 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
-const lines = data.lines()
+let lines = data.lines()
 
-const width  = lines[ 0 ].length
-const height = lines.length
+let width  = lines[ 0 ].length
+let height = lines.length
 
 var grid = str lines
 
-const N = grid.length
+let N = grid.length
 
 def biodiversity
 {
@@ -34,7 +34,7 @@ def count_adjacent (i)
 		total += +(grid[ i + width ] == '#')
 	}
 	
-	const x = i mod width
+	let x = i mod width
 	
 	if x > 0 then
 	{
@@ -51,7 +51,7 @@ def count_adjacent (i)
 
 def predicate (i)
 {
-	const n_adjacent = count_adjacent i
+	let n_adjacent = count_adjacent i
 	
 	var has_bug = grid[ i ] == '#'
 	
@@ -79,4 +79,4 @@ for i in 0 -> 100 do
 	if grid in grids then {break}
 }
 
-print biodiversity()
+put biodiversity()

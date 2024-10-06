@@ -1,17 +1,17 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[0]
+let data = (load input_path).lines()[0]
 
-const w = 25
-const h = 6
+let w = 25
+let h = 6
 
-const npx = w * h
+let npx = w * h
 
-const layers = [data / -npx]
+let layers = [data / -npx]
 
 def composite (i)
 {
@@ -33,4 +33,4 @@ for i in 0 -> npx do
 
 composed = translated( composed, "01", " X" )
 
-print "\n" (["", composed / h] map { "    " v "\n" })
+put "\n" (["", composed / h] map { "    " v "\n" })

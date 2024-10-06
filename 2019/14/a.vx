@@ -1,15 +1,15 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../lib/"
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 def parse (measure)
 {
-	const (n, name) = measure / ' '
+	let (n, name) = measure / ' '
 	
 	return name => int n
 }
@@ -21,10 +21,10 @@ for row in data do
 {
 	var p = (begin row).find " => "
 	
-	const reagents = p.past
-	const product = parse (p + 4).rest
+	let reagents = p.past
+	let product = parse (p + 4).rest
 	
-	const factors = [" " reagents / ','] map { parse substr(v, 1) }
+	let factors = [" " reagents / ','] map { parse substr(v, 1) }
 	
 	recipes[ product.key ] = [ product.value, factors ]
 	
@@ -38,22 +38,22 @@ while needs ver {v.value > 0 and v.key != "ORE"} do
 {
 	for need in (needs ver {v.value > 0}) do
 	{
-		const name = need.key
+		let name = need.key
 		
 		if name == "ORE" then
 		{
 			continue
 		}
 		
-		const needed = needs[ name ]
+		let needed = needs[ name ]
 		
-		const r = recipes[ name ]
+		let r = recipes[ name ]
 		
-		const n = r[ 0 ]
+		let n = r[ 0 ]
 		
-		const coefficient = (needed + n - 1) div n
+		let coefficient = (needed + n - 1) div n
 		
-		const factors = r[ 1 ]
+		let factors = r[ 1 ]
 		
 		for f in factors do
 		{
@@ -64,4 +64,4 @@ while needs ver {v.value > 0 and v.key != "ORE"} do
 	}
 }
 
-print needs[ "ORE" ]
+put needs[ "ORE" ]

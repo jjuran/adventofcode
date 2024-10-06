@@ -1,19 +1,19 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
-const intcode = import "intcode"
+let display = (import "status") { OUT <== _ }
+let intcode = import "intcode"
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[0]
-const core = [data / ','] map int
+let data = (load input_path).lines()[0]
+let core = [data / ','] map int
 
-const machine = intcode.machine core
+let machine = intcode.machine core
 
 var text = ""
 var scan = "Visual scan: "
@@ -34,19 +34,19 @@ for output in receiver machine.run do
 
 display "Done."
 
-const lines = text.lines() ver ...
+let lines = text.lines() ver ...
 
-const width  = lines[ 0 ].length
-const height = lines.length
+let width  = lines[ 0 ].length
+let height = lines.length
 
-const image = str lines
+let image = str lines
 
 def is_scaffold (x, y)
 {
 	return image[ x + y * width ] == '#'
 }
 
-const moves =
+let moves =
 [
 	[  0, -1 ],  # N
 	[  0,  1 ],  # S
@@ -56,7 +56,7 @@ const moves =
 
 def is_intersection (i, j)
 {
-	const neighbors = moves map { [v[0] + i, v[1] + j] }
+	let neighbors = moves map { [v[0] + i, v[1] + j] }
 	
 	return is_scaffold( i, j ) and neighbors pop {is_scaffold *v} > 2
 }
@@ -76,4 +76,4 @@ for i in 1 -> width - 1 do
 
 display ""
 
-print sum
+put sum

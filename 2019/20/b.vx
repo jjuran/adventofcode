@@ -1,29 +1,29 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
-const lines = data.lines()
+let lines = data.lines()
 
-const width  = lines[ 0 ].length
-const height = lines.length
+let width  = lines[ 0 ].length
+let height = lines.length
 
-const maze = str lines
+let maze = str lines
 
 var portkeys = str^[]
 var all_portals = int^[]
 
 var interportal_distances = str^[]
 
-const upper = packed ('A' .. 'Z')
+let upper = packed ('A' .. 'Z')
 
 def isupper (c) { c in upper }
 
@@ -32,7 +32,7 @@ def decompose (offset)
 	return offset mod width, offset div width
 }
 
-const dirs =
+let dirs =
 [
 	-width,  # N
 	width,  # S
@@ -42,8 +42,8 @@ const dirs =
 
 def is_inner (offset)
 {
-	const x = offset mod width
-	const y = offset div width
+	let x = offset mod width
+	let y = offset div width
 	
 	return x in 3 -> width - 3 and y in 3 -> height - 3
 }
@@ -87,16 +87,16 @@ def find_portal_labels
 	var q
 	var c
 	
-	const top    = p + width
-	const bottom = p + (maze.length - width)
+	let top    = p + width
+	let bottom = p + (maze.length - width)
 	
 	while p do
 	{
-		const c = *p++
+		let c = *p++
 		
 		if c == '#' then
 		{
-			const offset = (p + -1).past.length
+			let offset = (p + -1).past.length
 			
 			bottom_right = offset
 			
@@ -114,7 +114,7 @@ def find_portal_labels
 		{
 			# horizontal label
 			
-			const label = c c_ ""
+			let label = c c_ ""
 			
 			if *p == '.' then
 			{
@@ -142,7 +142,7 @@ def find_portal_labels
 		{
 			# bottom of vertical label
 			
-			const label = *q c ""
+			let label = *q c ""
 			
 			if q >= top and *(q -= width) == '.' then
 			{
@@ -153,7 +153,7 @@ def find_portal_labels
 		{
 			# top of vertical label
 			
-			const label = c *q ""
+			let label = c *q ""
 			
 			if q <= bottom and *(q += width) == '.' then
 			{
@@ -167,7 +167,7 @@ def find_portal_labels
 
 find_portal_labels()
 
-const (start, finish) = *portkeys[[ "AA", "ZZ" ]]
+let (start, finish) = *portkeys[[ "AA", "ZZ" ]]
 
 var reachable_portals = int^(all_portals.keys map {v => []})
 
@@ -176,7 +176,7 @@ reachable_portals[ finish ] = []
 
 def nameof (offset)
 {
-	const layer = if is_inner offset then {"inner"} else {"outer"}
+	let layer = if is_inner offset then {"inner"} else {"outer"}
 	
 	return layer " " reverse_lookup[ offset ]
 }
@@ -209,7 +209,7 @@ def compute_distances (portal)
 			
 			for d in dirs do
 			{
-				const offset = f + d
+				let offset = f + d
 				
 				new_frontier <-- offset
 			}
@@ -236,7 +236,7 @@ var best_distance_to = str^[]
 
 def is_best_distance_to (distance, site, level)
 {
-	const key = site ":" level
+	let key = site ":" level
 	
 	if key in best_distance_to and best_distance_to[ key ] < distance then
 	{
@@ -249,28 +249,28 @@ def is_best_distance_to (distance, site, level)
 
 def compute_paths
 {
-	const minimum = Iter.min (paths map .key)
+	let minimum = Iter.min (paths map .key)
 	
-	const min_paths = paths ver {v.key == minimum}
-	const more_paths = paths ver {v.key > minimum}
+	let min_paths = paths ver {v.key == minimum}
+	let more_paths = paths ver {v.key > minimum}
 	
 	var new_paths = more_paths
 	
 	for path in min_paths do
 	{
-		const distance = path.key
-		const portals  = path.value
+		let distance = path.key
+		let portals  = path.value
 		
-		const last = portals[ portals.length - 1 ]
+		let last = portals[ portals.length - 1 ]
 		
-		const index = last.key
-		const level = last.value
+		let index = last.key
+		let level = last.value
 		
 		for reachable in reachable_portals[ index ] do
 		{
-			const inward  = is_inner reachable
-			const outward = not inward
-			const is_exit = reachable == finish
+			let inward  = is_inner reachable
+			let outward = not inward
+			let is_exit = reachable == finish
 			
 			if level == 0 and outward and not is_exit then
 			{
@@ -283,7 +283,7 @@ def compute_paths
 				continue
 			}
 			
-			const interportal = index "-" reachable
+			let interportal = index "-" reachable
 			
 			var added_distance = interportal_distances[ interportal ]
 			
@@ -296,12 +296,12 @@ def compute_paths
 			
 			++added_distance
 			
-			const next_index = all_portals[ reachable ]
-			const next_level = level + +inward + -outward
+			let next_index = all_portals[ reachable ]
+			let next_level = level + +inward + -outward
 			
-			const next_portal = next_index => next_level
+			let next_portal = next_index => next_level
 			
-			const new_distance = distance + added_distance
+			let new_distance = distance + added_distance
 			
 			if is_best_distance_to( new_distance, next_index, next_level ) then
 			{
@@ -328,9 +328,10 @@ while paths do
 	
 	if exits then
 	{
-		display ""
-		
-		print *exits
 		break
 	}
 }
+
+display ""
+
+put exits

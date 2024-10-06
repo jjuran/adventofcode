@@ -1,17 +1,17 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
-const intcode = import "intcode"
+let display = (import "status") { OUT <== _ }
+let intcode = import "intcode"
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[0]
-const core = [data / ','] map int
+let data = (load input_path).lines()[0]
+let core = [data / ','] map int
 
 var line = ""
 var prompt = ""
@@ -22,7 +22,7 @@ var input_queue = begin DATA
 
 def input
 {
-	const c = *input_queue++
+	let c = *input_queue++
 	
 	if c != '\n' then
 	{
@@ -38,7 +38,7 @@ def input
 	return int c
 }
 
-const machine = intcode.machine core
+let machine = intcode.machine core
 
 machine.poke( 0, 2 )
 machine.connect-input input
@@ -49,7 +49,7 @@ for output in receiver machine.run do
 	{
 		display ""
 		
-		print output
+		put output
 	}
 	else
 	{

@@ -1,29 +1,29 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
-const lines = data.lines()
+let lines = data.lines()
 
-const width  = lines[ 0 ].length
-const height = lines.length
+let width  = lines[ 0 ].length
+let height = lines.length
 
-const maze = str lines
+let maze = str lines
 
 var portkeys = str^[]
 var portals  = int^[]
 
 var distances = int^[]
 
-const upper = packed ('A' .. 'Z')
+let upper = packed ('A' .. 'Z')
 
 def isupper (c) { c in upper }
 
@@ -32,7 +32,7 @@ def decompose (offset)
 	return offset mod width, offset div width
 }
 
-const dirs =
+let dirs =
 [
 	-width,  # N
 	width,  # S
@@ -42,7 +42,7 @@ const dirs =
 
 def record_portal (label, p)
 {
-	const offset = p.past.length
+	let offset = p.past.length
 	
 	if not label in portkeys then
 	{
@@ -50,7 +50,7 @@ def record_portal (label, p)
 	}
 	else
 	{
-		const other = portkeys[ label ]
+		let other = portkeys[ label ]
 		
 		display "Portal " label " at " rep ([other, offset] map decompose)
 		
@@ -65,8 +65,8 @@ def find_portal_labels
 	var q
 	var c
 	
-	const top    = p + width
-	const bottom = p + (maze.length - width)
+	let top    = p + width
+	let bottom = p + (maze.length - width)
 	
 	var n = 0
 	
@@ -80,7 +80,7 @@ def find_portal_labels
 		{
 			# horizontal label
 			
-			const label = c c_ ""
+			let label = c c_ ""
 			
 			if *p == '.' then
 			{
@@ -108,7 +108,7 @@ def find_portal_labels
 		{
 			# bottom of vertical label
 			
-			const label = *q c ""
+			let label = *q c ""
 			
 			if q >= top and *(q -= width) == '.' then
 			{
@@ -119,7 +119,7 @@ def find_portal_labels
 		{
 			# top of vertical label
 			
-			const label = c *q ""
+			let label = c *q ""
 			
 			if q <= bottom and *(q += width) == '.' then
 			{
@@ -135,7 +135,7 @@ def find_portal_labels
 
 find_portal_labels()
 
-const (start, finish) = *portkeys[[ "AA", "ZZ" ]]
+let (start, finish) = *portkeys[[ "AA", "ZZ" ]]
 
 def compute_distances
 {
@@ -163,7 +163,7 @@ def compute_distances
 			
 			for d in dirs do
 			{
-				const offset = f + d
+				let offset = f + d
 				
 				new_frontier <-- offset
 			}
@@ -181,4 +181,4 @@ compute_distances()
 
 display ""
 
-print distances[ finish ]
+put distances[ finish ]

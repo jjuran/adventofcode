@@ -1,16 +1,16 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var orbits = str^[]
 
 for row in data do
 {
-	const (a, b) = row / ')'
+	let (a, b) = row / ')'
 	
 	orbits[ b ] = a
 }
@@ -26,9 +26,9 @@ def count_indirect_orbits (sat)
 		return indirect_orbits[ sat ]
 	}
 	
-	const n = 1 + count_indirect_orbits orbits[ sat ]
+	let n = 1 + count_indirect_orbits orbits[ sat ]
 	
 	return indirect_orbits[ sat ] = n
 }
 
-print (orbits.keys map count_indirect_orbits per Math.sum)
+put (orbits.keys map count_indirect_orbits per Math.sum)

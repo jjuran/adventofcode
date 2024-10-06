@@ -1,36 +1,36 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var memory = [packed data / ','] map {int v.string}
 
 var PC = 0
 
-const opcodes = [ null, Math.sum, Math.product ]
+let opcodes = [ null, Math.sum, Math.product ]
 
 def run
 {
 	while true do
 	{
-		const op = memory[ PC++ ]
+		let op = memory[ PC++ ]
 		
 		if op == 99 then
 		{
 			break
 		}
 		
-		const i = memory[ PC++ ]
-		const j = memory[ PC++ ]
-		const k = memory[ PC++ ]
+		let i = memory[ PC++ ]
+		let j = memory[ PC++ ]
+		let k = memory[ PC++ ]
 		
-		const a = memory[ i ]
-		const b = memory[ j ]
+		let a = memory[ i ]
+		let b = memory[ j ]
 		
-		const c = opcodes[ op ]( a, b )
+		let c = opcodes[ op ]( a, b )
 		
 		memory[ k ] = c
 	}
@@ -41,4 +41,4 @@ memory[ 2 ] =  2
 
 run()
 
-print memory[ 0 ]
+put memory[ 0 ]

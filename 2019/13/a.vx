@@ -1,24 +1,24 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const intcode = import "intcode"
+let intcode = import "intcode"
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[0]
-const core = [data / ','] map int
+let data = (load input_path).lines()[0]
+let core = [data / ','] map int
 
-const machine = intcode.machine core
+let machine = intcode.machine core
 
-const Tile_empty  = 0
-const Tile_wall   = 1
-const Tile_block  = 2
-const Tile_paddle = 3
-const Tile_ball   = 4
+let Tile_empty  = 0
+let Tile_wall   = 1
+let Tile_block  = 2
+let Tile_paddle = 3
+let Tile_ball   = 4
 
 def third (f)
 {
@@ -38,4 +38,4 @@ while (var tile = third machine.run) < Tile_paddle do
 	}
 }
 
-print n_blocks
+put n_blocks

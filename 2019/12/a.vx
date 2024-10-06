@@ -1,10 +1,10 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 def parse_line (s)
 {
@@ -13,7 +13,7 @@ def parse_line (s)
 
 var positions = data map parse_line
 
-const n = positions.length
+let n = positions.length
 
 var velocities = [[0, 0, 0] (*) n]
 
@@ -33,15 +33,15 @@ def apply_gravity
 {
 	for i in 1 -> n do
 	{
-		const a = positions[ i ]
+		let a = positions[ i ]
 		
 		for j in 0 -> i do
 		{
-			const b = positions[ j ]
+			let b = positions[ j ]
 			
 			for axis in 0 -> 3 do
 			{
-				const pull = b[ axis ] <=> a[ axis ]
+				let pull = b[ axis ] <=> a[ axis ]
 				
 				velocities[ i ][ axis ] += pull
 				velocities[ j ][ axis ] -= pull
@@ -54,7 +54,7 @@ def apply_velocity
 {
 	for i in 0 -> n do
 	{
-		const velocity = velocities[ i ]
+		let velocity = velocities[ i ]
 		
 		for axis in 0 -> 3 do
 		{
@@ -69,4 +69,4 @@ for i in 0 -> 1000 do
 	apply_velocity()
 }
 
-print (0 -> n map total_energy per Math.sum)
+put (0 -> n map total_energy per Math.sum)

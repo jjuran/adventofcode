@@ -1,17 +1,17 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
-const intcode = import "intcode"
+let display = (import "status") { OUT <== _ }
+let intcode = import "intcode"
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[0]
-const core = [data / ','] map int
+let data = (load input_path).lines()[0]
+let core = [data / ','] map int
 
 var input_queue
 
@@ -22,14 +22,14 @@ def input
 
 def query (x, y)
 {
-	const machine = intcode.machine core
+	let machine = intcode.machine core
 	
 	input_queue = begin [ x, y ]
 	
 	return machine.run input
 }
 
-const ship_size = 100
+let ship_size = 100
 
 var edge = 10
 
@@ -53,11 +53,11 @@ def embiggen (new_edge)
 
 var min_x = 0
 
-const tiles = ".#"
+let tiles = ".#"
 
 def update (x, y)
 {
-	const r = query _
+	let r = query _
 	
 	display "Minimum X: " min_x "  Current: " x "," y
 	
@@ -101,11 +101,11 @@ def right_beam_edge (row)
 
 def check_ship_beam
 {
-	const top    = get_row (edge - ship_size)
-	const bottom = bottom_row()
+	let top    = get_row (edge - ship_size)
+	let bottom = bottom_row()
 	
-	const bottom_left = left_beam_edge bottom
-	const top_right   = right_beam_edge top
+	let bottom_left = left_beam_edge bottom
+	let top_right   = right_beam_edge top
 	
 	min_x = left_beam_edge top
 	
@@ -116,12 +116,12 @@ fill_bottom edge
 
 while 1 do
 {
-	const bottom = bottom_row()
-	const right = right_col()
+	let bottom = bottom_row()
+	let right = right_col()
 	
-	const width  = bottom pop {v == '#'}
+	let width  = bottom pop {v == '#'}
 	
-	const maximum = width
+	let maximum = width
 	
 	if maximum < ship_size then
 	{
@@ -130,7 +130,7 @@ while 1 do
 			min_x = (begin bottom).find('#').past.length
 		}
 		
-		const new_edge = edge * ship_size div (maximum or 2)
+		let new_edge = edge * ship_size div (maximum or 2)
 		
 		if new_edge > edge then
 		{
@@ -145,7 +145,7 @@ while 1 do
 	
 	while true do
 	{
-		const width = check_ship_beam()
+		let width = check_ship_beam()
 		
 		assert width <= ship_size
 		
@@ -154,7 +154,7 @@ while 1 do
 			break
 		}
 		
-		const new_edge = edge + (ship_size - width)
+		let new_edge = edge + (ship_size - width)
 		
 		embiggen new_edge
 		
@@ -165,9 +165,9 @@ while 1 do
 	break
 }
 
-const X = left_beam_edge bottom_row()
-const Y = edge - ship_size
+let X = left_beam_edge bottom_row()
+let Y = edge - ship_size
 
 display ""
 
-print (X * 10000 + Y)
+put (X * 10000 + Y)

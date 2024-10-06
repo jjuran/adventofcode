@@ -1,18 +1,18 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const intcode = import "intcode"
+let intcode = import "intcode"
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[0]
-const core = [data / ','] map int
+let data = (load input_path).lines()[0]
+let core = [data / ','] map int
 
-const machine = intcode.machine core
+let machine = intcode.machine core
 
 var painted_panels = str^[]
 
@@ -21,7 +21,7 @@ var y = 0
 
 var dir = 0  # up/right/down/left
 
-const movements =
+let movements =
 [
 	[0, -1],
 	[1, 0],
@@ -31,7 +31,7 @@ const movements =
 
 def sample
 {
-	const key = x "," y
+	let key = x "," y
 	
 	if key in painted_panels then
 	{
@@ -43,7 +43,7 @@ def sample
 
 while (+) (var c = machine.run sample) do
 {
-	const d = machine.run()
+	let d = machine.run()
 	
 	# paint a cell
 	painted_panels[ x "," y ] = c
@@ -52,10 +52,10 @@ while (+) (var c = machine.run sample) do
 	dir = (dir + d * 2 - 1) mod 4
 	
 	# move
-	const m = movements[ dir ]
+	let m = movements[ dir ]
 	
 	x += m[ 0 ]
 	y += m[ 1 ]
 }
 
-print painted_panels.length
+put painted_panels.length

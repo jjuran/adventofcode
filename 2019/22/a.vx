@@ -1,16 +1,16 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
-const lines = data.lines()
+let lines = data.lines()
 
-const N = 10007
+let N = 10007
 
-const card = 2019
+let card = 2019
 
 var position = card
 
@@ -36,17 +36,17 @@ def radix (inc)
 
 for row in lines do
 {
-	const words = [row / ' ']
+	let words = [row / ' ']
 	
 	if words[ 0 ] == "cut" then
 	{
-		const n = int words[ 1 ]
+		let n = int words[ 1 ]
 		
 		cut n
 	}
 	else if words[ 1 ] == "with" then
 	{
-		const increment = int words[ 3 ]
+		let increment = int words[ 3 ]
 		
 		radix increment
 	}
@@ -56,4 +56,4 @@ for row in lines do
 	}
 }
 
-print position
+put position

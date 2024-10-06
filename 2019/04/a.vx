@@ -1,12 +1,12 @@
 #!/usr/bin/env lvx
 
-const data = "138307-654504"
+let data = "138307-654504"
 
-const (min, max) = data / '-'
+let (min, max) = data / '-'
 
 def has_double (s6)
 {
-	const bytes = packed s6
+	let bytes = packed s6
 	
 	return '\0' in bytes[ 0 -> 5 ] ~ bytes[ 1 -> 6 ]
 }
@@ -29,7 +29,7 @@ def inc (s)
 	return floor str (int s + 1)
 }
 
-const ok = has_double
+let ok = has_double
 
 var code = floor min
 
@@ -42,4 +42,4 @@ while code <= max do
 	code = inc code
 }
 
-print n
+put n

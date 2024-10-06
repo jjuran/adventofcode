@@ -1,16 +1,16 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var orbits = str^[]
 
 for row in data do
 {
-	const (a, b) = row / ')'
+	let (a, b) = row / ')'
 	
 	orbits[ b ] = a
 }
@@ -52,4 +52,4 @@ while sat_you != sat_san do
 	sat_san = orbits[ sat_san ]
 }
 
-print n
+put n

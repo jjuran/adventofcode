@@ -1,38 +1,38 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()[0]
+let data = (load input_path).lines()[0]
 
-const digits = packed (   '0' ..    '9')
-const values = packed ('\x00' .. '\x09')
+let digits = packed (   '0' ..    '9')
+let values = packed ('\x00' .. '\x09')
 
 var signal = translated( data, digits, values )
 
-const N = signal.length
+let N = signal.length
 
 def zipmulsum (signal, i)
 {
 	signal = "+" signal
 	++i
 	
-	const Nmod = N div i * i
+	let Nmod = N div i * i
 	
 	var sum = 0
 	
-	const leading_zeros = i - 1
-	const skip = 1 + leading_zeros
+	let leading_zeros = i - 1
+	let skip = 1 + leading_zeros
 	
 	var j = skip
 	
-	const inc = 2 * i
+	let inc = 2 * i
 	
 	while j <= N do
 	{
@@ -58,7 +58,7 @@ def zipmulsum (signal, i)
 
 def fft (signal)
 {
-	const half_N = N div 2
+	let half_N = N div 2
 	
 	for i in 0 -> half_N do
 	{
@@ -86,6 +86,6 @@ for i in 0 -> 100 do
 
 display ""
 
-const output = signal[ 0 -> 8 ]
+let output = signal[ 0 -> 8 ]
 
-print translated( output, values, digits )
+put translated( output, values, digits )

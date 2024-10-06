@@ -1,12 +1,12 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const (one, two) = *(data map { [v / ','] })
+let (one, two) = *(data map { [v / ','] })
 
 def segments (path)
 {
@@ -18,15 +18,13 @@ def segments (path)
 	
 	for move in path do
 	{
-		const dir = move[ 0 ]
+		let dir = move[ 0 ]
 		
 		var inc = int substr( move, 1 )
 		
-		const segment
-		
 		if dir == 'L' then
 		{
-			const x0 = x
+			let x0 = x
 			x -= inc
 			
 			horizontal <-- [ x, y, x0 ]
@@ -34,7 +32,7 @@ def segments (path)
 		
 		if dir == 'R' then
 		{
-			const x0 = x
+			let x0 = x
 			x += inc
 			
 			horizontal <-- [ x0, y, x ]
@@ -42,7 +40,7 @@ def segments (path)
 		
 		if dir == 'D' then
 		{
-			const y0 = y
+			let y0 = y
 			y -= inc
 			
 			vertical <-- [ x, y, y0 ]
@@ -50,7 +48,7 @@ def segments (path)
 		
 		if dir == 'U' then
 		{
-			const y0 = y
+			let y0 = y
 			y += inc
 			
 			vertical <-- [ x, y0, y ]
@@ -62,8 +60,8 @@ def segments (path)
 
 def cross (h, v)
 {
-	const (x0, y, x1) = *h
-	const (x, y0, y1) = *v
+	let (x0, y, x1) = *h
+	let (x, y0, y1) = *v
 	
 	assert x0 <= x1
 	assert y0 <= y1
@@ -84,7 +82,7 @@ def crossings( hs, vs )
 	{
 		for v in vs do
 		{
-			if const x = cross( h, v ) then
+			if let x = cross( h, v ) then
 			{
 				result <-- x
 			}
@@ -99,17 +97,17 @@ def distance (coord)
 	return coord map abs per Math.sum
 }
 
-const (ah, av) = segments one
-const (bh, bv) = segments two
+let (ah, av) = segments one
+let (bh, bv) = segments two
 
-const intersects =
+let intersects =
 [
 	*crossings( ah, bv ),
 	*crossings( bh, av ),
 ]
 
-const distances = intersects map distance ver ...
+let distances = intersects map distance ver ...
 
-const minimum = Iter.min distances
+let minimum = Iter.min distances
 
-print minimum
+put minimum

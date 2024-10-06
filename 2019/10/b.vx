@@ -1,20 +1,20 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
-const pipe = (load bindir "/10-pipe.txt")
+let data = load input_path
+let pipe = (load bindir "/10-pipe.txt")
 
-const lines = data.lines()
+let lines = data.lines()
 
 var grid = str lines
 
-const height = lines.length
-const width = grid.length / height
+let height = lines.length
+let width = grid.length / height
 
-const (X, Y) = eval pipe
+let (X, Y) = eval pipe
 
 def set_cell( x, y, v )
 {
@@ -30,16 +30,16 @@ def contains( x, y )
 
 def angular_ordering (coordinates)
 {
-	const (x, y) = *coordinates
+	let (x, y) = *coordinates
 	
 	if x == 0 or y == 0 then
 	{
 		return (+(y == 0) + 2 * +(y - x > 0)) * 10^6
 	}
 	
-	const quadrant = +(x > 0 == y > 0) + 2 * +(x < 0)
+	let quadrant = +(x > 0 == y > 0) + 2 * +(x < 0)
 	
-	const slope = if x > 0 == y > 0
+	let slope = if x > 0 == y > 0
 		then {  1000 * y div x }
 		else { -1000 * x div y }
 	
@@ -52,7 +52,7 @@ def mark_obstructed_along_ray( gridref, x, y, dx, dy )
 	
 	while contains( (x += dx), (y += dy) ) do
 	{
-		const index = x + y * width
+		let index = x + y * width
 		
 		if (*gridref)[ index ] == 'X' then
 		{
@@ -101,7 +101,7 @@ def laser_rotation_sweep_targets
 	return Iter.sorted targets via angular_ordering
 }
 
-const targets = laser_rotation_sweep_targets()
+let targets = laser_rotation_sweep_targets()
 
 def abs_from_rel (x, y)
 {
@@ -113,6 +113,6 @@ def mux (x, y)
 	return x * 100 + y
 }
 
-const the_200th = targets[ 199 ]
+let the_200th = targets[ 199 ]
 
-print mux abs_from_rel *the_200th
+put mux abs_from_rel *the_200th
