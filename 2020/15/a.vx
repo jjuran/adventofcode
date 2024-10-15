@@ -1,4 +1,4 @@
-#!/usr/bin/env vx
+#!/usr/bin/env lvx
 
 const data = if argc > 1 then {argv[ 1 ]} else {"10,16,6,0,1,17"}
 
