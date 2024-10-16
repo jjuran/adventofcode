@@ -1,16 +1,16 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const start = int data[ 0 ]
-const buses = [data[ 1 ] / ','] ver {v != "x"} map int
+let start = int data[ 0 ]
+let buses = [data[ 1 ] / ','] ver {v != "x"} map int
 
-const times = buses map {v => -start mod v}
+let times = buses map {v => -start mod v}
 
-const min = Iter.min times via .value
+let min = Iter.min times via .value
 
-print (min.key * min.value)
+put (min.key * min.value)

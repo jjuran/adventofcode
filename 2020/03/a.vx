@@ -1,19 +1,19 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const height = data.length
-const width  = data[ 0 ].length
+let height = data.length
+let width  = data[ 0 ].length
 
 def is_tree (x, y)
 {
 	return data[ y ][ x mod width ] == '#'
 }
 
-const trees = 1 -> height ver { is_tree( 3 * v, v ) }
+let trees = 1 -> height ver { is_tree( 3 * v, v ) }
 
-print trees.length
+put trees.length

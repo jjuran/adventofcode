@@ -1,16 +1,16 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const data = if argc > 1 then {argv[ 1 ]} else {"925176834"}
+let data = if argc > 1 then {argv[ 1 ]} else {"925176834"}
 
-const N = 10^6
-const M = 10^7
+let N = 10^6
+let M = 10^7
 
 var indices = vector[ u32 ] (N + 1)
 var current = int data[[ 0 ]]
@@ -42,9 +42,9 @@ init()
 
 def move
 {
-	const x1 = indices[ current ]
-	const x2 = indices[ x1 ]
-	const x3 = indices[ x2 ]
+	let x1 = indices[ current ]
+	let x2 = indices[ x1 ]
+	let x3 = indices[ x2 ]
 	
 	indices[ current ] = indices[ x3 ]
 	
@@ -56,7 +56,7 @@ def move
 	}
 	while dst in [x1, x2, x3]
 	
-	const following_dst = indices[ dst ]
+	let following_dst = indices[ dst ]
 	
 	indices[ dst ] = x1
 	indices[ x3 ] = following_dst
@@ -76,7 +76,7 @@ for i in 0 -> M do
 
 display ""
 
-const a = indices[ 1 ]
-const b = indices[ a ]
+let a = indices[ 1 ]
+let b = indices[ a ]
 
-print (a * b)
+put (a * b)

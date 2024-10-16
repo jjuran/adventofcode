@@ -1,14 +1,14 @@
 #!/usr/bin/env lvx
 
-const data = if argc > 1 then {argv[ 1 ]} else {"10,16,6,0,1,17"}
+let data = if argc > 1 then {argv[ 1 ]} else {"10,16,6,0,1,17"}
 
-const starting = [data / ','] map int
+let starting = [data / ','] map int
 
-const N = 2020
+let N = 2020
 
 var seen = int^[]
 
-const n = starting.length
+let n = starting.length
 
 for T0 in 1 -> n do
 {
@@ -19,7 +19,7 @@ var next = starting[ n - 1 ]
 
 for T in n -> N do
 {
-	const x = 
+	let x = 
 		if next in seen
 			then { T - seen[ next ] }
 			else { 0 }
@@ -29,4 +29,4 @@ for T in n -> N do
 	next = x
 }
 
-print next
+put next

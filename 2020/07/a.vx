@@ -1,38 +1,38 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const digraph = import "digraph"
+let digraph = import "digraph"
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 def parse (s)
 {
-	const words = [s / ' ']
+	let words = [s / ' ']
 	
-	const style = words[ 0 ]
-	const color = words[ 1 ]
-	const count = words[ 4 ]
+	let style = words[ 0 ]
+	let color = words[ 1 ]
+	let count = words[ 4 ]
 	
 	if count == "no" then
 	{
 		return ()
 	}
 	
-	const indices = 1 -> words.length div 4 map {v * 4}
+	let indices = 1 -> words.length div 4 map {v * 4}
 	
-	const subcolors = indices map { " ".join *(words[ v + 1 .. v + 2 ]) }
+	let subcolors = indices map { " ".join *(words[ v + 1 .. v + 2 ]) }
 	
 	return style " " color => subcolors
 }
 
-const transpose = digraph.transposed (data map parse)
+let transpose = digraph.transposed (data map parse)
 
-const count = digraph.closure( transpose, "shiny gold" ).length - 1
+let count = digraph.closure( transpose, "shiny gold" ).length - 1
 
-print count
+put count

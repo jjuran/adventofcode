@@ -1,19 +1,19 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 def parse (s)
 {
-	const (opcode, operand) = s / ' '
+	let (opcode, operand) = s / ' '
 	
 	return [opcode, int operand]
 }
 
-const program = data map parse
+let program = data map parse
 
 var seen = x"00" * program.length
 
@@ -22,7 +22,7 @@ var PC = 0
 
 while not seen[ PC ] do
 {
-	const op = program[ PC ]
+	let op = program[ PC ]
 	
 	seen[ PC ] = '\xFF'
 	
@@ -38,4 +38,4 @@ while not seen[ PC ] do
 	}
 }
 
-print ACC
+put ACC

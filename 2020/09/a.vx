@@ -1,12 +1,12 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines() map int
+let data = (load input_path).lines() map int
 
-const n = data.length
+let n = data.length
 
 def valid (bases, value)
 {
@@ -26,7 +26,7 @@ def valid (bases, value)
 
 for i in 25 -> n do
 {
-	const bases = Iter.sorted data[ i - 25 -> i ]
+	let bases = Iter.sorted data[ i - 25 -> i ]
 	
 	if not valid (bases, data[ i ]) then
 	{

@@ -1,27 +1,27 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
-const n = data.length
+let n = data.length
 
-const lines = data.lines()
+let lines = data.lines()
 
-const width = lines[ 0 ].length
-const stride = width + 1
-const height = lines.length
+let width = lines[ 0 ].length
+let stride = width + 1
+let height = lines.length
 
-const seats = 0 -> n ver { data[ v ] == 'L' }
+let seats = 0 -> n ver { data[ v ] == 'L' }
 
-const moves =
+let moves =
 [
 	[-1, -1], [0, -1], [1, -1],
 	[-1,  0],          [1,  0],
@@ -35,7 +35,7 @@ def find_seat (x, y, dx, dy)
 	
 	while x in 0 -> width and y in 0 -> height do
 	{
-		const i = y * stride + x
+		let i = y * stride + x
 		
 		if data[ i ] == 'L' then
 		{
@@ -53,13 +53,13 @@ def find_neighbors (i)
 {
 	display "" i
 	
-	const x = i mod stride
-	const y = i div stride
+	let x = i mod stride
+	let y = i div stride
 	
 	return moves map { find_seat (x, y, *v) }
 }
 
-const neighbor_map = seats map { v => find_neighbors v }
+let neighbor_map = seats map { v => find_neighbors v }
 
 var grid = data
 
@@ -69,9 +69,9 @@ def step
 	
 	for seat in neighbor_map do
 	{
-		const i = seat.key
+		let i = seat.key
 		
-		const popcount = seat.value pop {grid[ v ] == '#'}
+		let popcount = seat.value pop {grid[ v ] == '#'}
 		
 		work[ i ] = ("#" grid[ i ] "L")[ (popcount + 3) div 4 ]
 	}
@@ -88,4 +88,4 @@ while step() do
 	display "" (grid pop {v == '#'})
 }
 
-print ""
+put ""

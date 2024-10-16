@@ -1,15 +1,15 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var onesmask
 var floaters
@@ -31,12 +31,12 @@ def set_mask (mask)
 
 def make_mask (bit)
 {
-	const x = unhex hex 2^bit;
+	let x = unhex hex 2^bit;
 	
 	return (x"00" * (5 - x.size)) x
 }
 
-const masks = vector[ vector[byte, 5] ] packed (0 -> 36 map make_mask)
+let masks = vector[ vector[byte, 5] ] packed (0 -> 36 map make_mask)
 
 def store_all (addr, floaters, data)
 {
@@ -51,8 +51,8 @@ def store_all (addr, floaters, data)
 		# Instead, use a segmented memory strategy to prevent the
 		# top-level array from getting too big and causing issues.
 		
-		const hi = addr[ 0 -> 2 ]
-		const lo = addr[ 2 -> 5 ]
+		let hi = addr[ 0 -> 2 ]
+		let lo = addr[ 2 -> 5 ]
 		
 		if not hi in memory then
 		{
@@ -64,7 +64,7 @@ def store_all (addr, floaters, data)
 		return ()
 	}
 	
-	const alt = addr ~ packed masks[ u8 floaters[ 0 ] ]
+	let alt = addr ~ packed masks[ u8 floaters[ 0 ] ]
 	
 	floaters = floaters[ 1 -> floaters.size ]
 	
@@ -82,13 +82,13 @@ def store (addr, data)
 }
 
 var i = 0
-const n = data.length
+let n = data.length
 
 for line in data do
 {
 	display "" ++i "/" n
 	
-	const (dst, eq, src) = line / ' '
+	let (dst, eq, src) = line / ' '
 	
 	if dst == "mask" then
 	{
@@ -96,12 +96,12 @@ for line in data do
 	}
 	else
 	{
-		const p = (begin dst + 4)
+		let p = (begin dst + 4)
 		
-		const q = p.find ']'
+		let q = p.find ']'
 		
-		const addr = unhex hex int (q - p)
-		const data = int src
+		let addr = unhex hex int (q - p)
+		let data = int src
 		
 		store (addr, data)
 	}
@@ -109,5 +109,5 @@ for line in data do
 
 display ""
 
-const sum = memory.values map { v.values per Math.sum } per Math.sum
-print sum
+let sum = memory.values map { v.values per Math.sum } per Math.sum
+put sum

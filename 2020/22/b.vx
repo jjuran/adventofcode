@@ -1,21 +1,21 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
-const digit = '0' .. '9'
-const card = digit+ => int
-const deck = [card, '\n']+ => {[_]}
-const hand = ["Player ", digit, ":\n", deck, '\n'?]
-const grammar = [hand (*) 2] => {[_]}
+let digit = '0' .. '9'
+let card = digit+ => int
+let deck = [card, '\n']+ => {[_]}
+let hand = ["Player ", digit, ":\n", deck, '\n'?]
+let grammar = [hand (*) 2] => {[_]}
 
 def parse
 {
@@ -24,7 +24,7 @@ def parse
 	return p += grammar
 }
 
-const decks = parse data
+let decks = parse data
 
 var (one, two) = *decks
 
@@ -38,9 +38,9 @@ def play_game (one, two)
 	
 	var seen = str^[]
 	
-	const play_round =
+	let play_round =
 	{
-		const hash = rep (one, two)
+		let hash = rep (one, two)
 		
 		if hash in seen then
 		{
@@ -49,8 +49,8 @@ def play_game (one, two)
 		
 		seen[ hash ] = 1
 		
-		const a = one[ 0 ]
-		const b = two[ 0 ]
+		let a = one[ 0 ]
+		let b = two[ 0 ]
 		
 		one = [tail *one]
 		two = [tail *two]
@@ -61,11 +61,11 @@ def play_game (one, two)
 		{
 			++depth
 			
-			const space = " " * depth
+			let space = " " * depth
 			
 			display "" ++nth space rep (a, b)
 			
-			one_wins, const two_wins = play_game (one[ 0 -> a ], two[ 0 -> b ])
+			one_wins, let two_wins = play_game (one[ 0 -> a ], two[ 0 -> b ])
 			
 			--depth
 		}
@@ -92,7 +92,7 @@ one, two = play_game (one, two)
 
 def score (deck)
 {
-	const n = deck.length
+	let n = deck.length
 	
 	deck <-- 0
 	deck = -deck
@@ -102,5 +102,5 @@ def score (deck)
 
 display ""
 
-const winning_score = score one + score two
-print winning_score
+let winning_score = score one + score two
+put winning_score

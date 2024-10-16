@@ -1,16 +1,16 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const n = data.length
+let n = data.length
 
 def parse (s)
 {
-	const (opcode, operand) = s / ' '
+	let (opcode, operand) = s / ' '
 	
 	return [opcode, int operand]
 }
@@ -23,7 +23,7 @@ def visited_set (program)
 	
 	while PC < n and not seen[ PC ] do
 	{
-		const op = program[ PC ]
+		let op = program[ PC ]
 		
 		seen[ PC ] = '\xFF'
 		
@@ -47,7 +47,7 @@ def accumulation (program)
 	
 	while PC < n and not seen[ PC ] do
 	{
-		const op = program[ PC ]
+		let op = program[ PC ]
 		
 		seen[ PC ] = '\xFF'
 		
@@ -66,25 +66,25 @@ def accumulation (program)
 	return [ACC] (*) (PC >= n)
 }
 
-const program = data map parse
+let program = data map parse
 
-const seen = visited_set program
+let seen = visited_set program
 
-const candidates = 0 -> n ver { seen[ v ] and program[ v ][ 1 ] != 1 }
+let candidates = 0 -> n ver { seen[ v ] and program[ v ][ 1 ] != 1 }
 
-const jmps = candidates ver { program[ v ][ 0 ] == "jmp" }
-const nops = candidates ver { program[ v ][ 0 ] == "nop" }
+let jmps = candidates ver { program[ v ][ 0 ] == "jmp" }
+let nops = candidates ver { program[ v ][ 0 ] == "nop" }
 
-const jmp_fixes = jmps map { var x = program; x[ v ][ 0 ] = "nop"; x }
-const nop_fixes = nops map { var x = program; x[ v ][ 0 ] = "jmp"; x }
+let jmp_fixes = jmps map { var x = program; x[ v ][ 0 ] = "nop"; x }
+let nop_fixes = nops map { var x = program; x[ v ][ 0 ] = "jmp"; x }
 
-const fixed_programs = [*jmp_fixes, *nop_fixes]
+let fixed_programs = [*jmp_fixes, *nop_fixes]
 
 for fixed in fixed_programs do
 {
-	if const acc = accumulation fixed then
+	if let acc = accumulation fixed then
 	{
-		print *acc
+		put *acc
 		
 		exit 0
 	}

@@ -1,17 +1,17 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines() map int
+let data = (load input_path).lines() map int
 
-const adapters = Iter.sorted data
+let adapters = Iter.sorted data
 
-const diffs = [1, *(adapters gap {b - a}), 3]
+let diffs = [1, *(adapters gap {b - a}), 3]
 
 def count (x) { diffs pop {v == x} }
 
-const x = [1, 3] map count per Math.product
+let x = [1, 3] map count per Math.product
 
-print x
+put x

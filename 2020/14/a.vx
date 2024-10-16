@@ -1,10 +1,10 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var maskdata
 var metamask
@@ -19,7 +19,7 @@ def set_mask (mask)
 
 def store (addr, data)
 {
-	const bytes = (x"00" * (5 - data.size)) data  # left-pad with NUL bytes
+	let bytes = (x"00" * (5 - data.size)) data  # left-pad with NUL bytes
 	
 	data = unhex "0x" hex (bytes & metamask | maskdata)
 	
@@ -28,7 +28,7 @@ def store (addr, data)
 
 for line in data do
 {
-	const (dst, eq, src) = line / ' '
+	let (dst, eq, src) = line / ' '
 	
 	if dst == "mask" then
 	{
@@ -36,16 +36,16 @@ for line in data do
 	}
 	else
 	{
-		const p = (begin dst + 4)
+		let p = (begin dst + 4)
 		
-		const q = p.find ']'
+		let q = p.find ']'
 		
-		const addr = int (q - p)
-		const data = unhex hex int src
+		let addr = int (q - p)
+		let data = unhex hex int src
 		
 		store (addr, data)
 	}
 }
 
-const sum = memory.values per Math.sum
-print sum
+let sum = memory.values per Math.sum
+put sum

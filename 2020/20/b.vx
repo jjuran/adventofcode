@@ -1,26 +1,26 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
-const edge = 10
+let edge = 10
 
-const digit = '0' .. '9'
-const number = digit+ => int
-const heading = ["Tile ", number, ":\n"]
-const cell = '.' | '#'
-const row = [cell+, '\n']
-const grid = [row+ => str]
-const tile = [heading, grid, '\n'] => {head _ => tail _}
-const grammar = tile+ => {[_]}
+let digit = '0' .. '9'
+let number = digit+ => int
+let heading = ["Tile ", number, ":\n"]
+let cell = '.' | '#'
+let row = [cell+, '\n']
+let grid = [row+ => str]
+let tile = [heading, grid, '\n'] => {head _ => tail _}
+let grammar = tile+ => {[_]}
 
 def parse
 {
@@ -56,7 +56,7 @@ def right_edge (grid)
 	return -mince( substr (-grid, 1), edge + 1 )
 }
 
-const each_edge = top_edge, left_edge, bottom_edge, right_edge
+let each_edge = top_edge, left_edge, bottom_edge, right_edge
 
 def map_edges
 {
@@ -82,9 +82,9 @@ def map_edges
 	return edge_map
 }
 
-const adjacency = map_edges()
+let adjacency = map_edges()
 
-const shared_adjacency = adjacency ver { v.value.length > 1 }  # not map edges
+let shared_adjacency = adjacency ver { v.value.length > 1 }  # not map edges
 
 def score_tiles_by_unique_edges
 {
@@ -94,7 +94,7 @@ def score_tiles_by_unique_edges
 	{
 		if adj.value.length == 1 then
 		{
-			const tile_id = *adj.value
+			let tile_id = *adj.value
 			
 			if tile_id in scores then
 			{
@@ -110,19 +110,19 @@ def score_tiles_by_unique_edges
 	return [*scores]
 }
 
-const scores = score_tiles_by_unique_edges()
+let scores = score_tiles_by_unique_edges()
 
-const surveys = int^(tileset map { v.key => [each_edge v.value] })
+let surveys = int^(tileset map { v.key => [each_edge v.value] })
 
 def find_edge_in_edges (edge, edges)
 {
-	const edge_indices = 0 .. 3 map { const e = edges[ v ]; e => v, -e => v }
+	let edge_indices = 0 .. 3 map { let e = edges[ v ]; e => v, -e => v }
 	
 	return (str^edge_indices)[ edge ]
 }
 
-const tiles_per_edge = (scores pop { v.value == 1 }) / 4 + 2
-const tiles_per_grid = tiles_per_edge^2
+let tiles_per_edge = (scores pop { v.value == 1 }) / 4 + 2
+let tiles_per_grid = tiles_per_edge^2
 
 var tile_grid = [null (*) tiles_per_grid]
 
@@ -143,14 +143,14 @@ def flip2 (grid)
 
 def transpose (grid)
 {
-	const lines = grid.lines()
+	let lines = grid.lines()
 	
-	const n = lines[ 0 ].length + 1
+	let n = lines[ 0 ].length + 1
 	
 	return 0 -> n map { mince( substr( grid, v ), n ) "\n" } per str
 }
 
-const grid_transforms =
+let grid_transforms =
 [
 	...,    # no-op
 	vflip,  # vflip only
@@ -162,7 +162,7 @@ const grid_transforms =
 	transpose * flip2,  # transposed half-circle rotation
 ]
 
-const index_transforms =
+let index_transforms =
 [
 	[0, 1, 2, 3],  # no-op
 	[2, 1, 0, 3],  # vflip only
@@ -181,8 +181,8 @@ def transformed_edge_index (index, transform)
 
 def find_other_tile_with_shared_edge (edge)
 {
-	const previous = tile_grid ver ... map .key
-	const adjacent = adjacency[ canon edge ] ver { not v in previous }
+	let previous = tile_grid ver ... map .key
+	let adjacent = adjacency[ canon edge ] ver { not v in previous }
 	
 	return *adjacent
 }
@@ -191,37 +191,37 @@ var n_tiles_solved = 1
 
 def solve_first_corner
 {
-	const Top    = 0
-	const Left   = 1
-	const Bottom = 2
-	const Right  = 3
+	let Top    = 0
+	let Left   = 1
+	let Bottom = 2
+	let Right  = 3
 	
-	const corner_tile_id = (scores ver { v.value == 2 })[ 0 ].key
+	let corner_tile_id = (scores ver { v.value == 2 })[ 0 ].key
 	
-	const unique_edges = adjacency ver { v.value == [corner_tile_id] }
-	                               map .key
+	let unique_edges = adjacency ver { v.value == [corner_tile_id] }
+	                             map .key
 	
-	const edges = surveys[ corner_tile_id ]
-	const found = unique_edges map { find_edge_in_edges (v, edges) }
+	let edges = surveys[ corner_tile_id ]
+	let found = unique_edges map { find_edge_in_edges (v, edges) }
 	
-	const vflipped = Bottom in found
-	const hflipped = Right  in found
+	let vflipped = Bottom in found
+	let hflipped = Right  in found
 	
-	const transform = +vflipped + 2 * +hflipped
+	let transform = +vflipped + 2 * +hflipped
 	
 	tile_grid[ 0 ] = corner_tile_id => transform
 }
 
 def solve_edge (start, inc)
 {
-	const Top    = 0
-	const Left   = 1
-	const Bottom = 2
-	const Right  = 3
+	let Top    = 0
+	let Left   = 1
+	let Bottom = 2
+	let Right  = 3
 	
-	const Near
-	const Far
-	const Adjacent
+	let Near
+	let Far
+	let Adjacent
 	
 	if inc == 1 then
 	{
@@ -238,7 +238,7 @@ def solve_edge (start, inc)
 	
 	var x = start
 	
-	const src = tile_grid[ x ]
+	let src = tile_grid[ x ]
 	
 	var next_tile = src.key
 	var transform = src.value
@@ -247,13 +247,13 @@ def solve_edge (start, inc)
 	
 	for i in 1 -> tiles_per_edge - 1 do
 	{
-		const far_edge = previous_edges[ transformed_edge_index (Far, transform) ]
+		let far_edge = previous_edges[ transformed_edge_index (Far, transform) ]
 		
 		next_tile = find_other_tile_with_shared_edge far_edge
 		
 		var next_edges = surveys[ next_tile ]
 		
-		const unique_edge = *(adjacency ver { v.value == [next_tile] } map .key)
+		let unique_edge = *(adjacency ver { v.value == [next_tile] } map .key)
 		
 		assert (+) unique_edge == 1
 		
@@ -268,7 +268,7 @@ def solve_edge (start, inc)
 			vflipped <-> hflipped
 		}
 		
-		const transposed = shared_edge_index in Adjacent
+		let transposed = shared_edge_index in Adjacent
 		
 		transform = +vflipped + 2 * +hflipped + 4 * +transposed
 		
@@ -282,14 +282,14 @@ def solve_edge (start, inc)
 
 def solve_corner (end, inc, last=false)
 {
-	const Top    = 0
-	const Left   = 1
-	const Bottom = 2
-	const Right  = 3
+	let Top    = 0
+	let Left   = 1
+	let Bottom = 2
+	let Right  = 3
 	
-	const Near
-	const Far
-	const Adjacent
+	let Near
+	let Far
+	let Adjacent
 	
 	if inc == 1 then
 	{
@@ -304,25 +304,25 @@ def solve_corner (end, inc, last=false)
 		Adjacent = [Left, Right]
 	}
 	
-	const dst = end - inc
-	const src = dst - inc
+	let dst = end - inc
+	let src = dst - inc
 	
-	const placing = tile_grid[ src ]
+	let placing = tile_grid[ src ]
 	
 	var tile_id   = placing.key
 	var transform = placing.value
 	
-	const previous_edges = surveys[ tile_id ]
+	let previous_edges = surveys[ tile_id ]
 	
-	const far_edge = previous_edges[ transformed_edge_index (Far, transform) ]
+	let far_edge = previous_edges[ transformed_edge_index (Far, transform) ]
 	
-	const next = find_other_tile_with_shared_edge far_edge
+	let next = find_other_tile_with_shared_edge far_edge
 	
-	const next_edges = surveys[ next ]
+	let next_edges = surveys[ next ]
 	
-	const nearby_edges = shared_adjacency ver { next in v.value } map .key
+	let nearby_edges = shared_adjacency ver { next in v.value } map .key
 	
-	const nearby_edge = *(nearby_edges ver { v != canon far_edge })
+	let nearby_edge = *(nearby_edges ver { v != canon far_edge })
 	
 	assert (+) nearby_edge == 1
 	
@@ -337,7 +337,7 @@ def solve_corner (end, inc, last=false)
 		vflipped <-> hflipped
 	}
 	
-	const transposed = shared_edge_index in Adjacent
+	let transposed = shared_edge_index in Adjacent
 	
 	transform = +vflipped + 2 * +hflipped + 4 * +transposed
 	
@@ -348,28 +348,28 @@ def solve_corner (end, inc, last=false)
 
 def solve_center (index)
 {
-	const Top    = 0
-	const Left   = 1
-	const Bottom = 2
-	const Right  = 3
+	let Top    = 0
+	let Left   = 1
+	let Bottom = 2
+	let Right  = 3
 	
-	const above = tile_grid[ index - tiles_per_edge ]
-	const aside = tile_grid[ index - 1 ]
+	let above = tile_grid[ index - tiles_per_edge ]
+	let aside = tile_grid[ index - 1 ]
 	
-	const above_edges = surveys[ above.key ]
-	const aside_edges = surveys[ aside.key ]
+	let above_edges = surveys[ above.key ]
+	let aside_edges = surveys[ aside.key ]
 	
-	const above_edge = above_edges[ transformed_edge_index (Bottom, above.value) ]
-	const aside_edge = aside_edges[ transformed_edge_index (Right,  aside.value) ]
+	let above_edge = above_edges[ transformed_edge_index (Bottom, above.value) ]
+	let aside_edge = aside_edges[ transformed_edge_index (Right,  aside.value) ]
 	
-	const next = find_other_tile_with_shared_edge above_edge
+	let next = find_other_tile_with_shared_edge above_edge
 	
-	const next_edges = surveys[ next ]
+	let next_edges = surveys[ next ]
 	
-	const nearby_edges = adjacency ver { next in v.value } map .key
+	let nearby_edges = adjacency ver { next in v.value } map .key
 	
-	const top_edge  = *(nearby_edges ver { v == canon above_edge })
-	const left_edge = *(nearby_edges ver { v == canon aside_edge })
+	let top_edge  = *(nearby_edges ver { v == canon above_edge })
+	let left_edge = *(nearby_edges ver { v == canon aside_edge })
 	
 	assert (+) top_edge == 1
 	assert (+) left_edge == 1
@@ -380,9 +380,9 @@ def solve_center (index)
 	var vflipped = top_edge_index  > 1
 	var hflipped = left_edge_index > 1
 	
-	const transposed = top_edge_index in [Left, Right]
+	let transposed = top_edge_index in [Left, Right]
 	
-	const transform = +vflipped + 2 * +hflipped + 4 * +transposed
+	let transform = +vflipped + 2 * +hflipped + 4 * +transposed
 	
 	tile_grid[ index ] = next => transform
 	
@@ -413,9 +413,9 @@ for y in 1 -> tiles_per_edge - 1 do
 
 def across (grids)
 {
-	const line_arrays = grids map { v.lines() }
+	let line_arrays = grids map { v.lines() }
 	
-	const edge = line_arrays[ 0 ][ 0 ].length
+	let edge = line_arrays[ 0 ][ 0 ].length
 	
 	def make_row (i)
 	{
@@ -427,44 +427,44 @@ def across (grids)
 
 def trim_transformed (grid, transform)
 {
-	const transformed_grid = grid_transforms[ transform ] grid
+	let transformed_grid = grid_transforms[ transform ] grid
 	
-	const lines = transformed_grid.lines()
+	let lines = transformed_grid.lines()
 	
-	const trimmed = 1 -> edge - 1
+	let trimmed = 1 -> edge - 1
 	
 	return "\n".join( *(lines[ trimmed ] map { v[ trimmed ] }), "")
 }
 
 display ""
 
-const trimmed = tile_grid map { trim_transformed (tileset[ v.key ], v.value) }
+let trimmed = tile_grid map { trim_transformed (tileset[ v.key ], v.value) }
 
 var final_grid = ""
 
 for Y in 0 -> tiles_per_edge do
 {
-	const i = Y * tiles_per_edge
-	const j = i + tiles_per_edge
+	let i = Y * tiles_per_edge
+	let j = i + tiles_per_edge
 	
 	final_grid .= across (trimmed[i -> j])
 }
 
-const grid_lines = final_grid.lines()
+let grid_lines = final_grid.lines()
 
-const grid_height = grid_lines.length
-const grid_width  = grid_lines[ 0 ].length
-const grid_stride = grid_width + 1
+let grid_height = grid_lines.length
+let grid_width  = grid_lines[ 0 ].length
+let grid_stride = grid_width + 1
 
-const sea_monster = DATA.lines()
+let sea_monster = DATA.lines()
 
-const sm_height = sea_monster.length
-const sm_width  = sea_monster[ 0 ].length
+let sm_height = sea_monster.length
+let sm_width  = sea_monster[ 0 ].length
 
-const gutter = "\0" * (grid_stride - sm_width)
+let gutter = "\0" * (grid_stride - sm_width)
 
 # We H-flip the sea monster
-const sm_mask = packed gutter.join *(sea_monster map {-v})
+let sm_mask = packed gutter.join *(sea_monster map {-v})
 
 var count = 0
 
@@ -476,14 +476,14 @@ def search_grid (grid)
 	{
 		var i = p.past.length
 		
-		const x = i mod grid_stride
-		const y = i div grid_stride
+		let x = i mod grid_stride
+		let y = i div grid_stride
 		
 		if y in 1 -> grid_height - 1 and x + sm_width <= grid_width then
 		{
 			i -= grid_stride
 			
-			const substring = packed grid[ i -> i + sm_mask.size ]
+			let substring = packed grid[ i -> i + sm_mask.size ]
 			
 			if substring | sm_mask == substring then
 			{
@@ -505,12 +505,12 @@ def count_hash (s)
 	return Iter.popcount translated (s, " .\n", "\0" * 3)
 }
 
-const roughness = count_hash final_grid
-                - count_hash DATA * count
+let roughness = count_hash final_grid
+              - count_hash DATA * count
 
 display ""
 
-print roughness
+put roughness
 
 end.
                   # 

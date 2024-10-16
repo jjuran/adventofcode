@@ -1,12 +1,12 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const vectors =
+let vectors =
 [
 	[ 0,  1],  # N
 	[-1,  0],  # W
@@ -35,8 +35,8 @@ def rotate (degrees)
 
 for line in data do
 {
-	const action = line[ 0 ]
-	const amount = int substr( line, 1 )
+	let action = line[ 0 ]
+	let amount = int substr( line, 1 )
 	
 	if action in "LR" then
 	{
@@ -44,7 +44,7 @@ for line in data do
 	}
 	else if action in "NWSE" then
 	{
-		const step = vectors[ cardinal_translation action ]
+		let step = vectors[ cardinal_translation action ]
 		
 		dx += step[ 0 ] * amount
 		dy += step[ 1 ] * amount
@@ -56,4 +56,4 @@ for line in data do
 	}
 }
 
-print (abs x + abs y)
+put (abs x + abs y)

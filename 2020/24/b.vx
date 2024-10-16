@@ -1,20 +1,20 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const N = 100
+let N = 100
 
-const hexdir = ("nw" | "sw" | "ne" | "se" | "e" | "w") => str
-const hexpath = [hexdir+] => {[_]}
+let hexdir = ("nw" | "sw" | "ne" | "se" | "e" | "w") => str
+let hexpath = [hexdir+] => {[_]}
 
 def parse (line)
 {
@@ -31,7 +31,7 @@ def walk (path)
 	var dexter = 0
 	var sinister = 0
 	
-	const axis = str^
+	let axis = str^
 	[
 		w: &fess, nw: &dexter, sw: &sinister,
 		e: &fess, se: &dexter, ne: &sinister,
@@ -39,7 +39,7 @@ def walk (path)
 	
 	for step in path do
 	{
-		const polarity = 'n' <=> (-step)[ 0 ]  # 'e' < 'n' (1); 'w' > 'n' (-1)
+		let polarity = 'n' <=> (-step)[ 0 ]  # 'e' < 'n' (1); 'w' > 'n' (-1)
 		
 		*axis[ step ] += polarity
 	}
@@ -47,7 +47,7 @@ def walk (path)
 	dexter   += fess
 	sinister += fess
 	
-	const hash = rep [dexter, sinister]
+	let hash = rep [dexter, sinister]
 	
 	if hash in grid then
 	{
@@ -61,17 +61,17 @@ def walk (path)
 
 def neighbors (x, y)
 {
-	const sw = [x - 1, y    ]
-	const  w = [x - 1, y - 1]
-	const nw = [x    , y - 1]
-	const ne = [x + 1, y    ]
-	const  e = [x + 1, y + 1]
-	const se = [x    , y + 1]
+	let sw = [x - 1, y    ]
+	let  w = [x - 1, y - 1]
+	let nw = [x    , y - 1]
+	let ne = [x + 1, y    ]
+	let  e = [x + 1, y + 1]
+	let se = [x    , y + 1]
 	
 	return [sw, w, nw, ne, e, se] map rep
 }
 
-const paths = data map parse
+let paths = data map parse
 
 for path in paths do
 {
@@ -99,15 +99,15 @@ def iterate (i)
 {
 	display "" i ": " Iter.popcount grid
 	
-	const grid_keys = grid.keys
+	let grid_keys = grid.keys
 	
-	const affected_set = affected_cells grid_keys
+	let affected_set = affected_cells grid_keys
 	
 	var work = str^[]
 	
 	for key in affected_set.keys do
 	{
-		const n = neighbors *(eval key) pop { v in grid_keys }
+		let n = neighbors *(eval key) pop { v in grid_keys }
 		
 		if n == 2 or (n == 1 and key in grid_keys) then
 		{
@@ -127,5 +127,5 @@ for i in 0 -> N do
 
 display ""
 
-const black = Iter.popcount grid
-print black
+let black = Iter.popcount grid
+put black

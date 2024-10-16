@@ -1,10 +1,10 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = Iter.sorted ((load input_path).lines() map int)
+let data = Iter.sorted ((load input_path).lines() map int)
 
 for a in data do
 {
@@ -12,7 +12,7 @@ for a in data do
 	{
 		if a + b == 2020 then
 		{
-			print (a * b)
+			put (a * b)
 			
 			exit 0
 		}

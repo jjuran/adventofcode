@@ -1,26 +1,26 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
-const digit = '0' .. '9'
-const lower = 'a' .. 'z'
-const alnum = digit | lower
-const vchar = alnum | '#'
-const space = ' ' | '\n'
-const xdigit = digit | 'a' .. 'f'
+let digit = '0' .. '9'
+let lower = 'a' .. 'z'
+let alnum = digit | lower
+let vchar = alnum | '#'
+let space = ' ' | '\n'
+let xdigit = digit | 'a' .. 'f'
 
-const field = [lower (*) 3] => str
-const value = vchar+ => str
+let field = [lower (*) 3] => str
+let value = vchar+ => str
 
-const pair = [field, ":", value] => {head _ => tail _}
-const row = [pair, [space, pair]*] => {[_]}
-const set = [row,  ["\n\n", row]*] => {[_]}
+let pair = [field, ":", value] => {head _ => tail _}
+let row = [pair, [space, pair]*] => {[_]}
+let set = [row,  ["\n\n", row]*] => {[_]}
 
-const fields = DATA.lines()
+let fields = DATA.lines()
 
 def year_within (range)
 {
@@ -44,9 +44,9 @@ def height (v)
 {
 	var p = begin v
 	
-	if const num = p += digit+ => int then
+	if let num = p += digit+ => int then
 	{
-		const unit = p.rest
+		let unit = p.rest
 		
 		if unit == "cm" then
 		{
@@ -62,7 +62,7 @@ def height (v)
 	return false
 }
 
-const validation = str^
+let validation = str^
 [
 	byr: year_within (1920 .. 2002),
 	iyr: year_within (2010 .. 2020),
@@ -76,13 +76,13 @@ const validation = str^
 
 def is_valid (passport)
 {
-	const keys = passport map .key
+	let keys = passport map .key
 	
-	const missing = fields ver { not v in keys }
+	let missing = fields ver { not v in keys }
 	
 	if not missing then
 	{
-		const malformed = passport ver { not validation[ v.key ] v.value }
+		let malformed = passport ver { not validation[ v.key ] v.value }
 		
 		return not malformed
 	}
@@ -92,11 +92,11 @@ def is_valid (passport)
 
 var p = begin data
 
-const passports = p += set
+let passports = p += set
 
-const valid_passports = passports ver is_valid
+let valid_passports = passports ver is_valid
 
-print valid_passports.length
+put valid_passports.length
 
 end.
 byr

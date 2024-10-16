@@ -1,17 +1,17 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const lower = 'a' .. 'z'
-const word  = lower+ => str
-const words = [word, [' ', word]*] => {[_]}
-const wlist = [word, [", ", word]*] => {[_]}
-const note  = ["(contains ", wlist, ")"]
-const food  = [words, ' ', note] => {[_]}
+let lower = 'a' .. 'z'
+let word  = lower+ => str
+let words = [word, [' ', word]*] => {[_]}
+let wlist = [word, [", ", word]*] => {[_]}
+let note  = ["(contains ", wlist, ")"]
+let food  = [words, ' ', note] => {[_]}
 
 def parse (line)
 {
@@ -20,7 +20,7 @@ def parse (line)
 	return p += food
 }
 
-const foods = data map parse
+let foods = data map parse
 
 def list_items (i)
 {
@@ -28,7 +28,7 @@ def list_items (i)
 	
 	for food in foods do
 	{
-		const items = food[ i ]
+		let items = food[ i ]
 		
 		for it in items do
 		{
@@ -39,8 +39,8 @@ def list_items (i)
 	return result.keys
 }
 
-const ingredients = list_items 0
-const allergens   = list_items 1
+let ingredients = list_items 0
+let allergens   = list_items 1
 
 def map_allergens_to_listings
 {
@@ -48,9 +48,9 @@ def map_allergens_to_listings
 	
 	for food in foods do
 	{
-		const ingredients = Iter.sorted food[ 0 ]
+		let ingredients = Iter.sorted food[ 0 ]
 		
-		const allergens = food[ 1 ]
+		let allergens = food[ 1 ]
 		
 		for a in allergens do
 		{
@@ -72,9 +72,9 @@ def intersection (lists)
 {
 	var result = []
 	
-	const first = lists[ 0 ]
+	let first = lists[ 0 ]
 	
-	const other = [tail *lists]
+	let other = [tail *lists]
 	
 	for x in first do
 	{
@@ -113,7 +113,7 @@ def difference (list, removed)
 	return result
 }
 
-const ingredient_lists_by_allergen = map_allergens_to_listings()
+let ingredient_lists_by_allergen = map_allergens_to_listings()
 
 var known_mappings = str^[]
 
@@ -123,9 +123,9 @@ def solving
 	
 	for a_i in ingredient_lists_by_allergen do
 	{
-		const inter = intersection a_i.value
+		let inter = intersection a_i.value
 		
-		const remaining = difference (inter, known_mappings.values)
+		let remaining = difference (inter, known_mappings.values)
 		
 		if remaining.length == 1 then
 		{
@@ -142,12 +142,12 @@ while solving() do
 {
 }
 
-const safe_ingredients = difference (ingredients, known_mappings.values)
+let safe_ingredients = difference (ingredients, known_mappings.values)
 
 def ingredient_appearances (ingredient)
 {
 	return foods pop { ingredient in v[ 0 ] }
 }
 
-const appearances = safe_ingredients map ingredient_appearances per Math.sum
-print appearances
+let appearances = safe_ingredients map ingredient_appearances per Math.sum
+put appearances

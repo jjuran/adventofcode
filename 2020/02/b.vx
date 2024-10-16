@@ -1,26 +1,26 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const digit = '0' .. '9'
-const lower = 'a' .. 'z'
+let digit = '0' .. '9'
+let lower = 'a' .. 'z'
 
-const number = digit+ => int
-const passwd = [ number, '-', number, ' ', lower => {*_}, ": ", lower+ => str ]
+let number = digit+ => int
+let passwd = [ number, '-', number, ' ', lower => {*_}, ": ", lower+ => str ]
 
 def valid (s)
 {
 	var p = begin s
 	
-	const (low, high, c, password) = p += passwd
+	let (low, high, c, password) = p += passwd
 	
 	return +(password[ low - 1 ] == c)  -  +(password[ high - 1 ] == c)
 }
 
-const conforming = data ver valid
+let conforming = data ver valid
 
-print conforming.length
+put conforming.length

@@ -1,21 +1,21 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const data = if argc > 1 then {argv[ 1 ]} else {"10,16,6,0,1,17"}
+let data = if argc > 1 then {argv[ 1 ]} else {"10,16,6,0,1,17"}
 
-const starting = [data / ','] map int
+let starting = [data / ','] map int
 
-const N = 30 * 10^6
+let N = 30 * 10^6
 
 var seen = vector[u32] N
 
-const n = starting.length
+let n = starting.length
 
 for T0 in 1 -> n do
 {
@@ -31,7 +31,7 @@ for T in n -> N do
 		display (T div 2^13) "/" (N div 2^13)
 	}
 	
-	const t = seen[ next ] or T
+	let t = seen[ next ] or T
 	
 	seen[ next ] = T
 	
@@ -40,4 +40,4 @@ for T in n -> N do
 
 display ""
 
-print next
+put next

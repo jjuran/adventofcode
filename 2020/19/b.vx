@@ -1,26 +1,26 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
-const digit = '0' .. '9'
-const lower = 'a' .. 'z'
-const letter = lower => str
-const number = digit+ => int
-const quote = ['"', letter, '"']
-const seq = [number, [' ', number]*] => {[_]}
-const alt = [seq, " | ", seq]
-const chain = (alt | seq) => {[_]}
-const recipe = quote | chain
-const rule = [number, ": ", recipe] => {head _ => tail _}
+let digit = '0' .. '9'
+let lower = 'a' .. 'z'
+let letter = lower => str
+let number = digit+ => int
+let quote = ['"', letter, '"']
+let seq = [number, [' ', number]*] => {[_]}
+let alt = [seq, " | ", seq]
+let chain = (alt | seq) => {[_]}
+let recipe = quote | chain
+let rule = [number, ": ", recipe] => {head _ => tail _}
 
 def parse (line)
 {
@@ -33,11 +33,11 @@ var p = (begin data).find "\n\n"
 
 ++p
 
-const parsed = p.past.lines() map parse
+let parsed = p.past.lines() map parse
 
 ++p
 
-const messages = p.rest.lines()
+let messages = p.rest.lines()
 
 var rules = int^parsed
 
@@ -46,7 +46,7 @@ rules[ 11 ] = [[42, 31], [42, 11, 31]]
 
 def conforms (p, r)
 {
-	const recipe = rules[ r ]
+	let recipe = rules[ r ]
 	
 	if recipe isa str then
 	{
@@ -77,7 +77,7 @@ def conforms (p, r)
 
 def conforming_message (msg)
 {
-	const matches = [conforms (begin msg ".", 0)]
+	let matches = [conforms (begin msg ".", 0)]
 	
 	return bool (matches ver { *v == '.' })
 }
@@ -93,4 +93,4 @@ for msg in messages do
 
 display ""
 
-print n_conforming
+put n_conforming

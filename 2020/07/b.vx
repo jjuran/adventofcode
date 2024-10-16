@@ -1,27 +1,27 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 def parse (s)
 {
-	const words = [s / ' ']
+	let words = [s / ' ']
 	
-	const style = words[ 0 ]
-	const color = words[ 1 ]
-	const count = words[ 4 ]
+	let style = words[ 0 ]
+	let color = words[ 1 ]
+	let count = words[ 4 ]
 	
 	if count == "no" then
 	{
 		return style " " color => []
 	}
 	
-	const indices = 1 -> words.length div 4 map {v * 4}
+	let indices = 1 -> words.length div 4 map {v * 4}
 	
-	const subcolors = indices map
+	let subcolors = indices map
 	{
 		" ".join *(words[ v + 1 .. v + 2 ]) => int words[ v ],
 	}
@@ -29,7 +29,7 @@ def parse (s)
 	return style " " color => subcolors
 }
 
-const color_map = str^(data map parse)
+let color_map = str^(data map parse)
 
 var count_memo = str^[]
 
@@ -40,12 +40,12 @@ def count_nested (color)
 		return count_memo[ color ]
 	}
 	
-	const contents = color_map[ color ]
+	let contents = color_map[ color ]
 	
-	const sum = 1 + int (contents map { v.value * count_nested v.key }
-	                              per Math.sum)
+	let sum = 1 + int (contents map { v.value * count_nested v.key }
+	                            per Math.sum)
 	
 	return count_memo[ color ] = sum
 }
 
-print (count_nested "shiny gold" - 1)
+put (count_nested "shiny gold" - 1)

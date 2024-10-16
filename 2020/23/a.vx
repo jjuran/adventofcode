@@ -1,16 +1,16 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = if argc > 1 then {argv[ 1 ]} else {"925176834"}
+let data = if argc > 1 then {argv[ 1 ]} else {"925176834"}
 
 var cups = data
 
 def move
 {
-	const trio = cups[ 1 .. 3 ]
+	let trio = cups[ 1 .. 3 ]
 	
 	cups = cups[[ 0 ]] cups[ 4 -> cups.length ]
 	
@@ -24,7 +24,7 @@ def move
 		}
 	}
 	
-	const i = (begin cups).find(byte dst).past.length + 1
+	let i = (begin cups).find(byte dst).past.length + 1
 	
 	cups = cups[ 0 -> i ] trio cups[ i -> cups.length ]
 	cups = cups[ 1 -> cups.length] cups[[ 0 ]]
@@ -35,9 +35,9 @@ for i in 1 .. 100 do
 	move()
 }
 
-const j = (begin cups).find('1').past.length
+let j = (begin cups).find('1').past.length
 
 cups = cups[ j -> cups.length ] cups[ 0 -> j ]
 cups = cups[ 1 -> cups.length]
 
-print cups
+put cups

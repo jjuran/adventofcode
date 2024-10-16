@@ -1,21 +1,21 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = load input_path
+let data = load input_path
 
-const edge = 10
+let edge = 10
 
-const digit = '0' .. '9'
-const number = digit+ => int
-const heading = ["Tile ", number, ":\n"]
-const cell = '.' | '#'
-const row = [cell+, '\n']
-const grid = [row+ => str]
-const tile = [heading, grid, '\n'] => {head _ => tail _}
-const grammar = tile+ => {[_]}
+let digit = '0' .. '9'
+let number = digit+ => int
+let heading = ["Tile ", number, ":\n"]
+let cell = '.' | '#'
+let row = [cell+, '\n']
+let grid = [row+ => str]
+let tile = [heading, grid, '\n'] => {head _ => tail _}
+let grammar = tile+ => {[_]}
 
 def parse
 {
@@ -24,7 +24,7 @@ def parse
 	return p += grammar
 }
 
-const tiles = parse()
+let tiles = parse()
 
 def canon (edge)
 {
@@ -51,7 +51,7 @@ def right_edge (grid)
 	return -mince( substr (-grid, 1), edge + 1 )
 }
 
-const each_edge = top_edge, left_edge, bottom_edge, right_edge
+let each_edge = top_edge, left_edge, bottom_edge, right_edge
 
 def map_edges
 {
@@ -77,7 +77,7 @@ def map_edges
 	return edge_map
 }
 
-const adjacency = map_edges()
+let adjacency = map_edges()
 
 def score_tiles_by_unique_edges
 {
@@ -87,7 +87,7 @@ def score_tiles_by_unique_edges
 	{
 		if adj.value.length == 1 then
 		{
-			const tile_id = *adj.value
+			let tile_id = *adj.value
 			
 			if tile_id in scores then
 			{
@@ -103,7 +103,7 @@ def score_tiles_by_unique_edges
 	return scores
 }
 
-const scores = score_tiles_by_unique_edges()
+let scores = score_tiles_by_unique_edges()
 
-const x = scores ver { v.value == 2 } map .key per Math.product
-print x
+let x = scores ver { v.value == 2 } map .key per Math.product
+put x

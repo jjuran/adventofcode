@@ -1,14 +1,14 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const digit = ('0' .. '9') => int
+let digit = ('0' .. '9') => int
 
-const ops = byte^['*': Math.product, '+': Math.sum]
+let ops = byte^['*': Math.product, '+': Math.sum]
 
 var p;
 
@@ -16,7 +16,7 @@ def calc
 {
 	def term
 	{
-		const x
+		let x = ???
 		
 		if *p == '(' then
 		{
@@ -40,7 +40,7 @@ def calc
 	{
 		p += ' '
 		
-		const this_op = *p++
+		let this_op = *p++
 		
 		p += ' '
 		
@@ -56,7 +56,7 @@ def calc
 		
 		p += ' '
 		
-		const next_op = *p
+		let next_op = *p
 		
 		if u8 next_op > u8 this_op then
 		{
@@ -78,5 +78,5 @@ def calculate (expr)
 	return calc p
 }
 
-const sum = data map calculate per Math.sum
-print sum
+let sum = data map calculate per Math.sum
+put sum
