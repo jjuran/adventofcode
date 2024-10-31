@@ -1,4 +1,4 @@
-#!/usr/bin/env minivx
+#!/usr/bin/env lvx
 
 const bindir = dirname realpath argv[ 0 ]
 
