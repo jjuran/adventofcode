@@ -9,7 +9,7 @@ def hex_distance (dexter, pale, sinister)
 	
 	if dexter < 0 and sinister < 0 then
 	{
-		const min = Math.min (-dexter, pale, -sinister)
+		let min = Math.min (-dexter, pale, -sinister)
 		
 		sinister += min
 		dexter   += min
@@ -34,7 +34,7 @@ def hex_distance (dexter, pale, sinister)
 		var tmp <- pale <- sinister <- dexter <- tmp
 	}
 	
-	const min = Math.min (dexter, sinister)
+	let min = Math.min (dexter, sinister)
 	
 	sinister -= min
 	dexter   -= min

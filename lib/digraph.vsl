@@ -7,7 +7,7 @@ def transposed (graph)
 	
 	for node in graph do
 	{
-		const src = node.key
+		let src = node.key
 		
 		for dst in node.value do
 		{
@@ -28,7 +28,7 @@ def transposed (graph)
 export
 def closure (graph, node)
 {
-	const T = typeof node
+	let T = typeof node
 	
 	var result = []
 	

@@ -8,7 +8,7 @@ def merge_maps
 	{
 		for m in map do
 		{
-			const k = m.key
+			let k = m.key
 			
 			if not k in result  or  m.value > result[ k ] then
 			{
@@ -22,7 +22,7 @@ def merge_maps
 
 def factorization (new_sequence, product)
 {
-	const sequence = new_sequence()
+	let sequence = new_sequence()
 	
 	var result = []
 	
@@ -30,7 +30,7 @@ def factorization (new_sequence, product)
 	
 	while product > 1 do
 	{
-		const factor = sequence()
+		let factor = sequence()
 		
 		var n = 0
 		
@@ -52,11 +52,11 @@ def factorization (new_sequence, product)
 
 def lcm_with_sequence (new_sequence, inputs)
 {
-	const prime_factorization = factorization % new_sequence
+	let prime_factorization = factorization % new_sequence
 	
-	const pf = merge_maps( inputs map prime_factorization )
+	let pf = merge_maps( inputs map prime_factorization )
 	
-	const factors = pf map { v.key ^ v.value }
+	let factors = pf map { v.key ^ v.value }
 	
 	return Math.product *factors
 }
@@ -66,9 +66,9 @@ def with (prime_number_sequencing)
 {
 	def lcm (inputs)
 	{
-		const max = Iter.max inputs
+		let max = Iter.max inputs
 		
-		const new_sequence = (prime_number_sequencing.with :max).new_sequence
+		let new_sequence = (prime_number_sequencing.with :max).new_sequence
 		
 		return lcm_with_sequence( new_sequence, inputs )
 	}
