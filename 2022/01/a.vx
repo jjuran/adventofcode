@@ -8,4 +8,4 @@ let data = [(load input_path) "\n0" / "\n\n"] map { v "\n" }
 
 let sums = data map { v.lines() map int per Math.sum }
 
-print Iter.max sums
+put Iter.max sums

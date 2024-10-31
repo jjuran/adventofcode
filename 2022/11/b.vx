@@ -93,4 +93,4 @@ inspects = -(Iter.sorted inspects)
 
 let monkey_business = inspects[ 0 .. 1 ] per Math.product
 
-print monkey_business
+put monkey_business

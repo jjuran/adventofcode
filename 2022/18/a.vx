@@ -32,4 +32,4 @@ for cube in data do
 
 display ""
 
-print exposed_sides
+put exposed_sides

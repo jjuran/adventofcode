@@ -12,4 +12,4 @@ let descending = -(Iter.sorted sums)
 
 let top3_sum = descending[0 -> 3] per Math.sum
 
-print top3_sum
+put top3_sum

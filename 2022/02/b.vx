@@ -20,4 +20,4 @@ let data = [fetch() / -2] map { [v / 2] map int }
 
 let total = data map { score *v } per Math.sum
 
-print total
+put total

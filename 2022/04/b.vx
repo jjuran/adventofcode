@@ -14,4 +14,4 @@ def overlaps (a, b)
 	return a[0] in B or b[0] in A
 }
 
-print (data pop { overlaps *v })
+put (data pop { overlaps *v })

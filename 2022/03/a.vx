@@ -32,4 +32,4 @@ def search (rucksack)
 	return byte p.past.size
 }
 
-print (data map search map u8 per Math.sum)
+put (data map search map u8 per Math.sum)

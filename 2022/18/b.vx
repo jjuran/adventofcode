@@ -99,4 +99,4 @@ for i in (0 -> grid.length ver { grid[ v ] == ' ' }) do
 
 display ""
 
-print exposed_sides
+put exposed_sides

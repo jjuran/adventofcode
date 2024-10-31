@@ -31,4 +31,4 @@ def search (group)
 	# not reached
 }
 
-print (groups map search map u8 per Math.sum)
+put (groups map search map u8 per Math.sum)

@@ -27,4 +27,4 @@ while not marker data[ i -> i + N ] do
 	++i
 }
 
-print (i + N)
+put (i + N)

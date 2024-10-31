@@ -143,4 +143,4 @@ search (0, 26, 26, "AA", "AA", valves_to_open)
 
 display ""
 
-print most_pressure
+put most_pressure

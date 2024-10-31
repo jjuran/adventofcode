@@ -47,4 +47,4 @@ for packet in data do
 
 let decoder_key = i2 * i6
 
-print decoder_key
+put decoder_key

@@ -44,4 +44,4 @@ for move in moves do
 
 let top = stacks map { (-v)[0] } per str
 
-print top
+put top
