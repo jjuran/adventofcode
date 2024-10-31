@@ -1,4 +1,4 @@
-#!/usr/bin/env minivx
+#!/usr/bin/env lvx
 
 if argc <= 1 then
 {
@@ -6,26 +6,26 @@ if argc <= 1 then
 	exit 1
 }
 
-const input_path = argv[ 1 ]
+let input_path = argv[ 1 ]
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+def import (lib) { eval (load, realpath) libdir lib ".vsl" }
 
-const display = (import "status") { OUT <== _ }
-const intcode = import "intcode"
+let display = (import "status") { OUT <== _ }
+let intcode = import "intcode"
 
-const data = (load input_path).lines()[0]
-const core = [data / ','] map int
+let data = (load input_path).lines()[0]
+let core = [data / ','] map int
 
-const machine = intcode.machine core
+let machine = intcode.machine core
 
 def input
 {
 	display ">>> "
 	
-	const c = IN.read 1
+	let c = IN.read 1
 	
 	display ""
 	
