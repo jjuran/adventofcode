@@ -45,4 +45,4 @@ let N = times.length
 
 let X = 0 -> N map { winning_move_count (times[ v ], dists[ v ]) } per {a * b}
 
-print X
+put X

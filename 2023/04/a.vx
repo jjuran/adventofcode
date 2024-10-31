@@ -27,4 +27,4 @@ def points (line)
 
 let total = data map points per {a + b}
 
-print total
+put total

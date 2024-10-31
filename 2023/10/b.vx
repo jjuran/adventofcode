@@ -136,4 +136,4 @@ for yy in 1 -> height do
 
 let X = omap pop { v == 'I' }
 
-print X
+put X

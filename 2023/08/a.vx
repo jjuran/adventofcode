@@ -43,4 +43,4 @@ while here != "ZZZ" do
 	n += n_steps
 }
 
-print n
+put n

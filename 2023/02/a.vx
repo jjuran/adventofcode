@@ -41,4 +41,4 @@ def impossible (samples)
 
 let sum = data map parse ver { not impossible v.value } map .key per {a + b}
 
-print sum
+put sum

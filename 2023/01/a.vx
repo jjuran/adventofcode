@@ -18,4 +18,4 @@ def calibration (s)
 
 let sum = data map calibration per Math.sum
 
-print sum
+put sum

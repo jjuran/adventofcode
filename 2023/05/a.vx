@@ -52,4 +52,4 @@ let convert = lookups per { b * a }
 
 let locations = seeds map convert
 
-print Iter.min locations
+put Iter.min locations

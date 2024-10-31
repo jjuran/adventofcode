@@ -100,4 +100,4 @@ for i in 0 -> n do
 	}
 }
 
-print sum
+put sum

@@ -62,4 +62,4 @@ def shortest_winning_charge_time()
 
 let n_winning_moves = (midpoint - shortest_winning_charge_time()) * 2 + 1
 
-print n_winning_moves
+put n_winning_moves

@@ -44,4 +44,4 @@ def minimum_power (samples)
 
 let sum = data map minimum_power * parse per {a + b}
 
-print sum
+put sum

@@ -98,4 +98,4 @@ for bid_hand in bid_hands do
 	sum += ++rank * bid_hand[ 2 ]
 }
 
-print sum
+put sum

@@ -20,4 +20,4 @@ def next_predicted (seq)
 
 let sum = lines map next_predicted per {a + b}
 
-print sum
+put sum

@@ -69,4 +69,4 @@ while frontier do
 
 --distance
 
-print distance
+put distance

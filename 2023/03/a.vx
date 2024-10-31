@@ -54,4 +54,4 @@ for i in 1 .. height do
 	}
 }
 
-print sum
+put sum
