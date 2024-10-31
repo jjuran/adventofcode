@@ -1,12 +1,12 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const pairs = byte^
+let pairs = byte^
 [
 	'(': ')',
 	'[': ']',
@@ -14,7 +14,7 @@ const pairs = byte^
 	'<': '>',
 ]
 
-const score = byte^
+let score = byte^
 [
 	')': 1,
 	']': 2,
@@ -30,7 +30,7 @@ def completion_score (line)
 	
 	while p do
 	{
-		const c = *p++
+		let c = *p++
 		
 		if c in pairs then
 		{
@@ -54,5 +54,5 @@ def median (set)
 	return (Iter.sorted set)[ set.length div 2 ]
 }
 
-const scores = data map completion_score
-print median scores
+let scores = data map completion_score
+put median scores

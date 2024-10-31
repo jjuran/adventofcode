@@ -1,12 +1,12 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const len = data[ 0 ].length
+let len = data[ 0 ].length
 
 def median (set)
 {
@@ -26,7 +26,7 @@ def rating (criterion)
 	
 	while valid.length > 1 do
 	{
-		const b = criterion (valid map { v[ i ] })
+		let b = criterion (valid map { v[ i ] })
 		
 		valid = valid ver { v[ i ] == b }
 		
@@ -36,8 +36,8 @@ def rating (criterion)
 	return unbin "0b" *valid
 }
 
-const oxy_rating = rating % median
-const co2_rating = rating % (NOT * median)
+let oxy_rating = rating % median
+let co2_rating = rating % (NOT * median)
 
-const life_support = oxy_rating() * co2_rating()
-print life_support
+let life_support = oxy_rating() * co2_rating()
+put life_support

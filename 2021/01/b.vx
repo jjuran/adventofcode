@@ -1,9 +1,9 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines() map int
+let data = (load input_path).lines() map int
 
-print (0 -> data.length - 3 pop { data[ v ] < data[ v + 3 ] })
+put (0 -> data.length - 3 pop { data[ v ] < data[ v + 3 ] })

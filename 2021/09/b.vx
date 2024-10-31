@@ -1,19 +1,19 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path)
+let data = (load input_path)
 
-const lines = data.lines()
-const width = lines[ 0 ].length
-const stride = width + 1
+let lines = data.lines()
+let width = lines[ 0 ].length
+let stride = width + 1
 
-const blank = "~" * stride
-const grid = str (blank, lines map { v "~" }, blank)
+let blank = "~" * stride
+let grid = str (blank, lines map { v "~" }, blank)
 
-const digit = '0' .. '9'
+let digit = '0' .. '9'
 
 def neighbors (index)
 {
@@ -26,7 +26,7 @@ def neighbors (index)
 
 def is_low (i)
 {
-	const height = grid[ i ]
+	let height = grid[ i ]
 	
 	return height in digit and not (neighbors i ver { grid[ v ] <= height })
 }
@@ -41,7 +41,7 @@ def basin_size (i)
 	
 	while frontier do
 	{
-		const i = frontier[ 0 ]
+		let i = frontier[ 0 ]
 		
 		frontier = [tail *frontier]
 		
@@ -58,9 +58,9 @@ def basin_size (i)
 	return size
 }
 
-const basin_sizes = stride -> grid.length - stride ver is_low map basin_size
+let basin_sizes = stride -> grid.length - stride ver is_low map basin_size
 
-const sizes_descending = -(Iter.sorted basin_sizes)
+let sizes_descending = -(Iter.sorted basin_sizes)
 
-const product = sizes_descending[ 0 -> 3 ] per Math.product
-print product
+let product = sizes_descending[ 0 -> 3 ] per Math.product
+put product

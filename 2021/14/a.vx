@@ -1,16 +1,16 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 def parse
 {
-	const (polymer, rules_chunk) = load input_path / "\n\n"
+	let (polymer, rules_chunk) = load input_path / "\n\n"
 	
 	def parse_rule (line)
 	{
-		const (a, b) = line / " -> "
+		let (a, b) = line / " -> "
 		
 		return a => b
 	}
@@ -18,7 +18,7 @@ def parse
 	return polymer, str^(rules_chunk.lines() map parse_rule)
 }
 
-const (polymer, rules) = parse()
+let (polymer, rules) = parse()
 
 def make_elements
 {
@@ -32,7 +32,7 @@ def make_elements
 	return str elements.keys
 }
 
-const elements = make_elements()
+let elements = make_elements()
 
 def step (polymer)
 {
@@ -42,7 +42,7 @@ def step (polymer)
 	
 	while p.rest.length > 1 do
 	{
-		const key = p.rest[ 0 -> 2 ]
+		let key = p.rest[ 0 -> 2 ]
 		
 		++p
 		
@@ -52,16 +52,16 @@ def step (polymer)
 	return s
 }
 
-const N = 10
+let N = 10
 
-const result = step^N polymer
+let result = step^N polymer
 
 def count (e)
 {
 	return result.length - Iter.popcount translated( result, e "", "\0" )
 }
 
-const counts = elements map count
+let counts = elements map count
 
-const delta = Iter.max counts - Iter.min counts
-print delta
+let delta = Iter.max counts - Iter.min counts
+put delta

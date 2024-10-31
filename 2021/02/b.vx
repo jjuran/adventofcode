@@ -1,16 +1,16 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 var depth = 0
 var dist = 0
 var aim = 0
 
-const commands = str^
+let commands = str^
 [
 	up:      { aim  -= _ },
 	down:    { aim  += _ },
@@ -19,10 +19,10 @@ const commands = str^
 
 for command in data do
 {
-	const (dir, inc) = command / ' '
+	let (dir, inc) = command / ' '
 	
 	commands[ dir ] int inc
 }
 
-const product = depth * dist
-print product
+let product = depth * dist
+put product

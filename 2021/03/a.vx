@@ -1,12 +1,12 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const len = data[ 0 ].length
+let len = data[ 0 ].length
 
 def median (set)
 {
@@ -18,9 +18,9 @@ def digit_slice (i)
 	return data map { v[ i ] }
 }
 
-const gamma = 0 -> len map median * digit_slice per str
+let gamma = 0 -> len map median * digit_slice per str
 
-const epsilon = translated (gamma, "01", "10")
+let epsilon = translated (gamma, "01", "10")
 
-const power = unbin "0b" gamma * unbin "0b" epsilon
-print power
+let power = unbin "0b" gamma * unbin "0b" epsilon
+put power

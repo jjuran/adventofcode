@@ -1,26 +1,26 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 var grid = load input_path
 
-const width = (begin grid).find('\n').past.length
-const stride = width + 1
+let width = (begin grid).find('\n').past.length
+let stride = width + 1
 
-const blank = (" " * width) "\n"
+let blank = (" " * width) "\n"
 
 grid = " " blank grid blank
 
-const indices = 1 + stride -> grid.length - stride - 1
+let indices = 1 + stride -> grid.length - stride - 1
 
 def smear (x)
 {
 	return *(-1 .. 1 map {x + v})
 }
 
-const neighbor_offsets = -1 .. 1 map { v * stride } map smear
+let neighbor_offsets = -1 .. 1 map { v * stride } map smear
 
 var n_flashes = 0
 
@@ -71,11 +71,11 @@ def step
 	}
 }
 
-const N = 100
+let N = 100
 
 for T in 1 .. N do
 {
 	step()
 }
 
-print n_flashes
+put n_flashes

@@ -1,12 +1,12 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = [(load input_path).lines()[ 0 ] / ','] map int
+let data = [(load input_path).lines()[ 0 ] / ','] map int
 
-const N = 256
+let N = 256
 
 var counts = [ 0 (*) 9 ]
 
@@ -17,12 +17,12 @@ for x in data do
 
 for day in 1 .. N do
 {
-	const zeros = counts[ 0 ]
+	let zeros = counts[ 0 ]
 	
 	counts = [tail *counts, zeros]
 	
 	counts[ 6 ] += zeros
 }
 
-const population = counts per {a + b}
-print population
+let population = counts per {a + b}
+put population

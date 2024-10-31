@@ -1,29 +1,29 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const number_drawings = [ eval data[ 0 ] ]
+let number_drawings = [ eval data[ 0 ] ]
 
-const n_cards = data.length div 6
+let n_cards = data.length div 6
 
 def get_card (i)
 {
-	const text = "\n" "\n".join *data[ 2 + i * 6 -> 5 + 2 + i * 6 ]
+	let text = "\n" "\n".join *data[ 2 + i * 6 -> 5 + 2 + i * 6 ]
 	
 	return [ text / 25 ] map eval
 }
 
-const cards = 0 -> n_cards map get_card
+let cards = 0 -> n_cards map get_card
 
 var occurrences = [ [] (*) 100 ]
 
 for c in 0 -> n_cards do
 {
-	const card = cards[ c ]
+	let card = cards[ c ]
 	
 	for i in 0 -> 5 do
 	{
@@ -38,18 +38,18 @@ var markings = [ "\0" * 5^2 (*) n_cards ]
 
 def bingo (c, i, j)
 {
-	const x5 = "x" * 5
+	let x5 = "x" * 5
 	
-	const rows = [markings[ c ] / 5]
+	let rows = [markings[ c ] / 5]
 	
 	return rows[ i ] == x5 or rows map { v[ j ] } per str == x5
 }
 
 def unmarked_sum (c)
 {
-	const card = cards[ c ]
+	let card = cards[ c ]
 	
-	const marks = markings[ c ]
+	let marks = markings[ c ]
 	
 	return 0 -> 25 ver { not marks[ v ] } map { card[ v ] } per {a + b}
 }
@@ -66,7 +66,7 @@ def last_card_to_win
 		
 		for o in occurrences[ number ] do
 		{
-			const (c, i, j) = *o
+			let (c, i, j) = *o
 			
 			markings[ c ][ i * 5 + j ] = 'x'
 			
@@ -83,5 +83,5 @@ def last_card_to_win
 	}
 }
 
-const score = unmarked_sum last_card_to_win() * last_number_drawn
-print score
+let score = unmarked_sum last_card_to_win() * last_number_drawn
+put score

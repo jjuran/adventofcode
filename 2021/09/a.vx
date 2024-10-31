@@ -1,19 +1,19 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path)
+let data = (load input_path)
 
-const lines = data.lines()
-const width = lines[ 0 ].length
-const stride = width + 1
+let lines = data.lines()
+let width = lines[ 0 ].length
+let stride = width + 1
 
-const blank = "~" * stride
-const grid = str (blank, lines map { v "~" }, blank)
+let blank = "~" * stride
+let grid = str (blank, lines map { v "~" }, blank)
 
-const digit = '0' .. '9'
+let digit = '0' .. '9'
 
 def neighbors (index)
 {
@@ -26,7 +26,7 @@ def neighbors (index)
 
 def is_low (i)
 {
-	const height = grid[ i ]
+	let height = grid[ i ]
 	
 	return height in digit and not (neighbors i ver { grid[ v ] <= height })
 }
@@ -36,5 +36,5 @@ def risk (i)
 	return 1 + int str grid[ i ]
 }
 
-const sum = stride -> grid.length - stride ver is_low map risk per Math.sum
-print sum
+let sum = stride -> grid.length - stride ver is_low map risk per Math.sum
+put sum

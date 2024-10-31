@@ -1,12 +1,12 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
-const pairs = byte^
+let pairs = byte^
 [
 	'(': ')',
 	'[': ']',
@@ -14,7 +14,7 @@ const pairs = byte^
 	'<': '>',
 ]
 
-const score = byte^
+let score = byte^
 [
 	')': 3,
 	']': 57,
@@ -30,7 +30,7 @@ def syntax_error_score (line)
 	
 	while p do
 	{
-		const c = *p++
+		let c = *p++
 		
 		if c in pairs then
 		{
@@ -49,5 +49,5 @@ def syntax_error_score (line)
 	return 0
 }
 
-const score_total = data map syntax_error_score per Math.sum
-print score_total
+let score_total = data map syntax_error_score per Math.sum
+put score_total

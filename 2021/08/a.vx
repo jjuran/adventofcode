@@ -1,17 +1,17 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 def trivial_outputs (line)
 {
-	const (left, right) = line / '|'
+	let (left, right) = line / '|'
 	
 	return [right / ' '] ver { v.length in [2, 4, 3, 7] }
 }
 
-const count = data map trivial_outputs map .length per Math.sum
-print count
+let count = data map trivial_outputs map .length per Math.sum
+put count

@@ -1,15 +1,15 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const grid = load input_path
+let grid = load input_path
 
-const grid_len = grid.length
+let grid_len = grid.length
 
-const width = (begin grid).find('\n').past.length
-const stride = width + 1
+let width = (begin grid).find('\n').past.length
+let stride = width + 1
 
 def neighbors (index)
 {
@@ -59,4 +59,4 @@ def lowest_risk
 	}
 }
 
-print lowest_risk()
+put lowest_risk()

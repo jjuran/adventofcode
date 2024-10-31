@@ -1,37 +1,37 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = (load input_path).lines()
+let data = (load input_path).lines()
 
 def parse (line)
 {
-	const words = [line / ' ']
+	let words = [line / ' ']
 	
-	const a = [words[ 0 ] / ','] map int
-	const b = [words[ 2 ] / ','] map int
+	let a = [words[ 0 ] / ','] map int
+	let b = [words[ 2 ] / ','] map int
 	
 	return [a, b]
 }
 
-const lines = data map parse
+let lines = data map parse
 
-const points = lines map { *v }
+let points = lines map { *v }
 
-const max_x = Iter.max (points map { v[ 0 ] })
-const max_y = Iter.max (points map { v[ 1 ] })
+let max_x = Iter.max (points map { v[ 0 ] })
+let max_y = Iter.max (points map { v[ 1 ] })
 
-const width  = max_x + 1
-const height = max_y + 1
-const stride = width + 1
+let width  = max_x + 1
+let height = max_y + 1
+let stride = width + 1
 
 var grid = ("0" * width) "\n" * height
 
 for line in lines do
 {
-	const (a, b) = *line
+	let (a, b) = *line
 	
 	var a0 = a[ 0 ]
 	var b0 = b[ 0 ]
@@ -53,7 +53,7 @@ for line in lines do
 	{
 		for i in a1 .. b1 do
 		{
-			const k = i * stride + a0
+			let k = i * stride + a0
 			
 			grid[ k ] = byte (u8 grid[ k ] + 1)
 		}
@@ -62,11 +62,11 @@ for line in lines do
 	{
 		for j in a0 .. b0 do
 		{
-			const k = a1 * stride + j
+			let k = a1 * stride + j
 			
 			grid[ k ] = byte (u8 grid[ k ] + 1)
 		}
 	}
 }
 
-print Iter.popcount translated (grid, "01\n", "\0" * 3)
+put Iter.popcount translated (grid, "01\n", "\0" * 3)

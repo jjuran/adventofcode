@@ -1,13 +1,13 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
-const libdir = bindir "/../../lib/"
+let bindir = dirname realpath argv[ 0 ]
+let libdir = bindir "/../../lib/"
 
-const import = { const path = libdir _ ".vsl"; eval( load path, path ) }
+let import = { let path = libdir _ ".vsl"; eval( load path, path ) }
 
-const display = (import "status") { OUT <== _ }
+let display = (import "status") { OUT <== _ }
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
 def generate_full_map
 {
@@ -22,7 +22,7 @@ def generate_full_map
 		subgrids <-- grid.lines()
 	}
 	
-	const height = subgrids[ 0 ].length
+	let height = subgrids[ 0 ].length
 	
 	var s = ""
 	
@@ -42,12 +42,12 @@ def generate_full_map
 	return s
 }
 
-const grid = generate_full_map()
+let grid = generate_full_map()
 
-const grid_len = grid.length
+let grid_len = grid.length
 
-const width = (begin grid).find('\n').past.length
-const stride = width + 1
+let width = (begin grid).find('\n').past.length
+let stride = width + 1
 
 def neighbors (index)
 {
@@ -101,4 +101,4 @@ def lowest_risk
 	}
 }
 
-print lowest_risk()
+put lowest_risk()

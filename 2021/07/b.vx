@@ -1,14 +1,14 @@
 #!/usr/bin/env lvx
 
-const bindir = dirname realpath argv[ 0 ]
+let bindir = dirname realpath argv[ 0 ]
 
-const input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
 
-const data = [(load input_path).lines()[ 0 ] / ','] map int
+let data = [(load input_path).lines()[ 0 ] / ','] map int
 
-const n = data.length
+let n = data.length
 
-const sorted = Iter.sorted data
+let sorted = Iter.sorted data
 
 def burn (dist)
 {
@@ -20,14 +20,14 @@ def cost (median)
 	return data map { v - median } map abs map burn per Math.sum
 }
 
-const min_x = sorted[ 0 ]
-const max_x = sorted[ n - 1 ]
+let min_x = sorted[ 0 ]
+let max_x = sorted[ n - 1 ]
 
 var minimum = cost min_x
 
 for i in min_x + 1 .. max_x do
 {
-	const fuel = cost i
+	let fuel = cost i
 	
 	if fuel > minimum then
 	{
@@ -37,4 +37,4 @@ for i in min_x + 1 .. max_x do
 	minimum = fuel
 }
 
-print minimum
+put minimum
