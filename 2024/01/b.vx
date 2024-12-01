@@ -1,0 +1,23 @@
+#!/usr/bin/env lvx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let lines = (load input_path).lines()
+
+let data = lines map { [v / "   "] map int }
+
+let left  = data map { v[ 0 ] }
+let right = data map { v[ 1 ] }
+
+var frequencies = vector[ u32, 100000 ]()
+
+for x in right do
+{
+	frequencies[ x ] = frequencies[ x ] + 1
+}
+
+let sum = left map { v * frequencies[ v ] } per Math.sum
+
+put sum

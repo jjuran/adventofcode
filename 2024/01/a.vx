@@ -1,0 +1,17 @@
+#!/usr/bin/env lvx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let lines = (load input_path).lines()
+
+let data = lines map { [v / "   "] map int }
+
+let left  = Iter.sorted (data map { v[ 0 ] })
+let right = Iter.sorted (data map { v[ 1 ] })
+
+let sum = 0 -> lines.length map { abs (left[ v ] - right[ v ]) }
+                            per Math.sum
+
+put sum
