@@ -1,0 +1,29 @@
+#!/usr/bin/env lvx
+
+let bindir = dirname realpath argv[ 0 ]
+
+let input_path = if argc > 1 then {argv[ 1 ]} else {bindir "/input.txt"}
+
+let digit = '0' .. '9'
+
+let number = [digit, [digit, digit?]?] => int
+
+let MUL = ["mul(", number, ",", number, ")"] => Math.product
+
+var sum = 0
+
+var p = begin load input_path
+
+while p do
+{
+	if (+) (let x = p += MUL) then
+	{
+		sum += x
+	}
+	else
+	{
+		++p
+	}
+}
+
+put sum
